@@ -1,0 +1,30 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+  <body>
+    <p id='server-time'></p>
+    <p>Enter a message</p>
+      <form action="#" id="send" method="post">
+        <input type="text" name="message" id="message" class="submit"/>
+        <input type="submit" name="submit" class="submit"/>
+      </form>
+    <script>
+
+      if (!/(&|\?)username=/.test(window.location.search)) {
+        var newSearch = window.location.search;
+        if (newSearch !== '' & newSearch !== '?') {
+          newSearch += '&';
+        }
+        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+        window.location.search = newSearch;
+      }
+
+    </script>
+    <script>
+  
+    </script>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="session.js"></script>
+  </body>
+</html>
