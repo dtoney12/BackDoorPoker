@@ -21,15 +21,22 @@ module.exports = {
 			console.log(clientID,':',msg);
 			pokerObj.time = new Date().toTimeString();
 			client.send( JSON.stringify(pokerObj) ); });
-		
-		var oneSetInterval = setInterval( ()=> {
-  			pokerObj.time = new Date().toTimeString();
-  			client.send( JSON.stringify(pokerObj) ), 5000 });
 
-  		oneSetInterval();
+		// var oneSetInterval = () => { return setTimeout };
 
-  		client.on('close', ()=> console.log(clientID, 'disconnected') );
+  // 		oneSetInterval( );
 
+  		client.on('close', ()=> {
 
+  			console.log(clientID, 'disconnected') });
+
+		var oneSetInterval = setInterval(
+			()=> { 	pokerObj.time = new Date().toTimeString();
+  					client.send( JSON.stringify(pokerObj) );
+					console.log('gee')}, 2000);
+
+		setTimeout(()=>{
+			clearInterval(oneSetInterval);
+		},20000);
 	}	
 };

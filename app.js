@@ -19,5 +19,26 @@ wss.on('connection', (ws) => {
 	var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
 	console.log('Client connected', clientID);
 	sessions.manage(ws, clientID);
+	
+	
+
+	// oneSetInterval( ()=> {
+	// 	var pokerObj = {
+	//       name: 'Mike',
+	//       joinTable: 'false',
+	//       rejoinWaitTimer: 0,
+	//       sitOutNext: false,
+	//       quitYesOrNo: false,
+	//       turn: false,
+	//       token: null,
+	//       bootPlayer: false,
+	//       bootPlayerTimer: 0,
+	//       bet: 0,
+	//       newBet: 0
+	//     };
+	// 	pokerObj.time = new Date().toTimeString();
+	// 	client.send( JSON.stringify(pokerObj) )
+	// }, 5000);
+
 });
 
