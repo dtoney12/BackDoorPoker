@@ -13,30 +13,28 @@ module.exports = {
 	      bootPlayer: false,
 	      bootPlayerTimer: 0,
 	      bet: 0,
-	      newBet: 0
+	      newBet: 0,
+	      message: ''
 	    };
 		pokerObj.time = new Date().toTimeString();
 
 		client.on('message', (msg)=> {
-			console.log(clientID,':',msg);
-			pokerObj.time = new Date().toTimeString();
-			client.send( JSON.stringify(pokerObj) ); });
-
-		// var oneSetInterval = () => { return setTimeout };
-
-  // 		oneSetInterval( );
+			pokerObj = JSON.parse(msg);
+			console.log(clientID + ' message:', pokerObj.message);
+			});
 
   		client.on('close', ()=> {
+  			console.log(clientID, 'disconnected');
+  			clearInterval(oneSetInterval); 
+  			});
 
-  			console.log(clientID, 'disconnected') });
+		var oneSetInterval = setInterval( ()=> {
+			pokerObj.time = new Date().toTimeString();
+			client.send( JSON.stringify(pokerObj) );
+			}, 2000);
 
-		var oneSetInterval = setInterval(
-			()=> { 	pokerObj.time = new Date().toTimeString();
-  					client.send( JSON.stringify(pokerObj) );
-					console.log('gee')}, 2000);
-
-		setTimeout(()=>{
-			clearInterval(oneSetInterval);
-		},20000);
+		// setTimeout(()=>{
+		// 	clearInterval(oneSetInterval);
+		// 	},20000);
 	}	
 };

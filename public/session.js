@@ -24,7 +24,6 @@ var session = {
 
 				ws.onmessage = function (msg) {
 					pokerObj = JSON.parse(msg.data);
-					console.log(pokerObj);
 					el.innerHTML = 'Server time: ' + pokerObj.time;
 					window.setTableState(pokerObj);
 				};
@@ -32,8 +31,7 @@ var session = {
 				$('#send').submit(function(event) {
 					event.preventDefault();
 					pokerObj.message = $('#message').val();
-					console.log(pokerObj.message);
-					ws.send(pokerObj.message);
+					ws.send( JSON.stringify(pokerObj) );
 				});
 
 			});
