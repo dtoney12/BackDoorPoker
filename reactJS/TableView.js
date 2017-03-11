@@ -15,7 +15,7 @@ class TableView extends React.Component {
       newBet: 0,
       time: 0
     };
-    window.setPState = this.setState.bind(this);
+    window.setTableState = this.setState.bind(this);
   }
 
   render() {

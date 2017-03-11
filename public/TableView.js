@@ -30,7 +30,7 @@ var TableView = function (_React$Component) {
       newBet: 0,
       time: 0
     };
-    window.setPState = _this.setState.bind(_this);
+    window.setTableState = _this.setState.bind(_this);
     return _this;
   }
 
