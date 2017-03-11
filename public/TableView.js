@@ -44,7 +44,7 @@ var TableView = function (_React$Component) {
           'tbody',
           null,
           Object.entries(this.state).map(function (entry) {
-            // console.log(entry);
+            entry[1] = String(entry[1]);
             return React.createElement(
               'tr',
               null,

@@ -23,7 +23,7 @@ class TableView extends React.Component {
       <table>
       <tbody>
         {Object.entries(this.state).map( function(entry) {
-          // console.log(entry);
+          entry[1] = String(entry[1]);
           return  <tr>
                       <td>{entry[0]}:</td> 
                       <td>{entry[1]}</td>

@@ -4,12 +4,28 @@
 </head>
   <body>
     <p id='server-time'></p>
-    <p>Enter a message</p>
-      <form action="#" id="send" method="post">
-        <input type="text" name="message" id="message" class="submit"/>
-        <input type="submit" name="submit" class="submit"/>
+    <p>Enter your name</p>
+      <form action="#" id="nameButton" method="post">
+        <input type="text" id="name"/>
+        <input type="submit"/>
       </form>
-    <script>
+    <p>Enter password</p>
+      <form action="#" id="passwordButton" method="post">
+        <input type="text" id="password"/>
+        <input type="submit"/>
+      </form>
+    <p>Enter a message</p>
+      <form action="#" id="messageButton" method="post">
+        <input type="text" id="message"/>
+        <input type="submit"/>
+      </form>
+    <p>Join the Table</p>
+      <form action="#" id="joinTableButton" method="post">
+        <input type="submit" id="joinTable"/>
+      </form>
+
+
+<!--     <script>
 
       if (!/(&|\?)username=/.test(window.location.search)) {
         var newSearch = window.location.search;
@@ -20,7 +36,7 @@
         window.location.search = newSearch;
       }
 
-    </script>
+    </script> -->
     <div id="room"></div>
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="react-with-addons.js"></script>

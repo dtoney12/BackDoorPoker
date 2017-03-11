@@ -8,7 +8,8 @@ var session = {
 				var el = document.getElementById('server-time');
 				var pokerObj = {
 			      name: 'RandomPerson',
-			      joinTable: 'false',
+			      password: '',
+			      joinTable: false,
 			      rejoinWaitTimer: 0,
 			      sitOutNext: false,
 			      quitYesOrNo: false,
@@ -18,9 +19,16 @@ var session = {
 			      bootPlayerTimer: 0,
 			      bet: 0,
 			      newBet: 0,
-			      message: ''
+			      message: '',
+			      update: ''
+
 			    };
-			    var pokerObj = window.pokerObj;
+			    var submitButton = function(eventX, type, bool) {
+			    	eventX.preventDefault();
+			    	pokerObj[type] = document.getElementById(type).value || bool;
+			    	pokerObj.update = type;
+					ws.send( JSON.stringify(pokerObj) );
+			    }
 
 				ws.onmessage = function (msg) {
 					pokerObj = JSON.parse(msg.data);
@@ -28,10 +36,17 @@ var session = {
 					window.setTableState(pokerObj);
 				};
 
-				$('#send').submit(function(event) {
-					event.preventDefault();
-					pokerObj.message = $('#message').val();
-					ws.send( JSON.stringify(pokerObj) );
+				$('#nameButton').submit(function(event) {
+					submitButton(event, 'name');
+				});
+				$('#passwordButton').submit(function(event) {
+					submitButton(event, 'password');
+				});
+				$('#messageButton').submit(function(event) {
+					submitButton(event, 'message');
+				});
+				$('#joinTableButton').submit(function(event) {
+					submitButton(event, 'joinTable', true);
 				});
 
 			});
