@@ -3,7 +3,6 @@
 const express = require('express');
 const SocketServer = require('ws').Server;
 const path = require('path');
-const model = require('./model');
 const sessions = require('./sessions');
 const PORT = process.env.PORT || 3000;
 const CLIENT_FILES = path.join(__dirname, './public');
