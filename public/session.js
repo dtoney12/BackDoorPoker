@@ -11,6 +11,7 @@ var session = {
 					var pokerObj = JSON.parse(msg.data);
 					console.log(pokerObj);
 					el.innerHTML = 'Server time: ' + pokerObj.time;
+					window.setPState(pokerObj);
 				};
 
 				$('#send').submit(function(event) {

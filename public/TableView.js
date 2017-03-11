@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -16,50 +16,55 @@ var TableView = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
 
-    _this.state = {};
+    _this.state = {
+      name: 'Bob',
+      joinTable: 'false',
+      rejoinWaitTimer: 0,
+      sitOutNext: false,
+      quitYesOrNo: false,
+      turn: false,
+      token: null,
+      bootPlayer: false,
+      bootPlayerTimer: 0,
+      bet: 0,
+      newBet: 0,
+      time: 0
+    };
+    window.setPState = _this.setState.bind(_this);
     return _this;
   }
 
   _createClass(TableView, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return React.createElement(
-        "table",
+        'table',
         null,
-        Object.entries(this.props.playerState).map(function (entry) {
-          console.log(entry);
-          return React.createElement(
-            "tr",
-            null,
-            React.createElement(
-              "td",
+        React.createElement(
+          'tbody',
+          null,
+          Object.entries(this.state).map(function (entry) {
+            // console.log(entry);
+            return React.createElement(
+              'tr',
               null,
-              entry[0],
-              ":"
-            ),
-            " ",
-            React.createElement(
-              "td",
-              null,
-              entry[1]
-            )
-          );
-        })
+              React.createElement(
+                'td',
+                null,
+                entry[0],
+                ':'
+              ),
+              React.createElement(
+                'td',
+                null,
+                entry[1]
+              )
+            );
+          })
+        )
       );
     }
   }]);
 
   return TableView;
 }(React.Component);
-
-// PropTypes tell other developers what `props` a component expects
-// Warnings will be shown in the console when the defined rules are violated
-
-
-TableView.propTypes = {
-  playerState: React.PropTypes.object.isRequired
-};
-
-// In the ES6 spec, files are "modules" and do not share a top-level scope
-// `var` declarations will only exist globally where explicitly defined
-window.TableView = TableView;
