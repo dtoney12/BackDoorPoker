@@ -7,27 +7,18 @@ const model = require('./model');
 const sessions = require('./sessions');
 const PORT = process.env.PORT || 3000;
 const CLIENT_FILES = path.join(__dirname, './public');
-
-// Start server
+							  // .use( (req, res) => {
+							  // 	console.log('something else');
+							  // })
 const server = express()
-  // .use( (req, res) => {
-  // 	res.sendFile(CLIENT_FILES)
-  // })
-	.use(express.static(__dirname + '/public'))
-	.listen(PORT, () => console.log(`Listening on ${ PORT }`) );
+.use(express.static(__dirname + '/public'))
+.listen(PORT, () => console.log(`Listening on ${ PORT }`) );
 const wss = new SocketServer({ server });
 
+
 wss.on('connection', (ws) => {
-  console.log('Client connected');
-  sessions.manage(ws);
-  ws.on('close', () => console.log('Client disconnected') );
+	var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);
+	console.log('Client connected', clientID);
+	sessions.manage(ws, clientID);
 });
 
-// setTimeout(() => {
-//   wss.clients.forEach((client) => {
-//   	var returnObj = {
-//   		'time': new Date().toTimeString()
-//   	}
-//     client.send(returnObj.time);
-//   });
-// }, 5000);

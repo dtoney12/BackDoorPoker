@@ -1,12 +1,16 @@
 
 
 module.exports = {
-	manage: function(clientS) {
-		var pokerObj = {
+	manage: function(client, clientID) {
+		var pokerObj = JSON.stringify({
       		time: new Date().toTimeString()
-    	}
-    	sendObj = JSON.stringify(pokerObj);
-		clientS.send( sendObj );
-  		setTimeout( () => clientS.send( sendObj ), 5000 )
+    	});
+
+		client.on('message', (msg)=> console.log(clientID,':',msg) );
+  		client.on('close', ()=> console.log(clientID, 'disconnected') );
+		
+		client.send( pokerObj );
+  		setTimeout( ()=> client.send( pokerObj ), 5000 );
+
 	}	
 };

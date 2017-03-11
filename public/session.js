@@ -13,6 +13,13 @@ var session = {
 					el.innerHTML = 'Server time: ' + pokerObj.time;
 				};
 
+				$('#send').submit(function(event) {
+					event.preventDefault();
+					var text = $('#message').val();
+					console.log(text);
+					ws.send(text);
+				});
+
 			});
 		};
 	}
