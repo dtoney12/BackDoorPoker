@@ -1,11 +1,15 @@
 var Backbone = require('backbone');
 var dbase = require('./db');
 var helper = require('./helper');
+var model = require('./model');
 
 exports.PlayerState = Backbone.Model.extend({
 	defaults: {
 		name: 'PlayerName',
+		model: {},
 		password: '',
+		loggedIn: false,
+		logOut: false,
 		joinTable: false,
 		rejoinWaitTimer: 0,
 		sitOutNext: false,
@@ -29,6 +33,15 @@ exports.PlayerState = Backbone.Model.extend({
 				console.log('\n(player state change password event triggered)');
 				console.log('state password is now ----> :' + this.attributes.password);
 			},
+			"change:loggedIn": ()=>{
+				console.log('\n(player state change loggedIn event triggered)');
+				console.log('state loggedIn is now ----> :' + this.attributes.loggedIn);
+				this.attributes.model.set( { loggedIn: true } );
+			},
+			"change:logOut": ()=>{
+				console.log('\n(player state change logOut event triggered)');
+				console.log('state logOut is currently ----> :' + this.attributes.logOut);
+			},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
 			"change:sitOutNext": ()=>{console.log('\n change sitOutNext detected')},
@@ -40,6 +53,10 @@ exports.PlayerState = Backbone.Model.extend({
 			"change:bet": ()=>{console.log('\n change bet detected')},
 			"change:newBet": ()=>{console.log('\n change newBet detected')},
 			"change:message": ()=>{console.log('\n change message detected')},
+			"change:update": ()=>{
+				console.log('\n(player state change update event triggered)');
+				console.log('state update is currently ----> :' + this.attributes.update);
+				this.attributes.model.set( { update: this.attributes.update } ); }
 			})		
 	}
 });
@@ -50,7 +67,9 @@ exports.PlayersState = Backbone.Collection.extend({
 });
 var PlayersState = exports.PlayersState;
 var currentUsers = new PlayersState();
-exports.getUserObj = function(userName) {
+
+var getStateUserObj = function(userName) {
+	console.log('looking')
 	for (var i = 0; i < currentUsers.models.length; i++) {
 		var user = currentUsers.models[i];
 		if (user.attributes.name === userName) {
@@ -59,6 +78,7 @@ exports.getUserObj = function(userName) {
 	}
 	return false;
 }
+
 exports.registerNewPlayer = function(enteredName) {
 	console.log('\nAttempting to create Player >>' + enteredName + '<<')
 	var player = new PlayerState();
@@ -66,14 +86,41 @@ exports.registerNewPlayer = function(enteredName) {
 	console.log('\nPlayer >>' + player.attributes.name + '<< created');
 	currentUsers.add(player);
 	console.log('Player >>' + player.attributes.name + '<< added to currentUsers');
+	player.set( { model: model.getUserObj(enteredName) } );
+	console.log('Player >>' + player.attributes.name + '<< **** { model object } ***** added');
+	return player;
 }
-exports.updatePassword = function(enteredPW, userName){
-	var player = exports.getUserObj(userName);
-	if (player) {
-		player.set( { password: enteredPW });
-		console.log('\nPlayer >>' + player.attributes.name + '<< password set to ' + enteredPW);
+exports.logInPlayer = function(player, playerInfo) {
+	for (var x in playerInfo) {
+		player.set( { [x]: playerInfo[x] } );
+		player.set( { loggedIn: true} );
 	}
 }
+exports.logOutPlayer = function(player) {
+	console.log('(((((still need to write state.logOutPlayer function))))))');
+}
+exports.updateClientStatus = function(player, message) {
+	// var player = getStateUserObj(userName);
+	// if (!!player) {
+		player.set( { update: message} );
+	// } else {
+	// 	console.log('updating client, not the player');
+	// 	var user = model.getUserObj(enteredName);
+	// 	user.set( { update: message} );
+	// }
+}
+
+
+
+// exports.updatePassword = function(enteredPW, userName){
+// 	var player = exports.getUserObj(userName);
+// 	if (player) {
+// 		player.set( { password: enteredPW });
+// 		console.log('\nPlayer >>' + player.attributes.name + '<< password set to ' + player.attributes.password);
+// 		player.set( { loggedIn: true });
+// 		console.log('Player >>' + player.attributes.name + '<< loggedIn set to ' + player.attributes.loggedIn);
+// 	}
+// }
 
 // var TableState = {
 // 	playersAtTable: [],

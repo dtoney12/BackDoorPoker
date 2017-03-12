@@ -2,18 +2,20 @@ class TableView extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      name: 'Bob',
-      joinTable: 'false',
+      name: 'Bobs',
+      password: '',
+      update: '',
+      joinTable: false,
+      turn: false,
+      bet: 0,
+      newBet: 0,
+      message: '',
       rejoinWaitTimer: 0,
       sitOutNext: false,
       quitYesOrNo: false,
-      turn: false,
       token: null,
       bootPlayer: false,
-      bootPlayerTimer: 0,
-      bet: 0,
-      newBet: 0,
-      time: 0
+      bootPlayerTimer: 0
     };
     window.setTableState = this.setState.bind(this);
   }

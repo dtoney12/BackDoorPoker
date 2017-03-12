@@ -45,6 +45,9 @@ var session = {
 				$('#messageButton').submit(function(event) {
 					submitButton(event, 'message');
 				});
+				$('#logOutButton').submit(function(event) {
+					submitButton(event, 'logOut');
+				});
 				$('#joinTableButton').submit(function(event) {
 					submitButton(event, 'joinTable', true);
 				});

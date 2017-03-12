@@ -20,6 +20,7 @@ module.exports = {
 
   		client.on('close', ()=> {
   			console.log('\n' + clientID, ' <------ disconnected');
+  			playerBb.set( { logOut: true } );
   			clearInterval(oneSetInterval); 
   			});
 

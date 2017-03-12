@@ -17,18 +17,20 @@ var TableView = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
 
     _this.state = {
-      name: 'Bob',
-      joinTable: 'false',
+      name: 'Bobs',
+      password: '',
+      update: '',
+      joinTable: false,
+      turn: false,
+      bet: 0,
+      newBet: 0,
+      message: '',
       rejoinWaitTimer: 0,
       sitOutNext: false,
       quitYesOrNo: false,
-      turn: false,
       token: null,
       bootPlayer: false,
-      bootPlayerTimer: 0,
-      bet: 0,
-      newBet: 0,
-      time: 0
+      bootPlayerTimer: 0
     };
     window.setTableState = _this.setState.bind(_this);
     return _this;
