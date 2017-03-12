@@ -1,13 +1,18 @@
 var model = require('./model');
+var Backbone = require('backbone');
+
 
 module.exports = {
 	manage: function(client, clientID) {
-		var pokerObj = model.pokerObj;
+		var playerBb = new model.Player();
+		model.PlayersBb.add(playerBb);
+
+		var pokerObj = playerBb.attributes;
 		var filter = model.allowFilterPokerObj;
 		pokerObj.time = new Date().toTimeString();
 
 		client.on('message', (recObj)=> {
-			model.mergeObj( JSON.parse(recObj), pokerObj, filter);
+			model.mergeObj( JSON.parse(recObj), playerBb, filter);
 			console.log(clientID + ' updated ' + pokerObj.update + ':', pokerObj[pokerObj.update]);
 			});
 
