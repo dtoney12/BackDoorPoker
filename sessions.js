@@ -15,7 +15,7 @@ module.exports = {
 			recObj = JSON.parse(recObj);
 			model.mergeObj( recObj, playerBb, filter);
 			console.log('\n' + clientID + ' attempted to update ' + recObj.update + ':', recObj[recObj.update]);
-			console.log(clientID, recObj.update + ' state: ' + (pokerObj[pokerObj.update]).toString());
+			console.log(clientID, recObj.update + ' state: ' + pokerObj[pokerObj.update]);
 			});
 
   		client.on('close', ()=> {
