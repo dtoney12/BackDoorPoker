@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %> | {{name}}</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript">
+      var appConfig = {
+        route: '/<%= route %>'
+      };
+    </script>
+  </head>
+  <body class="<%= route.replace(/\//g, '-') %>">
+  	<div class="container">
+  		<h1><%= title %></h1>
+      <% if (typeof session.flash === "object" && typeof session.flash.message === "string") { %>
+        <div class="alert alert-<%= session.flash.type %>">
+          <%= session.flash.message %>
+        </div>
+      <% } %>
+	    <%- body %>
+	    <br /><br />
+    </div>
+    <script data-main="/scripts/app" src="/scripts/backbone-on-express/vendor/require.js"></script>
+  </body>
+</html>

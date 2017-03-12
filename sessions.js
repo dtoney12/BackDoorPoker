@@ -13,13 +13,13 @@ module.exports = {
 
 		client.on('message', (recObj)=> {
 			recObj = JSON.parse(recObj);
+			console.log('\n' + clientID + ' attempting to update ' + recObj.update + '----> :' + recObj[recObj.update]);
 			model.mergeObj( recObj, playerBb, filter);
-			console.log('\n' + clientID + ' attempted to update ' + recObj.update + ':', recObj[recObj.update]);
-			console.log(clientID, recObj.update + ' state: ' + pokerObj[pokerObj.update]);
+			// console.log(clientID, recObj.update + ' model -----> ' + pokerObj[pokerObj.update]);
 			});
 
   		client.on('close', ()=> {
-  			console.log(clientID, 'disconnected');
+  			console.log('\n' + clientID, ' <------ disconnected');
   			clearInterval(oneSetInterval); 
   			});
 

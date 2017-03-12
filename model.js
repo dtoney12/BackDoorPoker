@@ -22,10 +22,12 @@ exports.Player = Backbone.Model.extend({
 	initialize: function() {
 		this.on({
 			"change:name": ()=>{
-				console.log('\n change name detected');
-				console.log('name currently set to: ' + this.attributes.name);
-				// dbase.addName(this.attributes.name, this);
-				},
+				console.log('\n(player model change name event triggered)');
+				console.log('model name is now ----> :' + this.attributes.name);
+				if (this.attributes.name !== '') {
+					dbase.addName(this.attributes.name, this);
+				}
+			},
 			"change:password": ()=>{console.log('\n change password detected')},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},

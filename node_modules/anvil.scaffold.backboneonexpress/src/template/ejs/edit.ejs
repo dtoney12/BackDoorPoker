@@ -1,0 +1,6 @@
+<form id="{{name}}_update" action="/{{name}}/update/<%= _id %>" method="POST">
+	<input name="_id" value="<%= _id %>" type="hidden" />
+	<%- include _form.ejs %>
+	<input type="submit" class="btn btn-primary" value="Save" />
+	<a href="/{{name}}/delete/<%= _id %>" class="btn btn-danger">Delete {{name}}</a>
+</form>

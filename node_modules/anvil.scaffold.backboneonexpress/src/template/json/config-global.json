@@ -1,0 +1,25 @@
+{
+	"port": 1117,
+	"secret": "{{secret}}",
+	"enableJSON": true,
+	"public": "./public",
+	"templates": "./public/templates",
+	"layout": "layout",
+	"viewEngine": "ejs",
+	"require": {
+		"baseUrl": "./public/scripts/",
+		"paths": {
+			"models": "models",
+			"views": "views",
+			"collections": "collections",
+			"controllers": "../../controllers",
+			"templates": "../templates",
+			"css": "../css"
+		}
+	},
+	"storage": {
+		"driver": "mongoose",
+		"server": "localhost",
+		"database": "{{name}}"
+	}
+}

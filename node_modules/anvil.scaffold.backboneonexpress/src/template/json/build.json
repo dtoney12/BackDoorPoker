@@ -1,0 +1,9 @@
+{
+  "source": "public",
+  "spec": "test",
+  "output":  "public-build",
+  "dependencies": [ "anvil.mocha" ],
+  "anvil.uglify": {
+    "all": "true"
+	}
+}
