@@ -38,8 +38,35 @@ module.exports = {
 		  	})
 	  	});
 	},
-	addPassword: {
-
+	addPassword: function(enteredPW, player, callback){
+	  	pool.getConnection(function(err, connection) {
+	  		if (err) {
+	  			throw err;
+	  		}
+	  		var queryString = `SELECT * from player WHERE name='${player.attributes.name}';`;	
+	  		connection.query(queryString, function(err, nameExists) {
+	  			if (err) {
+	  				throw err;
+	  			}
+	  			if (nameExists.length) {
+	  				var queryString = `UPDATE player SET password='${enteredPW}' WHERE name='${player.attributes.name}';`
+		  			connection.query(queryString, function(err, rows) {
+			  			if (err) {
+			  				throw err;
+			  			}
+			  			console.log(`\npassword updated for >>${player.attributes.name}<< in db -----> :` + enteredPW);
+			  			state.updatePassword(enteredPW, player.attributes.name);
+			  			connection.release();
+			  		});
+	  			} else {
+	  				console.log('\nPlayer name does not exist in db -----> :' + player.attributes.name);
+	  				console.log('Rejecting password update request -----> :' + enteredPW)
+	  				player.set( { update: `${player.attributes.name} <--- user doesn't exist` } );
+	  				player.set( { password: '' } );
+	  				connection.release();
+	  			}
+		  	})
+	  	});
 	},
 	initDbPlayer: function() {
 		pool.getConnection(function(err, connection) {

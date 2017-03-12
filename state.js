@@ -25,7 +25,10 @@ exports.PlayerState = Backbone.Model.extend({
 				console.log('\n(player state change name event triggered)');
 				console.log('state name is now ----> :' + this.attributes.name);
 			},
-			"change:password": ()=>{console.log('\n change password detected')},
+			"change:password": ()=>{
+				console.log('\n(player state change password event triggered)');
+				console.log('state password is now ----> :' + this.attributes.password);
+			},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
 			"change:sitOutNext": ()=>{console.log('\n change sitOutNext detected')},
@@ -47,6 +50,15 @@ exports.PlayersState = Backbone.Collection.extend({
 });
 var PlayersState = exports.PlayersState;
 var currentUsers = new PlayersState();
+exports.getUserObj = function(userName) {
+	for (var i = 0; i < currentUsers.models.length; i++) {
+		var user = currentUsers.models[i];
+		if (user.attributes.name === userName) {
+			return user;
+		}
+	}
+	return false;
+}
 exports.registerNewPlayer = function(enteredName) {
 	console.log('\nAttempting to create Player >>' + enteredName + '<<')
 	var player = new PlayerState();
@@ -54,6 +66,13 @@ exports.registerNewPlayer = function(enteredName) {
 	console.log('\nPlayer >>' + player.attributes.name + '<< created');
 	currentUsers.add(player);
 	console.log('Player >>' + player.attributes.name + '<< added to currentUsers');
+}
+exports.updatePassword = function(enteredPW, userName){
+	var player = exports.getUserObj(userName);
+	if (player) {
+		player.set( { password: enteredPW });
+		console.log('\nPlayer >>' + player.attributes.name + '<< password set to ' + enteredPW);
+	}
 }
 
 // var TableState = {

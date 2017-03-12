@@ -28,7 +28,13 @@ exports.Player = Backbone.Model.extend({
 					dbase.addName(this.attributes.name, this);
 				}
 			},
-			"change:password": ()=>{console.log('\n change password detected')},
+			"change:password": ()=>{
+				console.log('\n(player model change password event triggered)');
+				console.log('model password is now ----> :' + this.attributes.password);
+				if (this.attributes.password !== '') {
+					dbase.addPassword(this.attributes.password, this);
+				}
+			},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
 			"change:sitOutNext": ()=>{console.log('\n change sitOutNext detected')},
@@ -54,7 +60,7 @@ exports.PlayersBb = new Players();
 
 exports.allowFilterPokerObj = {
 		name: true,
-		// password: '',
+		password: '',
 		joinTable: true,
 		// rejoinWaitTimer: false,
 		sitOutNext: true,
