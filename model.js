@@ -16,6 +16,9 @@ exports.Player = Backbone.Model.extend({
 		newBet: 0,
 		message: '',
 		update: ''
+	},
+	initialize: function() {
+		this.on("change:name", function() {console.log('\n change detected')})		
 	}
 });
 var Player = exports.Player;
@@ -27,26 +30,9 @@ exports.Players = Backbone.Collection.extend({
 var Players = exports.Players;
 exports.PlayersBb = new Players();
 
-	
-exports.pokerObj = {
-		name: 'PlayerName',
-		password: '',
-		joinTable: false,
-		rejoinWaitTimer: 0,
-		sitOutNext: false,
-		quitYesOrNo: false,
-		turn: false,
-		token: null,
-		bootPlayer: false,
-		bootPlayerTimer: 0,
-		bet: 0,
-		newBet: 0,
-		message: '',
-		update: ''
-}
 exports.allowFilterPokerObj = {
 		name: true,
-		password: '',
+		// password: '',
 		joinTable: true,
 		// rejoinWaitTimer: false,
 		sitOutNext: true,

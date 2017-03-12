@@ -48,6 +48,12 @@ var session = {
 				$('#joinTableButton').submit(function(event) {
 					submitButton(event, 'joinTable', true);
 				});
+				$('#turnButton').submit(function(event) {
+					submitButton(event, 'turnButton', true);
+				});
+				$('#rejoinWaitTimerButton').submit(function(event) {
+					submitButton(event, 'rejoinWaitTimer');
+				});
 
 			});
 		};

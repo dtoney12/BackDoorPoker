@@ -12,8 +12,10 @@ module.exports = {
 		pokerObj.time = new Date().toTimeString();
 
 		client.on('message', (recObj)=> {
-			model.mergeObj( JSON.parse(recObj), playerBb, filter);
-			console.log(clientID + ' updated ' + pokerObj.update + ':', pokerObj[pokerObj.update]);
+			recObj = JSON.parse(recObj);
+			model.mergeObj( recObj, playerBb, filter);
+			console.log('\n' + clientID + ' attempted to update ' + recObj.update + ':', recObj[recObj.update]);
+			console.log(clientID, recObj.update + ' state: ' + (pokerObj[pokerObj.update]).toString());
 			});
 
   		client.on('close', ()=> {
