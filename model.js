@@ -24,7 +24,7 @@ exports.Player = Backbone.Model.extend({
 			"change:name": ()=>{
 				console.log('\n change name detected');
 				console.log('name currently set to: ' + this.attributes.name);
-				dbase.addName(this.attributes.name, this);
+				// dbase.addName(this.attributes.name, this);
 				},
 			"change:password": ()=>{console.log('\n change password detected')},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
