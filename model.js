@@ -18,7 +18,21 @@ exports.Player = Backbone.Model.extend({
 		update: ''
 	},
 	initialize: function() {
-		this.on("change:name", function() {console.log('\n change detected')})		
+		this.on([
+			"change:name": function() {console.log('\n change name detected')},
+			"change:password": function() {console.log('\n change password detected')},
+			"change:joinTable": function() {console.log('\n change joinTable detected')},
+			"change:rejoinWaitTimer": function() {console.log('\n change rejoinWaitTimer detected')},
+			"change:sitOutNext": function() {console.log('\n change sitOutNext detected')},
+			"change:quitYesOrNo": function() {console.log('\n change quitYesOrNo detected')},
+			"change:turn": function() {console.log('\n change turn detected')},
+			"change:token": function() {console.log('\n change token detected')},
+			"change:bootPlayer": function() {console.log('\n change bootPlayer detected')},
+			"change:bootPlayerTimer": function() {console.log('\n change bootPlayerTimer detected')},
+			"change:bet": function() {console.log('\n change bet detected')},
+			"change:newBet": function() {console.log('\n change newBet detected')},
+			"change:message": function() {console.log('\n change message detected')},
+			])		
 	}
 });
 var Player = exports.Player;
