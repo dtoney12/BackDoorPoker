@@ -1,6 +1,5 @@
 var Backbone = require('backbone');
 var dbase = require('./db');
-var helper = require('./helper');
 var model = require('./model');
 
 exports.PlayerState = Backbone.Model.extend({
@@ -10,6 +9,9 @@ exports.PlayerState = Backbone.Model.extend({
 		password: '',
 		loggedIn: false,
 		logOut: false,
+		accountCash: 0,
+		getCash: false,
+		getCashWait: 0,
 		joinTable: false,
 		rejoinWaitTimer: 0,
 		sitOutNext: false,
@@ -21,7 +23,18 @@ exports.PlayerState = Backbone.Model.extend({
 		bet: 0,
 		newBet: 0,
 		message: '',
-		update: ''
+		chats: [],
+		update: 'nothing to report',
+		Player1: {},
+		Player2: {},
+		Player3: {},
+		Player4: {},
+		Player5: {},
+		Player6: {},
+		Player7: {},
+		Player8: {},
+		Player9: {},
+		Player10: {}
 	},
 	initialize: function() {
 		this.on({
@@ -41,6 +54,16 @@ exports.PlayerState = Backbone.Model.extend({
 			"change:logOut": ()=>{
 				console.log('\n(player state change logOut event triggered)');
 				console.log('state logOut is currently ----> :' + this.attributes.logOut);
+			},
+			"change:accountCash": ()=>{
+				console.log('\n(player state change accountCash event triggered)');
+				console.log('state accountCash is currently ----> :' + this.attributes.accountCash);
+				this.attributes.model.set( { accountCash: this.attributes.accountCash } );
+			},
+			"change:getCashWait": ()=>{
+				console.log('\n(player state change getCashWait event triggered)');
+				console.log('state getCashWait is currently ----> :' + this.attributes.getCashWait);
+				this.attributes.model.set( { getCashWait: this.attributes.getCashWait } );
 			},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
@@ -68,6 +91,14 @@ exports.PlayersState = Backbone.Collection.extend({
 var PlayersState = exports.PlayersState;
 var currentUsers = new PlayersState();
 
+exports.syncPlayerStateDb = function(player, playerInfo) {
+	console.log('(((((( SYNC ATTMEPTING )))))')
+	console.log('playerInfo rows = ', playerInfo);
+	for (var x in playerInfo) {
+		console.log('SYNC EVENT' +playerInfo[x]);
+		player.set( { [x]: playerInfo[x] } );
+	}
+}
 var getStateUserObj = function(userName) {
 	console.log('looking')
 	for (var i = 0; i < currentUsers.models.length; i++) {
@@ -100,14 +131,7 @@ exports.logOutPlayer = function(player) {
 	console.log('(((((still need to write state.logOutPlayer function))))))');
 }
 exports.updateClientStatus = function(player, message) {
-	// var player = getStateUserObj(userName);
-	// if (!!player) {
-		player.set( { update: message} );
-	// } else {
-	// 	console.log('updating client, not the player');
-	// 	var user = model.getUserObj(enteredName);
-	// 	user.set( { update: message} );
-	// }
+	player.set( { update: message} );
 }
 
 

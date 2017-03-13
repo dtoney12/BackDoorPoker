@@ -2,56 +2,48 @@
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
-  <body>
-    <p id='server-time'></p>
-    <p>Enter your name</p>
-      <form action="#" id="nameButton" method="post">
-        <input type="text" id="name"/>
-        <input type="submit"/>
-      </form>
-    <p>Enter password</p>
-      <form action="#" id="passwordButton" method="post">
-        <input type="text" id="password"/>
-        <input type="submit"/>
-      </form>
-    <p>Enter a message</p>
-      <form action="#" id="messageButton" method="post">
-        <input type="text" id="message"/>
-        <input type="submit"/>
-      </form>
-    <p>Log Out</p>
-      <form action="#" id="logOutButton" method="post">
-        <input type="submit" id="logOut"/>
-      </form>
-    <p>Join the Table</p>
-      <form action="#" id="joinTableButton" method="post">
-        <input type="submit" id="joinTable"/>
-      </form>
-    <p>Take Turn</p>
-      <form action="#" id="turnButton" method="post">
-        <input type="submit" id="turn"/>
-      </form>
-    <p>Set Rejoin Wait Timer</p>
-      <form action="#" id="rejoinWaitTimerButton" method="post">
-      <input type="text" id="rejoinWaitTimer"/>
-        <input type="submit"/>
-      </form>
-
-
-
-<!--     <script>
-
-      if (!/(&|\?)username=/.test(window.location.search)) {
-        var newSearch = window.location.search;
-        if (newSearch !== '' & newSearch !== '?') {
-          newSearch += '&';
-        }
-        newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
-        window.location.search = newSearch;
-      }
-
-    </script> -->
-    <div id="room"></div>
+          <div class="forms"/>
+            <p id='server-time'></p>
+            <p>Enter your name</p>
+              <form action="#" id="nameButton" method="post">
+                <input type="text" id="name"/>
+                <input type="submit"/>
+              </form>
+            <p>Enter password</p>
+              <form action="#" id="passwordButton" method="post">
+                <input type="text" id="password"/>
+                <input type="submit"/>
+              </form>
+            <p>Enter a message</p>
+              <form action="#" id="messageButton" method="post">
+                <input type="text" id="message"/>
+                <input type="submit"/>
+              </form>
+            <p>Get Cash</p>
+              <form action="#" id="getCashButton" method="post">
+                <input type="submit" id="getCash"/>
+              </form>
+            <p>Log Out</p>
+              <form action="#" id="logOutButton" method="post">
+                <input type="submit" id="logOut"/>
+              </form>
+            <p>Join the Table</p>
+              <form action="#" id="joinTableButton" method="post">
+                <input type="submit" id="joinTable"/>
+              </form>
+            <p>Take Turn</p>
+              <form action="#" id="turnButton" method="post">
+                <input type="submit" id="turn"/>
+              </form>
+            <p>Set Rejoin Wait Timer</p>
+              <form action="#" id="rejoinWaitTimerButton" method="post">
+              <input type="text" id="rejoinWaitTimer"/>
+                <input type="submit"/>
+              </form>
+          </div>
+  <body background="pokertable.png">
+<div id="room" class="clearfix"></div>
+    
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="react-with-addons.js"></script>
     <script type="text/javascript" src="react-dom.js"></script>

@@ -1,6 +1,5 @@
 var Backbone = require('backbone');
 var dbase = require('./db');
-var helper = require('./helper');
 
 exports.Player = Backbone.Model.extend({
 	defaults: {
@@ -8,6 +7,9 @@ exports.Player = Backbone.Model.extend({
 		password: '',
 		loggedIn: false,
 		logOut: false,
+		accountCash: 0,
+		getCash: false,
+		getCashWait: 0,
 		joinTable: false,
 		rejoinWaitTimer: 0,
 		sitOutNext: false,
@@ -19,9 +21,41 @@ exports.Player = Backbone.Model.extend({
 		bet: 0,
 		newBet: 0,
 		message: '',
-		update: ''
+		chats: [],
+		update: 'nothing to report',
+		Player1: {},
+		Player2: {},
+		Player3: {},
+		Player4: {},
+		Player5: {},
+		Player6: {},
+		Player7: {},
+		Player8: {},
+		Player9: {},
+		Player10: {}
 	},
 	initialize: function() {
+		this.filter = {
+			name: true,
+			password: '',
+			// loggedIn: false,
+			logOut: true,
+			joinTable: true,
+			// rejoinWaitTimer: false,
+			sitOutNext: true,
+			quitYesOrNo: true,
+			// accountCash: '',
+			getCash: true,
+			// getCashWait: 24,
+			// turn: false,
+			// token: false,
+			// bootPlayer: false,
+			// bootPlayerTimer: false,
+			bet: true,
+			newBet: true,
+			message: true
+			// update: false
+		};
 		this.on({
 			"change:name": ()=>{
 				console.log('\n(player model change name event triggered)');
@@ -48,6 +82,25 @@ exports.Player = Backbone.Model.extend({
 					dbase.logOutPlayer(this);
 				}
 			},
+			"change:accountCash": ()=>{
+				console.log('\n(player model change accountCash event triggered)');
+				console.log('model accountCash is currently ----> :' + this.attributes.accountCash);
+			},
+			"change:getCashWait": ()=>{
+				console.log('\n(player model change getCashWait event triggered)');
+				console.log('model getCashWait is currently ----> :' + this.attributes.getCashWait);
+			},
+			"change:getCash": ()=>{
+				console.log('\n(player model change getCash event triggered)');
+				console.log('model getCash is currently ----> :' + this.attributes.getCash);
+				if (this.attributes.getCash === true && this.attributes.accountCash < 100) {
+					if (this.attributes.getCashWait === 0) {
+						dbase.getCash(this);
+						// dbase.getCashWait(this);	
+					}
+					else state.updateClientStatus(this, 'You must wait to get more cash (check the timer!)');
+				}
+			},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
 			"change:sitOutNext": ()=>{console.log('\n change sitOutNext detected')},
 			"change:quitYesOrNo": ()=>{console.log('\n change quitYesOrNo detected')},
@@ -60,7 +113,7 @@ exports.Player = Backbone.Model.extend({
 			"change:message": ()=>{console.log('\n change message detected')},
 			"change:update": ()=>{
 				console.log('\n(player model change update event triggered)');
-				console.log('model update is currently ----> :' + this.attributes.model); }
+				console.log('model update is currently ----> :' + this.attributes.update); }
 			})		
 	}
 });
@@ -84,24 +137,7 @@ exports.getUserObj = function(userName) {
 	return false;
 }
 
-exports.allowFilterPokerObj = {
-		name: true,
-		password: '',
-		loggedIn: false,
-		logOut: true,
-		joinTable: true,
-		// rejoinWaitTimer: false,
-		sitOutNext: true,
-		quitYesOrNo: true,
-		// turn: false,
-		// token: false,
-		// bootPlayer: false,
-		// bootPlayerTimer: false,
-		bet: true,
-		newBet: true,
-		message: true
-		// update: false
-}
+
 
 exports.mergeObj = function(newObj, modelObj, allowfilterObj) {
 	for (var x in modelObj.attributes) {

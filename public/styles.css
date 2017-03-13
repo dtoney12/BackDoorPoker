@@ -1,0 +1,38 @@
+
+body {
+    position: relative;
+    background-image: url('pokertable.png');
+    background-repeat:no-repeat;
+ 	background-size: cover;
+ 	color: yellow;
+ 	font-family: Helvetica, Verdana, Arial, Sans-Serif;
+ 	font-size: 13;
+ 	font-weight: 100;
+}
+table {
+    width: 250px;
+    margin-right: 0px;
+    margin-left: auto;
+    float: right contain;
+    clear float left: all;
+    color: yellow;
+ 	font-family: Helvetica, Verdana, Arial, Sans-Serif;
+ 	font-size: 13;
+ 	font-weight: 100;
+ 	overflow:hidden;
+
+}
+.forms {
+	width: 30%;
+	float: left;
+	clear float right;
+	clear float align-content: left;
+	overflow:hidden;
+}
+.clearfix:after { 
+   content: "."; 
+   visibility: hidden; 
+   display: block; 
+   height: 0; 
+   clear: both;
+}

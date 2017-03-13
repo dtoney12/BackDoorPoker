@@ -8,14 +8,12 @@ module.exports = {
 		model.PlayersBb.add(playerBb);
 
 		var pokerObj = playerBb.attributes;
-		var filter = model.allowFilterPokerObj;
 		pokerObj.time = new Date().toTimeString();
 
 		client.on('message', (recObj)=> {
 			recObj = JSON.parse(recObj);
 			console.log('\n' + clientID + ' attempting to update ' + recObj.update + '----> :' + recObj[recObj.update]);
-			model.mergeObj( recObj, playerBb, filter);
-			// console.log(clientID, recObj.update + ' model -----> ' + pokerObj[pokerObj.update]);
+			model.mergeObj( recObj, playerBb, playerBb.filter);
 			});
 
   		client.on('close', ()=> {

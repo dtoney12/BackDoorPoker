@@ -6,23 +6,7 @@ var session = {
 				var HOST = location.origin.replace(/^http/, 'ws')
 				var ws = new WebSocket(HOST);
 				var el = document.getElementById('server-time');
-				var pokerObj = {
-			      name: 'RandomPerson',
-			      password: '',
-			      joinTable: false,
-			      rejoinWaitTimer: 0,
-			      sitOutNext: false,
-			      quitYesOrNo: false,
-			      turn: false,
-			      token: null,
-			      bootPlayer: false,
-			      bootPlayerTimer: 0,
-			      bet: 0,
-			      newBet: 0,
-			      message: '',
-			      update: ''
-
-			    };
+				var pokerObj = {};
 			    var submitButton = function(eventX, type, bool) {
 			    	eventX.preventDefault();
 			    	pokerObj[type] = document.getElementById(type).value || bool;
@@ -44,6 +28,9 @@ var session = {
 				});
 				$('#messageButton').submit(function(event) {
 					submitButton(event, 'message');
+				});
+				$('#getCashButton').submit(function(event) {
+					submitButton(event, 'getCash', true);
 				});
 				$('#logOutButton').submit(function(event) {
 					submitButton(event, 'logOut');

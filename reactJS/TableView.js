@@ -5,17 +5,31 @@ class TableView extends React.Component {
       name: 'Bobs',
       password: '',
       update: '',
+      accountCash: '',
+      getCash: false,
+      getCashWait: 24,
       joinTable: false,
       turn: false,
       bet: 0,
       newBet: 0,
       message: '',
+      chats: [],
       rejoinWaitTimer: 0,
       sitOutNext: false,
       quitYesOrNo: false,
       token: null,
       bootPlayer: false,
-      bootPlayerTimer: 0
+      bootPlayerTimer: 0,
+      Player1: {},
+      Player2: {},
+      Player3: {},
+      Player4: {},
+      Player5: {},
+      Player6: {},
+      Player7: {},
+      Player8: {},
+      Player9: {},
+      Player10: {}
     };
     window.setTableState = this.setState.bind(this);
   }
