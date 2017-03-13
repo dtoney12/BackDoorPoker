@@ -72,7 +72,7 @@ var TableView = function (_React$Component) {
               ),
               React.createElement(
                 'td',
-                null,
+                { nameClass: 'tableRight' },
                 entry[1]
               )
             );

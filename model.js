@@ -110,22 +110,50 @@ exports.Player = Backbone.Model.extend({
 			"change:bootPlayerTimer": ()=>{console.log('\n change bootPlayerTimer detected')},
 			"change:bet": ()=>{console.log('\n change bet detected')},
 			"change:newBet": ()=>{console.log('\n change newBet detected')},
-			"change:message": ()=>{console.log('\n change message detected')},
+			"change:chats": ()=>{
+				console.log('\n(player model change chats event triggered)');
+				console.log('model chats is currently ----> :' + this.attributes.chats);
+			},
+			"change:message": ()=>{
+				console.log('\n(player model change message event triggered)');
+				console.log('model message is currently ----> :' + this.attributes.message);
+			},
 			"change:update": ()=>{
 				console.log('\n(player model change update event triggered)');
-				console.log('model update is currently ----> :' + this.attributes.update); }
-			})		
+				console.log('model update is currently ----> :' + this.attributes.update); 
+			}
+		});
 	}
 });
 var Player = exports.Player;
 
 
 exports.Players = Backbone.Collection.extend({
-		model: Player
+	model: Player,
+	initialize: function () {
+		this.on({"change:message": 
+			(sendingPlayer, msg)=> { this.each( function(player) {
+				player.set( { message: msg } );
+			});
+		}
+		});
+	}	
 });
 var Players = exports.Players;
 var PlayersBb = new Players();
 exports.PlayersBb = PlayersBb;
+
+// exports.lobbyChat = Backbone.Collection.extend({
+// 	initialize: function () {
+// 		this.on({"all": ()=> {
+// 			console.log('XXXXXX THE LOBBY CHAT BACKBONE IS --->:' + this);
+// 			}
+// 		});
+// 	}
+// });
+// var lobbyChat = exports.lobbyChat;
+// var lobbyChatBb = new lobbyChat();
+// exports.lobbyChatBb = lobbyChatBb;
 
 exports.getUserObj = function(userName) {
 	for (var i = 0; i < PlayersBb.models.length; i++) {

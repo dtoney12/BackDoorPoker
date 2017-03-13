@@ -6,7 +6,7 @@ module.exports = {
 	manage: function(client, clientID) {
 		var playerBb = new model.Player();
 		model.PlayersBb.add(playerBb);
-
+	
 		var pokerObj = playerBb.attributes;
 		pokerObj.time = new Date().toTimeString();
 

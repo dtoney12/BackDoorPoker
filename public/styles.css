@@ -4,7 +4,7 @@ body {
     background-image: url('pokertable.png');
     background-repeat:no-repeat;
  	background-size: cover;
- 	color: yellow;
+ 	color: #FF00E0;
  	font-family: Helvetica, Verdana, Arial, Sans-Serif;
  	font-size: 13;
  	font-weight: 100;
@@ -15,7 +15,7 @@ table {
     margin-left: auto;
     float: right contain;
     clear float left: all;
-    color: yellow;
+    color: #FF00E0;
  	font-family: Helvetica, Verdana, Arial, Sans-Serif;
  	font-size: 13;
  	font-weight: 100;
@@ -35,4 +35,7 @@ table {
    display: block; 
    height: 0; 
    clear: both;
+}
+.tableRight {
+  color: red;
 }

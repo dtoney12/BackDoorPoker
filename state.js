@@ -92,15 +92,11 @@ var PlayersState = exports.PlayersState;
 var currentUsers = new PlayersState();
 
 exports.syncPlayerStateDb = function(player, playerInfo) {
-	console.log('(((((( SYNC ATTMEPTING )))))')
-	console.log('playerInfo rows = ', playerInfo);
 	for (var x in playerInfo) {
-		console.log('SYNC EVENT' +playerInfo[x]);
 		player.set( { [x]: playerInfo[x] } );
 	}
 }
 var getStateUserObj = function(userName) {
-	console.log('looking')
 	for (var i = 0; i < currentUsers.models.length; i++) {
 		var user = currentUsers.models[i];
 		if (user.attributes.name === userName) {

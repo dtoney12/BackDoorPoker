@@ -42,7 +42,7 @@ class TableView extends React.Component {
           entry[1] = String(entry[1]);
           return  <tr>
                       <td>{entry[0]}:</td> 
-                      <td>{entry[1]}</td>
+                      <td nameClass="tableRight">{entry[1]}</td>
                   </tr>
         })}
       </tbody>
