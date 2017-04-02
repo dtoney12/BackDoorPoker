@@ -206,48 +206,48 @@ module.exports = {
 	 //  	});
 	},	
 	initDbPlayer: function() {
-		// pool.getConnection(function(err, connection) {
-	 //  		if (err) {
-	 //  			throw err;
-	 //  		}
-	 //  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
-	 //  		connection.query(queryString, function(err) {
-	 //  			if (err) {
-	 //  				throw err;
-	 //  			}
-	 //  			var queryString = `CREATE DATABASE dtpoker;`;
-	 //  			connection.query(queryString, function(err) {
-		//   			if (err) {
-		//   				throw err;
-		//   			}
-		//   			var queryString = `USE dtpoker;`;
-		//   			connection.query(queryString, function(err) {
-		// 	  			if (err) {
-		// 	  				throw err;
-		// 	  			}
-		// 	  			var queryString = `CREATE TABLE player ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, \
-	 // 					name CHAR(140), password CHAR(140), loggedIn BOOLEAN, accountCash INT, getCashWait INT, UNIQUE (name) );`;
-		//   				connection.query(queryString, function(err) {
-		// 		  			if (err) {
-		// 		  				throw err;
-		// 		  			}
-		// 		  			var queryString = `INSERT INTO player ( id, name, password, loggedin, accountCash, getCashWait ) VALUES (null, 'Bobs', 'UpandDownInTheWater', false, 0, 0 );`;
-		// 	  				connection.query(queryString, function(err) {
-		// 			  			if (err) {
-		// 			  				throw err;
-		// 			  			}
-		// 	  					connection.release();
-		// 	  					return;
-		// 			  		});
-		// 			  	return;
-		// 		  		});
-		// 		  	return;
-		// 	  		});
-		// 	  	return;
-		// 	  	});
-		// 	  return;
-		//   	});
-		// return;
-	 //  	});
+		pool.getConnection(function(err, connection) {
+	  		if (err) {
+	  			throw err;
+	  		}
+	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
+	  		connection.query(queryString, function(err) {
+	  			if (err) {
+	  				throw err;
+	  			}
+	  			var queryString = `CREATE DATABASE dtpoker;`;
+	  			connection.query(queryString, function(err) {
+		  			if (err) {
+		  				throw err;
+		  			}
+		  			var queryString = `USE dtpoker;`;
+		  			connection.query(queryString, function(err) {
+			  			if (err) {
+			  				throw err;
+			  			}
+			  			var queryString = `CREATE TABLE player ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, \
+	 					name CHAR(140), password CHAR(140), loggedIn BOOLEAN, accountCash INT, getCashWait INT, UNIQUE (name) );`;
+		  				connection.query(queryString, function(err) {
+				  			if (err) {
+				  				throw err;
+				  			}
+				  			var queryString = `INSERT INTO player ( id, name, password, loggedin, accountCash, getCashWait ) VALUES (null, 'Bobs', 'UpandDownInTheWater', false, 0, 0 );`;
+			  				connection.query(queryString, function(err) {
+					  			if (err) {
+					  				throw err;
+					  			}
+			  					connection.release();
+			  					return;
+					  		});
+					  	return;
+				  		});
+				  	return;
+			  		});
+			  	return;
+			  	});
+			  return;
+		  	});
+		return;
+	  	});
 	}
 }
