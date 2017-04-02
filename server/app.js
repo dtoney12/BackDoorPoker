@@ -10,6 +10,8 @@ var Backbone = require('./non_config/backbone');
 const PORT = process.env.PORT || 3000;
 const CLIENT_FILES = path.join(__dirname, '/../public');
 console.log('directory = ', __dirname)
+
+
 const server = express()
 .use(express.static(__dirname + '/../public'))
 .listen(PORT, () => {
