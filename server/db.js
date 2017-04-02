@@ -3,8 +3,8 @@ var state = require('./state');
 
 var pool = mysql.createPool({
   host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
-  user: 'root',
-    // user: 'b82cb10f9f2046' || 'root',
+  // user: 'root',
+    user: 'b82cb10f9f2046' || 'root',
   password: '',
     // password: 'e0146cc4',
   // database: ''
