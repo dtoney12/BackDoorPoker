@@ -35,7 +35,6 @@ module.exports = {
 				  			}
 				  			console.log('\nname added to db -----> :' + enteredName);
 				  			player.set( { update: `${enteredName} <--- Please log in` } );
-				  			connection.release();
 				  			return;
 				  		});
 				  	}
@@ -45,14 +44,12 @@ module.exports = {
 		  				console.log('removing name from model -----> :' + enteredName)
 		  				player.set( { update: `${enteredName} <--- already logged in` } );
 		  				player.set( { name: '' } );
-		  				connection.release();
 		  				return;
 		  			} else if (playerInfo[0].loggedin === 0) {
 		  				console.log('\nUser exists in db but not logged in -----> :' + enteredName);
 		  				console.log('Requesting user to log in -----> :' + enteredName)
 		  				player.set( { update: `${enteredName} <--- Please log in` } );
 		  				player.set( { name: enteredName } );
-		  				connection.release();
 		  				return;
 		  			}
 	  			}
@@ -80,7 +77,6 @@ module.exports = {
 				  			player = state.registerNewPlayer(player.attributes.name);
 				  			state.logInPlayer(player, playerInfo[0]);
 				  			console.log('\nPassword \'' + enteredPW + '\' set and Registered New Player ------> Logging in player-----> :' + player.attributes.name);
-				  			connection.release();
 				  			return;
 				  		});
 	  				} else {
@@ -92,13 +88,11 @@ module.exports = {
 					  			}
 		  						state.logInPlayer(player, playerInfo[0]);
 		  						console.log('\nPassword \'' + enteredPW + '\' matches ------> Logging in player-----> :' + player.attributes.name);
-		  						connection.release();
 					  			return;
 					  		});
 	  					} else {
 	  						console.log('\nPassword \'' + enteredPW + '\' does not match for Player-----> :' + player.attributes.name);
 	  						state.updateClientStatus(player, 'Password incorrect or already logged in, Sorry');
-	  						connection.release();
 	  						return;
 	  					}
 	  				}
@@ -107,7 +101,6 @@ module.exports = {
 	  				console.log('Rejecting password update request -----> :' + enteredPW)
 	  				player.set( { update: `${player.attributes.name} <--- user doesn't exist` } );
 	  				player.set( { password: '' } );
-	  				connection.release();
 	  				return;
 	  			}
 		  	});
@@ -134,13 +127,11 @@ module.exports = {
 				  			}
 				  			console.log(`\ndb loggedIn has been set to false for >>${player.attributes.name}<<`);
 				  			state.logOutPlayer(player);
-				  			connection.release();
 				  			return;
 				  		});
 		  			}
 	  			} else {
 	  				console.log('\nPlayer name does not exist in db -----> :' + player.attributes.name);
-	  				connection.release();
 	  				return;
 	  			}
 		  	})
@@ -200,14 +191,12 @@ module.exports = {
 				  			if (playerInfo.length) {			  			
 					  			console.log(`\ndb accountCash has been set to 1000, getCashWait to 60 for >>${player.attributes.name}<<`);
 					  			state.syncPlayerStateDb(player, updatedPlayerInfo[0]);
-					  			connection.release();
 					  			return;
 					  		}
 					  	});
 					});
 	  			} else {
 	  				console.log('\nPlayer name does not exist in db -----> :' + player.attributes.name);
-	  				connection.release();
 	  				return;
 	  			}
 		  	})
