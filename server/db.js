@@ -261,11 +261,11 @@ module.exports = {
 	  			if (err) {
 	  				throw err;
 	  			}
-	  			var queryString = `CREATE DATABASE dtpoker;`;
-	  			connection.query(queryString, function(err) {
-		  			if (err) {
-		  				throw err;
-		  			}
+	  			// var queryString = `CREATE DATABASE dtpoker;`;
+	  			// connection.query(queryString, function(err) {
+		  		// 	if (err) {
+		  		// 		throw err;
+		  		// 	}
 		  		// 	var queryString = `USE dtpoker;`;
 		  		// 	connection.query(queryString, function(err) {
 			  	// 		if (err) {
@@ -289,8 +289,8 @@ module.exports = {
 				  		});
 				  // 	return;
 			  	// 	});
-			  	return;
-			  	});
+			  	// return;
+			  	// });
 			  return;
 		  	});
 		return;
