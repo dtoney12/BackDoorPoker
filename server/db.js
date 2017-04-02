@@ -3,14 +3,15 @@ var state = require('./state');
 
 // var pool = mysql.createPool({
 var pool = mysql.createConnection({
-  host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
-  port: 3306,
+  // host: 'localhost',
+  host: 'us-cdbr-iron-east-03.cleardb.net',
+  // port: 3306,
   // user: 'root',
-    user: 'b6688425c7d55d' || 'root',
-  // Passwordrd: '',
+    user: 'b6688425c7d55d',
+  // password: '',
     password: 'b6eb9da1',
   // database: ''
-    database: 'heroku_5a562928f98c27c'
+    // database: 'heroku_5a562928f98c27c'
 });
 
 module.exports = {
@@ -214,38 +215,38 @@ module.exports = {
 	initDbPlayer: function() {
 		console.log('pool = ', pool)
 		// pool.getConnection(function(err, connection) {
-		pool.connect(function(err, connection) {
+		pool.connect(function(err) {
 	  		if (err) {
 	  			console.log(err)
 	  			throw err;
 	  		}
 	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
-	  		connection.query(queryString, function(err) {
+	  		pool.query(queryString, function(err) {
 	  			if (err) {
 	  				throw err;
 	  			}
 	  			var queryString = `CREATE DATABASE dtpoker;`;
-	  			connection.query(queryString, function(err) {
+	  			pool.query(queryString, function(err) {
 		  			if (err) {
 		  				throw err;
 		  			}
 		  			var queryString = `USE dtpoker;`;
-		  			connection.query(queryString, function(err) {
+		  			pool.query(queryString, function(err) {
 			  			if (err) {
 			  				throw err;
 			  			}
 			  			var queryString = `CREATE TABLE player ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, \
 	 					name CHAR(140), password CHAR(140), loggedIn BOOLEAN, accountCash INT, getCashWait INT, UNIQUE (name) );`;
-		  				connection.query(queryString, function(err) {
+		  				pool.query(queryString, function(err) {
 				  			if (err) {
 				  				throw err;
 				  			}
 				  			var queryString = `INSERT INTO player ( id, name, password, loggedin, accountCash, getCashWait ) VALUES (null, 'Bobs', 'UpandDownInTheWater', false, 0, 0 );`;
-			  				connection.query(queryString, function(err) {
+			  				pool.query(queryString, function(err) {
 					  			if (err) {
 					  				throw err;
 					  			}
-			  					connection.release();
+			  					// pool.release();
 			  					return;
 					  		});
 					  	return;
