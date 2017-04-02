@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var state = require('./state');
-var pool = mysql.connect(process.env.CLEARDB_DATABASE_URL);
+var pool = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
 
 // // var pool = mysql.createPool({
 // var pool = mysql.createConnection({
