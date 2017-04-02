@@ -1,11 +1,11 @@
 var mysql = require('mysql');
 var state = require('./state');
 
-// var pool = mysql.createPool({
-//   host: 'localhost',
-//   user: 'root',
-//   password: ''
-// });
+var pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: ''
+});
 
 module.exports = {
 	addName: function(enteredName, player, callback){
