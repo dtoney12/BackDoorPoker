@@ -1,7 +1,8 @@
 var mysql = require('mysql');
 var state = require('./state');
 
-var pool = mysql.createPool({
+// var pool = mysql.createPool({
+var pool = mysql.createConnection({
   host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
   port: 3306,
   // user: 'root',
@@ -212,7 +213,8 @@ module.exports = {
 	},	
 	initDbPlayer: function() {
 		console.log('pool = ', pool)
-		pool.getConnection(function(err, connection) {
+		// pool.getConnection(function(err, connection) {
+		pool.connect(function(err, connection) {
 	  		if (err) {
 	  			console.log(err)
 	  			throw err;
