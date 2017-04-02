@@ -256,7 +256,7 @@ module.exports = {
 	  		if (err) {
 	  			throw err;
 	  		}
-	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
+	  		var queryString = `DROP TABLE IF EXISTS player;`;	
 	  		connection.query(queryString, function(err) {
 	  			if (err) {
 	  				throw err;
