@@ -13,7 +13,7 @@ module.exports = {
 		client.on('message', (recObj)=> {
 			recObj = JSON.parse(recObj);
 			console.log('\n' + clientID + ' attempting to update ' + recObj.update + '----> :' + recObj[recObj.update]);
-			model.mergeObj( recObj, playerBb, playerBb.filter);
+			model.updateFromClient( recObj, playerBb, playerBb.filter);
 			});
 
   		client.on('close', ()=> {

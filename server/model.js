@@ -167,7 +167,7 @@ exports.getUserObj = function(userName) {
 
 
 
-exports.mergeObj = function(newObj, modelObj, allowfilterObj) {
+exports.updateFromClient = function(newObj, modelObj, allowfilterObj) {
 	for (var x in modelObj.attributes) {
 		if (x in allowfilterObj) {
 			modelObj.set( { [x]: newObj[x] || modelObj.attributes[x] } );

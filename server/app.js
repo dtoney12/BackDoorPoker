@@ -5,12 +5,13 @@ const SocketServer = require('ws').Server;
 const path = require('path');
 const sessions = require('./sessions');
 const dbase = require('./db');
-var Backbone = require('backbone');
+var Backbone = require('./non_config/backbone');
 // const model = require('./model')
 const PORT = process.env.PORT || 3000;
-const CLIENT_FILES = path.join(__dirname, './public');
+const CLIENT_FILES = path.join(__dirname, '/../public');
+console.log('directory = ', __dirname)
 const server = express()
-.use(express.static(__dirname + '/public'))
+.use(express.static(__dirname + '/../public'))
 .listen(PORT, () => {
 	console.log('\n\n\n\n\n   (((((((((  WELCOME TO DTPOKER SERVER  )))))))))  ');
 	console.log(`Listening on ${ PORT }`);

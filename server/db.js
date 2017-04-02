@@ -4,8 +4,7 @@ var state = require('./state');
 var pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'dtpoker'
+  password: ''
 });
 
 module.exports = {
