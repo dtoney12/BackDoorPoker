@@ -220,11 +220,11 @@ module.exports = {
 	  			console.log(err)
 	  			throw err;
 	  		}
-	  		// var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
-	  		// pool.query(queryString, function(err) {
-	  		// 	if (err) {
-	  		// 		throw err;
-	  		// 	}
+	  		var queryString = `DROP TABLE IF EXISTS player;`;	
+	  		connection.query(queryString, function(err) {
+	  			if (err) {
+	  				throw err;
+	  			}
 	  		// 	var queryString = `CREATE DATABASE dtpoker;`;
 	  		// 	pool.query(queryString, function(err) {
 		  	// 		if (err) {
@@ -255,8 +255,8 @@ module.exports = {
 			  // 		});
 			  // 	return;
 			  // 	});
-			  // return;
-		  	// });
+			  return;
+		  	});
 		return;
 	  	});
 	}
