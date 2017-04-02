@@ -206,6 +206,7 @@ module.exports = {
 	 //  	});
 	},	
 	initDbPlayer: function() {
+		console.log('pool = ', pool)
 		pool.getConnection(function(err, connection) {
 	  		if (err) {
 	  			throw err;
