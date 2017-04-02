@@ -1,11 +1,11 @@
 var mysql = require('mysql');
 var state = require('./state');
 
-var pool = mysql.createPool({
-  host: 'us-cdbr-iron-east-03.cleardb.net',
-  user: 'b6688425c7d55d',
-  password: 'b6eb9da1',
-  database: 'heroku_5a562928f98c27c'
+var pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL || {
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'dtpoker'
 });
 
 module.exports = {
@@ -206,21 +206,66 @@ module.exports = {
 		  	})
 	  	});
 	},	
+	// initDbPlayer: function() {
+	// 	pool.getConnection(function(err, connection) {
+	//   		if (err) {
+	//   			throw err;
+	//   		}
+	//   		var queryString = `DROP TABLE IF EXISTS player;`;	
+	//   		connection.query(queryString, function(err) {
+	//   			if (err) {
+	//   				throw err;
+	//   			}
+	//   			// var queryString = `CREATE DATABASE dtpoker;`;
+	//   			// connection.query(queryString, function(err) {
+	// 	  		// 	if (err) {
+	// 	  		// 		throw err;
+	// 	  		// 	}
+	// 	  		// 	var queryString = `USE dtpoker;`;
+	// 	  		// 	connection.query(queryString, function(err) {
+	// 		  	// 		if (err) {
+	// 		  	// 			throw err;
+	// 		  	// 		}
+	// 		  			var queryString = `CREATE TABLE player ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, \
+	//  					name CHAR(140), password CHAR(140), loggedIn BOOLEAN, accountCash INT, getCashWait INT, UNIQUE (name) );`;
+	// 	  				connection.query(queryString, function(err) {
+	// 			  			if (err) {
+	// 			  				throw err;
+	// 			  			}
+	// 			  			var queryString = `INSERT INTO player ( id, name, password, loggedin, accountCash, getCashWait ) VALUES (null, 'Bobs', 'UpandDownInTheWater', false, 0, 0 );`;
+	// 		  				connection.query(queryString, function(err) {
+	// 				  			if (err) {
+	// 				  				throw err;
+	// 				  			}
+	// 		  					connection.release();
+	// 		  					return;
+	// 				  		});
+	// 				  	return;
+	// 			  		});
+	// 			  // 	return;
+	// 		  	// 	});
+	// 		  	// return;
+	// 		  	// });
+	// 		  return;
+	// 	  	});
+	// 	return;
+	//   	});
+	// },
 	initDbPlayer: function() {
 		pool.getConnection(function(err, connection) {
 	  		if (err) {
 	  			throw err;
 	  		}
-	  		var queryString = `DROP TABLE IF EXISTS player;`;	
+	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
 	  		connection.query(queryString, function(err) {
 	  			if (err) {
 	  				throw err;
 	  			}
-	  			// var queryString = `CREATE DATABASE dtpoker;`;
-	  			// connection.query(queryString, function(err) {
-		  		// 	if (err) {
-		  		// 		throw err;
-		  		// 	}
+	  			var queryString = `CREATE DATABASE dtpoker;`;
+	  			connection.query(queryString, function(err) {
+		  			if (err) {
+		  				throw err;
+		  			}
 		  		// 	var queryString = `USE dtpoker;`;
 		  		// 	connection.query(queryString, function(err) {
 			  	// 		if (err) {
@@ -244,8 +289,8 @@ module.exports = {
 				  		});
 				  // 	return;
 			  	// 	});
-			  	// return;
-			  	// });
+			  	return;
+			  	});
 			  return;
 		  	});
 		return;
