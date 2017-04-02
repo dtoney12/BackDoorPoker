@@ -2,9 +2,10 @@ var mysql = require('mysql');
 var state = require('./state');
 
 var pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: ''
+  host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
+  user: 'b82cb10f9f2046' || 'root',
+  password: 'e0146cc4',
+  database: 'heroku_de805534f85b070'
 });
 
 module.exports = {
