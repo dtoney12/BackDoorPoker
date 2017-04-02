@@ -1,19 +1,19 @@
 var mysql = require('mysql');
 var state = require('./state');
-var pool = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
+// var pool = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
 
-// // var pool = mysql.createPool({
-// var pool = mysql.createConnection({
-//   // host: 'localhost',
-//   host: 'us-cdbr-iron-east-03.cleardb.net',
-//   // port: 3306,
-//   // user: 'root',
-//     user: 'b6688425c7d55d',
-//   // password: '',
-//     password: 'b6eb9da1',
-//   // database: ''
-//     // database: 'heroku_5a562928f98c27c'
-// });
+// var pool = mysql.createPool({
+var pool = mysql.createConnection({
+  // host: 'localhost',
+  host: 'us-cdbr-iron-east-03.cleardb.net',
+  // port: 3306,
+  // user: 'root',
+    user: 'b6688425c7d55d',
+  // password: '',
+    password: 'b6eb9da1',
+  // database: ''
+    database: 'heroku_5a562928f98c27c'
+});
 
 module.exports = {
 	addName: function(enteredName, player, callback){
