@@ -209,6 +209,7 @@ module.exports = {
 		console.log('pool = ', pool)
 		pool.getConnection(function(err, connection) {
 	  		if (err) {
+	  			console.log(err)
 	  			throw err;
 	  		}
 	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
