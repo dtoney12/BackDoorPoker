@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "compile": "babel ./reactJS --out-dir ./public --presets=es2015,react --ignore=node_modules,public,Troubleshoot --watch & live-server"
+    "start": "nodemone ./server/app.js",
   },
   "engines": {
     "node": "6.2.0"
