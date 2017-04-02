@@ -4,11 +4,11 @@ var state = require('./state');
 var pool = mysql.createPool({
   host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
   // user: 'root',
-    user: 'b82cb10f9f2046' || 'root',
+    user: '	b6688425c7d55d' || 'root',
   // password: '',
-    password: 'e0146cc4'
+    password: 'b6eb9da1',
   // database: ''
-    // database: 'heroku_de805534f85b070'
+    database: 'heroku_5a562928f98c27c'
 });
 
 module.exports = {
