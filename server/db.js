@@ -1,9 +1,9 @@
 var mysql = require('mysql');
-var MySQLPool = require("mysql-pool").MySQLPool;
 var state = require('./state');
 
-var pool = new MySQLPool({
+var pool = mysql.createPool({
   host: 'us-cdbr-iron-east-03.cleardb.net' || 'localhost',
+  port: 3306,
   // user: 'root',
     user: 'b6688425c7d55d' || 'root',
   // Passwordrd: '',
