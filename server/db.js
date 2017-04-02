@@ -221,21 +221,21 @@ module.exports = {
 	  			console.log(err)
 	  			throw err;
 	  		}
-	  		var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
-	  		pool.query(queryString, function(err) {
-	  			if (err) {
-	  				throw err;
-	  			}
-	  			var queryString = `CREATE DATABASE dtpoker;`;
-	  			pool.query(queryString, function(err) {
-		  			if (err) {
-		  				throw err;
-		  			}
-		  			var queryString = `USE dtpoker;`;
-		  			pool.query(queryString, function(err) {
-			  			if (err) {
-			  				throw err;
-			  			}
+	  		// var queryString = `DROP DATABASE IF EXISTS dtpoker;`;	
+	  		// pool.query(queryString, function(err) {
+	  		// 	if (err) {
+	  		// 		throw err;
+	  		// 	}
+	  		// 	var queryString = `CREATE DATABASE dtpoker;`;
+	  		// 	pool.query(queryString, function(err) {
+		  	// 		if (err) {
+		  	// 			throw err;
+		  	// 		}
+		  	// 		var queryString = `USE dtpoker;`;
+		  	// 		pool.query(queryString, function(err) {
+			  // 			if (err) {
+			  // 				throw err;
+			  // 			}
 			  			var queryString = `CREATE TABLE player ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, \
 	 					name CHAR(140), password CHAR(140), loggedIn BOOLEAN, accountCash INT, getCashWait INT, UNIQUE (name) );`;
 		  				pool.query(queryString, function(err) {
@@ -252,12 +252,12 @@ module.exports = {
 					  		});
 					  	return;
 				  		});
-				  	return;
-			  		});
-			  	return;
-			  	});
-			  return;
-		  	});
+				 //  	return;
+			  // 		});
+			  // 	return;
+			  // 	});
+			  // return;
+		  	// });
 		return;
 	  	});
 	}
