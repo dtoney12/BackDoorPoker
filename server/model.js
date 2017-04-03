@@ -1,10 +1,14 @@
 var Backbone = require('backbone');
 var dbase = require('./db');
 
-exports.Player = Backbone.Model.extend({
+exports.User = Backbone.Model.extend({
 	defaults: {
 		name: 'PlayerName',
+		userState: {},
+		session: {},
+		clientID: '',
 		password: '',
+		location: 'lobby',
 		loggedIn: false,
 		logOut: false,
 		accountCash: 0,
@@ -35,7 +39,7 @@ exports.Player = Backbone.Model.extend({
 		Player10: {}
 	},
 	initialize: function() {
-		this.filter = {
+		this.validUserInputFilter = {
 			name: true,
 			password: '',
 			// loggedIn: false,
@@ -57,42 +61,45 @@ exports.Player = Backbone.Model.extend({
 			// update: false
 		};
 		this.on({
+			"all": ()=>{ 
+				// this.attributes.session.send(JSON.stringify(this.attributes));
+			},
 			"change:name": ()=>{
-				console.log('\n(player model change name event triggered)');
-				console.log('model name is now ----> :' + this.attributes.name);
+				console.log('\n>>>>MODEL change name event triggered');
+				console.log('>>>>MODEL name is now ----> :' + this.attributes.name);
 				if (this.attributes.name !== '') {
 					dbase.addName(this.attributes.name, this);
 				}
 			},
 			"change:password": ()=>{
-				console.log('\n(player model change password event triggered)');
-				console.log('model password is now ----> :' + this.attributes.password);
+				console.log('\n>>>>MODEL change password event triggered');
+				console.log('>>>>MODEL password is now ----> :' + this.attributes.password);
 				if (this.attributes.password !== '') {
 					dbase.checkPassword(this.attributes.password, this);
 				}
 			},
 			"change:loggedIn": ()=>{
-				console.log('\n(player model change loggedIn event triggered)');
-				console.log('model loggedIn is currently ----> :' + this.attributes.loggedIn);
+				console.log('\n>>>>MODEL change loggedIn event triggered');
+				console.log('>>>>MODEL loggedIn is currently ----> :' + this.attributes.loggedIn);
 			},
 			"change:logOut": ()=>{
-				console.log('\n(player model change loggedIn event triggered)');
-				console.log('model loggedIn is currently ----> :' + this.attributes.loggedIn);
+				console.log('\n>>>>MODEL change loggedIn event triggered');
+				console.log('>>>>MODEL loggedIn is currently ----> :' + this.attributes.loggedIn);
 				if (this.attributes.logOut === true) {
 					dbase.logOutPlayer(this);
 				}
 			},
 			"change:accountCash": ()=>{
-				console.log('\n(player model change accountCash event triggered)');
-				console.log('model accountCash is currently ----> :' + this.attributes.accountCash);
+				console.log('\n>>>>MODEL change accountCash event triggered');
+				console.log('>>>>MODEL accountCash is currently ----> :' + this.attributes.accountCash);
 			},
 			"change:getCashWait": ()=>{
-				console.log('\n(player model change getCashWait event triggered)');
-				console.log('model getCashWait is currently ----> :' + this.attributes.getCashWait);
+				console.log('\n>>>>MODEL change getCashWait event triggered');
+				console.log('>>>>MODEL getCashWait is currently ----> :' + this.attributes.getCashWait);
 			},
 			"change:getCash": ()=>{
-				console.log('\n(player model change getCash event triggered)');
-				console.log('model getCash is currently ----> :' + this.attributes.getCash);
+				console.log('\n>>>>MODEL change getCash event triggered');
+				console.log('>>>>MODEL getCash is currently ----> :' + this.attributes.getCash);
 				if (this.attributes.getCash === true && this.attributes.accountCash < 100) {
 					if (this.attributes.getCashWait === 0) {
 						dbase.getCash(this);
@@ -111,37 +118,42 @@ exports.Player = Backbone.Model.extend({
 			"change:bet": ()=>{console.log('\n change bet detected')},
 			"change:newBet": ()=>{console.log('\n change newBet detected')},
 			"change:chats": ()=>{
-				console.log('\n(player model change chats event triggered)');
-				console.log('model chats is currently ----> :' + this.attributes.chats);
+				console.log('\n>>>>MODEL change chats event triggered');
+				console.log('>>>>MODEL chats is currently ----> :' + this.attributes.chats);
 			},
 			"change:message": ()=>{
-				console.log('\n(player model change message event triggered)');
-				console.log('model message is currently ----> :' + this.attributes.message);
+				console.log('\n>>>>MODEL change message event triggered');
+				console.log('>>>>MODEL message is currently ----> :' + this.attributes.message);
 			},
 			"change:update": ()=>{
-				console.log('\n(player model change update event triggered)');
-				console.log('model update is currently ----> :' + this.attributes.update); 
+				// console.log('\n>>>>MODEL change update event triggered');
+				// console.log('>>>>MODEL update is currently ----> :' + this.attributes.update); 
 			}
 		});
 	}
 });
-var Player = exports.Player;
+var User = exports.User;
 
 
-exports.Players = Backbone.Collection.extend({
-	model: Player,
+var UsersGroup = Backbone.Collection.extend({
+	model: User,
 	initialize: function () {
 		this.on({"change:message": 
-			(sendingPlayer, msg)=> { this.each( function(player) {
-				player.set( { message: msg } );
+			(sendingUser, msg)=> { this.each( function(user) {
+				if (user.attributes.chats.length > 10) {
+					for (var i = 9; i < user.attributes.chats.length-1; i++) {
+						user.attributes.chats.pop();
+					}
+				}
+				user.set( { chats: [`(${sendingUser.attributes.name}) ${msg}`].concat(user.attributes.chats) });
 			});
 		}
 		});
 	}	
 });
-var Players = exports.Players;
-var PlayersBb = new Players();
-exports.PlayersBb = PlayersBb;
+
+var guests = new UsersGroup();
+exports.guests = guests;
 
 // exports.lobbyChat = Backbone.Collection.extend({
 // 	initialize: function () {
@@ -156,21 +168,21 @@ exports.PlayersBb = PlayersBb;
 // exports.lobbyChatBb = lobbyChatBb;
 
 exports.getUserObj = function(userName) {
-	for (var i = 0; i < PlayersBb.models.length; i++) {
-		var user = PlayersBb.models[i];
+	for (var i = 0; i < guests.models.length; i++) {
+		var user = guests.models[i];
 		if (user.attributes.name === userName) {
 			return user;
 		}
 	}
-	return false;
+	return {};
 }
 
 
 
-exports.updateFromClient = function(newObj, modelObj, allowfilterObj) {
-	for (var x in modelObj.attributes) {
+exports.filterInputFromClient = function(recObj, user, allowfilterObj) {
+	for (var x in user.attributes) {
 		if (x in allowfilterObj) {
-			modelObj.set( { [x]: newObj[x] || modelObj.attributes[x] } );
+			user.set( { [x]: recObj[x] || user.attributes[x] } );
 		}
 	}
 }

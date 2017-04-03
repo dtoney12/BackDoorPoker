@@ -21,7 +21,7 @@ const server = express()
 	});
 const wss = new SocketServer({ server });
 
-dbase.initDbPlayer();	
+dbase.initDb();	
 
 wss.on('connection', (ws) => {
 	var clientID = ws.upgradeReq.rawHeaders[21].slice(0,5);

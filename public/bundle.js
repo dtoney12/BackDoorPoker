@@ -9484,8 +9484,9 @@ var TableView = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
 
     _this.state = {
-      name: 'Bobs',
+      name: '',
       password: '',
+      location: 'lobby',
       update: '',
       accountCash: '',
       getCash: false,
@@ -9530,7 +9531,8 @@ var TableView = function (_React$Component) {
             'tbody',
             null,
             Object.entries(this.state).map(function (entry) {
-              entry[1] = String(entry[1]);
+
+              var tableEntry = !Array.isArray(entry[1]) ? String(entry[1]) : entry[1][0];
               return _react2.default.createElement(
                 'tr',
                 null,
@@ -9543,7 +9545,7 @@ var TableView = function (_React$Component) {
                 _react2.default.createElement(
                   'td',
                   { nameClass: 'tableRight' },
-                  entry[1]
+                  tableEntry
                 )
               );
             })

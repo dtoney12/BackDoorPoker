@@ -2,13 +2,15 @@ var Backbone = require('backbone');
 var dbase = require('./db');
 var model = require('./model');
 
-exports.PlayerState = Backbone.Model.extend({
+exports.UserState = Backbone.Model.extend({
 	defaults: {
 		name: 'PlayerName',
-		model: {},
+		userModel: {},
+		session: {},
 		password: '',
 		loggedIn: false,
 		logOut: false,
+		location: 'lobby',
 		accountCash: 0,
 		getCash: false,
 		getCashWait: 0,
@@ -37,33 +39,62 @@ exports.PlayerState = Backbone.Model.extend({
 		Player10: {}
 	},
 	initialize: function() {
+		this.updateUserModelFilter = {
+			name: true,
+			// password: '',
+			loggedIn: true,
+			// logOut: true,
+			location: true,
+			// accountCash: true,
+			// getCashWait: true,
+			// joinTable: true,
+			// rejoinWaitTimer: false,
+			// sitOutNext: true,
+			// quitYesOrNo: true,
+			// accountCash: '',
+			// getCash: true,
+			// getCashWait: 24,
+			// turn: false,
+			// token: false,
+			// bootPlayer: false,
+			// bootPlayerTimer: false,
+			// bet: true,
+			// newBet: true,
+			// message: true
+			// update: false
+		};
 		this.on({
+			"all": ()=>{
+				console.log(this.userModel);
+				// var setUserModelObj = filterUpdateToUserModel(this.attributes, this.userModel, this.updateUserModelFilter)
+				// this.userModel.set(setUserModelObj);
+			},
 			"change:name": ()=>{
-				console.log('\n(player state change name event triggered)');
-				console.log('state name is now ----> :' + this.attributes.name);
+				console.log('\n>>>>STATE  change name event triggered');
+				console.log('>>>>STATE  name is now ----> :' + this.attributes.name);
 			},
 			"change:password": ()=>{
-				console.log('\n(player state change password event triggered)');
-				console.log('state password is now ----> :' + this.attributes.password);
+				console.log('\n>>>>STATE  change password event triggered');
+				console.log('>>>>STATE  password is now ----> :' + this.attributes.password);
 			},
 			"change:loggedIn": ()=>{
-				console.log('\n(player state change loggedIn event triggered)');
-				console.log('state loggedIn is now ----> :' + this.attributes.loggedIn);
-				this.attributes.model.set( { loggedIn: true } );
+				console.log('\n>>>>STATE  change loggedIn event triggered');
+				console.log('>>>>STATE  loggedIn is now ----> :' + this.attributes.loggedIn);
+				this.attributes.userModel.set( { loggedIn: true } );
 			},
 			"change:logOut": ()=>{
-				console.log('\n(player state change logOut event triggered)');
-				console.log('state logOut is currently ----> :' + this.attributes.logOut);
+				console.log('\n>>>>STATE  change logOut event triggered');
+				console.log('>>>>STATE  logOut is currently ----> :' + this.attributes.logOut);
 			},
 			"change:accountCash": ()=>{
-				console.log('\n(player state change accountCash event triggered)');
-				console.log('state accountCash is currently ----> :' + this.attributes.accountCash);
-				this.attributes.model.set( { accountCash: this.attributes.accountCash } );
+				console.log('\n>>>>STATE  change accountCash event triggered');
+				console.log('>>>>STATE  accountCash is currently ----> :' + this.attributes.accountCash);
+				this.attributes.userModel.set( { accountCash: this.attributes.accountCash } );
 			},
 			"change:getCashWait": ()=>{
-				console.log('\n(player state change getCashWait event triggered)');
-				console.log('state getCashWait is currently ----> :' + this.attributes.getCashWait);
-				this.attributes.model.set( { getCashWait: this.attributes.getCashWait } );
+				console.log('\n>>>>STATE  change getCashWait event triggered');
+				console.log('>>>>STATE  getCashWait is currently ----> :' + this.attributes.getCashWait);
+				this.attributes.userModel.set( { getCashWait: this.attributes.getCashWait } );
 			},
 			"change:joinTable": ()=>{console.log('\n change joinTable detected')},
 			"change:rejoinWaitTimer": ()=>{console.log('\n change rejoinWaitTimer detected')},
@@ -77,19 +108,18 @@ exports.PlayerState = Backbone.Model.extend({
 			"change:newBet": ()=>{console.log('\n change newBet detected')},
 			"change:message": ()=>{console.log('\n change message detected')},
 			"change:update": ()=>{
-				console.log('\n(player state change update event triggered)');
-				console.log('state update is currently ----> :' + this.attributes.update);
-				this.attributes.model.set( { update: this.attributes.update } ); }
-			})		
+				console.log('\n>>>>STATE  change update event triggered');
+				console.log('>>>>STATE  update is currently ----> :' + this.attributes.update);
+				this.attributes.userModel.set( { update: this.attributes.update } ); }
+			})
 	}
 });
-var PlayerState = exports.PlayerState;
+var UserState = exports.UserState;
 
-exports.PlayersState = Backbone.Collection.extend({
-		model: PlayerState
+var UsersStateGroup = Backbone.Collection.extend({
+		model: UserState
 });
-var PlayersState = exports.PlayersState;
-var currentUsers = new PlayersState();
+var allUsersStateGroup = new UsersStateGroup();
 
 exports.syncPlayerStateDb = function(player, playerInfo) {
 	for (var x in playerInfo) {
@@ -97,8 +127,8 @@ exports.syncPlayerStateDb = function(player, playerInfo) {
 	}
 }
 var getStateUserObj = function(userName) {
-	for (var i = 0; i < currentUsers.models.length; i++) {
-		var user = currentUsers.models[i];
+	for (var i = 0; i < allUsersStateGroup.models.length; i++) {
+		var user = allUsersStateGroup.models[i];
 		if (user.attributes.name === userName) {
 			return user;
 		}
@@ -106,23 +136,17 @@ var getStateUserObj = function(userName) {
 	return false;
 }
 
-exports.registerNewPlayer = function(enteredName) {
-	console.log('\nAttempting to create Player >>' + enteredName + '<<')
-	var player = new PlayerState();
-	player.set( { name: enteredName });
-	console.log('\nPlayer >>' + player.attributes.name + '<< created');
-	currentUsers.add(player);
-	console.log('Player >>' + player.attributes.name + '<< added to currentUsers');
-	player.set( { model: model.getUserObj(enteredName) } );
-	console.log('Player >>' + player.attributes.name + '<< **** { model object } ***** added');
-	return player;
+exports.addUserState = function(user, userDBInfo, additions) {
+	var userState = new UserState();
+	console.log('\n>>>>STATE  State for User ' + user.attributes.name + ' created');
+	allUsersStateGroup.add(userState);
+	userState.set( { userModel: user } );
+	userState.set(Object.assign(userDBInfo, additions));
+	// for (var x in userDBInfo) {
+	// 	x !== 'loggedIn' ? userState.set( { [x]: userDBInfo[x] } ) : userState.set( { loggedIn: true} );
+	// }
 }
-exports.logInPlayer = function(player, playerInfo) {
-	for (var x in playerInfo) {
-		player.set( { [x]: playerInfo[x] } );
-		player.set( { loggedIn: true} );
-	}
-}
+
 exports.logOutPlayer = function(player) {
 	console.log('(((((still need to write state.logOutPlayer function))))))');
 }
@@ -130,7 +154,13 @@ exports.updateClientStatus = function(player, message) {
 	player.set( { update: message} );
 }
 
-
+var filterUpdateToUserModel = function(userStateAttributes, userModel, allowfilterObj) {
+	for (var x in userStateAttributes) {
+		if (x in allowfilterObj) {
+			userModel.set( { [x]: userStateAttributes[x] } );
+		}
+	}
+}
 
 // exports.updatePassword = function(enteredPW, userName){
 // 	var player = exports.getUserObj(userName);
