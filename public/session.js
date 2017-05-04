@@ -6,22 +6,22 @@ var session = {
 				var HOST = location.origin.replace(/^http/, 'ws')
 				var ws = new WebSocket(HOST);
 				var el = document.getElementById('server-time');
-				var pokerObj = {};
 			    var submitButton = function(eventX, type, bool) {
 			    	eventX.preventDefault();
-			    	pokerObj[type] = document.getElementById(type).value || bool;
-			    	pokerObj.update = type;
-					ws.send( JSON.stringify(pokerObj) );
+			    	let sendObj = {};
+			    	sendObj[type] = document.getElementById(type).value || bool;
+			    	sendObj.username = window.username;
+					ws.send( JSON.stringify(sendObj) );
 			    }
 
-				ws.onmessage = function (msg) {
-					pokerObj = JSON.parse(msg.data);
-					el.innerHTML = 'Server time: ' + pokerObj.time;
-					window.setTableState(pokerObj);
+				ws.onmessage = function (update) {
+					update = JSON.parse(update.data);
+					window.setTableState(update);
+
 				};
 
 				$('#nameButton').submit(function(event) {
-					submitButton(event, 'name');
+					submitButton(event, 'editName');
 				});
 				$('#passwordButton').submit(function(event) {
 					submitButton(event, 'password');
@@ -32,17 +32,23 @@ var session = {
 				$('#getCashButton').submit(function(event) {
 					submitButton(event, 'getCash', true);
 				});
-				$('#logOutButton').submit(function(event) {
-					submitButton(event, 'logOut');
+				$('#getTableCashButton').submit(function(event) {
+					submitButton(event, 'getTableCash', true);
 				});
 				$('#joinTableButton').submit(function(event) {
 					submitButton(event, 'joinTable', true);
 				});
-				$('#turnButton').submit(function(event) {
-					submitButton(event, 'turnButton', true);
+				$('#foldButton').submit(function(event) {
+					submitButton(event, 'fold', true);
 				});
 				$('#rejoinWaitTimerButton').submit(function(event) {
 					submitButton(event, 'rejoinWaitTimer');
+				});
+				$('#leaveTableButton').submit(function(event) {
+					submitButton(event, 'leaveTable', true);
+				});
+				$('#logoutButton').submit(function(event) {
+					submitButton(event, 'logout', true);
 				});
 
 			});

@@ -1,0 +1,23 @@
+
+module.exports = {
+ 	hasSession:           (sessionId)=>{ return { code: 1,   status: "User has ongoing Session "+sessionId,                   }},
+ 	alreadyLoggedIn:       (username)=>{ return { code: 2,   status: "Username "+username+" already logged in", 	            }},
+ 	newUserCreated:        (username)=>{ return { code: 3,   status: "New User "+username+" created",                         }},
+ 	logInSuccess:          (username)=>{ return { code: 4,   status: "Username "+username+" successfully logged in",          }},
+ 	incorrectPassword:             ()=>{ return { code: 5,   status: "Password Incorrect",                                    }},
+ 	dbError:                  (error)=>{ return { code: 6,   status: "DB ERROR, error = "+error,                              }},
+ 	lgOutSuccess:          (username)=>{ return { code: 7,   status: "Username "+username+" successfully logged out",         }},
+ 	noQueryHits:                   ()=>{ return { code: 8,   status: "No Matches Found!",                                     }},
+  unknownLoginError:     (username)=>{ return { code: 9,   status: "Unknown Login Database Error",                          }},
+  SetUpdateError:        (username)=>{ return { code: 10,  status: "SetUpdate() Failed for User"+username+"check callback", }},
+  waitCash:              (username)=>{ return { code: 11,  status: "Must wait ",                                            }},
+  getAccount:            (username)=>{ return { code: 12,  status: "Error while retrieveing account info for "+username,    }},
+  tableFull:                 (room)=>{ return { code: 13,  status: "Sorry, "+room.name+" is full",                          }},
+  CheckConditionalError: (username)=>{ return { code: 14,  status: "DB CheckConditional() Failed for User"+username,        }},
+  ReturnValueError:      (username)=>{ return { code: 15,  status: "DB ReturnValue()      Failed for User"+username,        }},
+  NotEnoughAccountCash:  (username)=>{ return { code: 16,  status: "Not Enough Account Cash for "         +username,        }},
+  NotEnoughTableCash:    (username)=>{ return { code: 17,  status: "Not Enough Table Cash for "           +username,        }},
+  willJoinTable:         (username)=>{ return { code: 18,  status: "Player "+username+" will join table",                   }},
+  willLeaveTable:        (username)=>{ return { code: 19,  status: "Player "+username+" will leave table",                  }},
+
+}

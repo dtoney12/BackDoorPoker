@@ -9476,86 +9476,86 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var TableView = function (_React$Component) {
-  _inherits(TableView, _React$Component);
+    _inherits(TableView, _React$Component);
 
-  function TableView(props) {
-    _classCallCheck(this, TableView);
+    function TableView(props) {
+        _classCallCheck(this, TableView);
 
-    var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
+        var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
 
-    _this.state = {
-      name: '',
-      password: '',
-      location: 'lobby',
-      update: '',
-      accountCash: '',
-      getCash: false,
-      getCashWait: 24,
-      joinTable: false,
-      turn: false,
-      bet: 0,
-      newBet: 0,
-      message: '',
-      chats: [],
-      rejoinWaitTimer: 0,
-      sitOutNext: false,
-      quitYesOrNo: false,
-      token: null,
-      bootPlayer: false,
-      bootPlayerTimer: 0,
-      Player1: {},
-      Player2: {},
-      Player3: {},
-      Player4: {},
-      Player5: {},
-      Player6: {},
-      Player7: {},
-      Player8: {},
-      Player9: {},
-      Player10: {}
-    };
-    window.setTableState = _this.setState.bind(_this);
-    return _this;
-  }
-
-  _createClass(TableView, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { className: 'site-container' },
-        _react2.default.createElement(
-          'table',
-          null,
-          _react2.default.createElement(
-            'tbody',
-            null,
-            Object.entries(this.state).map(function (entry) {
-
-              var tableEntry = !Array.isArray(entry[1]) ? String(entry[1]) : entry[1][0];
-              return _react2.default.createElement(
-                'tr',
-                null,
-                _react2.default.createElement(
-                  'td',
-                  null,
-                  entry[0],
-                  ':'
-                ),
-                _react2.default.createElement(
-                  'td',
-                  { nameClass: 'tableRight' },
-                  tableEntry
-                )
-              );
-            })
-          )
-        )
-      );
+        _this.state = {
+            username: '',
+            password: '',
+            location: 'LOBBY',
+            update: '',
+            accountCash: 0,
+            getCash: false,
+            tableCash: 0,
+            getCashWait: 24,
+            joinTable: false,
+            turn: false,
+            bet: 0,
+            newBet: 0,
+            message: '',
+            chats: [],
+            rejoinWaitTimer: 0,
+            sitOutNext: false,
+            quitYesOrNo: false,
+            token: null,
+            bootPlayer: false,
+            bootPlayerTimer: 0,
+            loggedIn: 0,
+            logout: false
+        };
+        window.setTableState = _this.setTableState.bind(_this);
+        window.state = _this.state;
+        return _this;
     }
-  }]);
 
-  return TableView;
+    _createClass(TableView, [{
+        key: 'setTableState',
+        value: function setTableState(update) {
+            update.chats ? update.chats = update.chats.concat(this.state.chats) : null;
+            this.setState(update);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'site-container' },
+                _react2.default.createElement(
+                    'table',
+                    null,
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        Object.entries(this.state).map(function (entry) {
+                            var key = entry[0];
+                            var tableEntry = !Array.isArray(entry[1]) ? String(entry[1]) : entry[1][0];
+                            return _react2.default.createElement(
+                                'tr',
+                                { key: key },
+                                _react2.default.createElement(
+                                    'td',
+                                    { className: 'tableLeft' },
+                                    key,
+                                    ':'
+                                ),
+                                _react2.default.createElement(
+                                    'td',
+                                    { className: 'tableRight' },
+                                    tableEntry
+                                )
+                            );
+                        })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return TableView;
 }(_react2.default.Component);
 
 _reactDom2.default.render(_react2.default.createElement(TableView, null), document.getElementById('room'));

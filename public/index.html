@@ -9,7 +9,7 @@
             <p id='server-time'></p>
             <p>Enter your name</p>
               <form action="#" id="nameButton" method="post">
-                <input type="text" id="name"/>
+                <input type="text" id="editName"/>
                 <input type="submit"/>
               </form>
             <p>Enter password</p>
@@ -22,29 +22,38 @@
                 <input type="text" id="message"/>
                 <input type="submit"/>
               </form>
-            <p>Get Cash</p>
+            <p>Replenish Cash</p>
               <form action="#" id="getCashButton" method="post">
                 <input type="submit" id="getCash"/>
               </form>
-            <p>Log Out</p>
-              <form action="#" id="logOutButton" method="post">
-                <input type="submit" id="logOut"/>
+            <p>Transfer to Table Cash</p>
+              <form action="#" id="getTableCashButton" method="post">
+                <input type="text" id="getTableCash"/>
+                <input type="submit"/>
               </form>
             <p>Join the Table</p>
               <form action="#" id="joinTableButton" method="post">
                 <input type="submit" id="joinTable"/>
               </form>
-            <p>Take Turn</p>
-              <form action="#" id="turnButton" method="post">
-                <input type="submit" id="turn"/>
+            <p>Fold</p>
+              <form action="#" id="foldButton" method="post">
+                <input type="submit" id="fold"/>
               </form>
             <p>Set Rejoin Wait Timer</p>
               <form action="#" id="rejoinWaitTimerButton" method="post">
               <input type="text" id="rejoinWaitTimer"/>
                 <input type="submit"/>
               </form>
+            <p>Leave Table</p>
+              <form action="#" id="leaveTableButton" method="post">
+                <input type="submit" id="leaveTable"/>
+              </form>
+            <p>Log Out</p>
+              <form action="#" id="logoutButton" method="post">
+                <input type="submit" id="logout"/>
+              </form>
           </div>
-  <body background="pokertable.png">
+  <!-- <body background="pokertable.png"> -->
 <div id="room" class="clearfix"></div>
     
     <script type="text/javascript" src="jquery.js"></script>
