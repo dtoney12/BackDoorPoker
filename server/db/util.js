@@ -22,6 +22,31 @@ module.exports = {
     return x;
   },
 
+  orderedDeck: ()=> {
+    var suits = [ '♥', '♣', '♠', '♦' ];
+    var values = [ 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K' ];
+    var deck = [];
+
+    suits.forEach(function(suit) {
+      values.forEach(function(value) {
+        deck.push(value + suit);
+      });
+    });
+
+    return deck;
+  },
+  
+  shuffledDeck: (deck)=> {
+    for (var i = deck.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = deck[i];
+        deck[i] = deck[j];
+        deck[j] = temp;
+    }
+    return deck;
+  },
+
+  
   promiseAllTimeout: (promises, timeout, resolvePartial=true)=> {
     return new Promise(function(resolve, reject) {
         let results = [],

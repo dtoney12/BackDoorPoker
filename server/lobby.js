@@ -44,6 +44,10 @@ const User = Backbone.Model.extend({
 			"change:accountCash": 	(user, value)=> this.ws && this.sendUpdate({accountCash: value}),
 			"change:tableCash":   	(user, value)=> this.ws && this.sendUpdate({tableCash: value}),
 			"change:chats": 				(user, value)=> this.ws && this.sendUpdate({chats: value}),
+			"change:seat":          (user, value)=> this.ws && this.sendUpdate({seat: value}),
+			"change:holdCards":     (user, value)=> this.ws && this.sendUpdate({holdCards: value}),
+			// "change:dcRound":       (user, value)=> this.ws && this.sendUpdate({dcRound: value}),
+			// "change:dcRemain":      (user, value)=> this.ws && this.sendUpdate({dcRemain: value}),
 			"change:update": 				(user, value)=> this.ws && this.sendUpdate({update: value}),
 		});
 		this.update = (toSend)=>{ 

@@ -5,7 +5,7 @@ module.exports = {
 		AUTO_INCREMENT, username VARCHAR(255), password VARCHAR(255), \
 		firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), \
 		loggedIn BOOLEAN, sessionId VARCHAR(255), room VARCHAR(255), \
-		phone_number VARCHAR(255), address VARCHAR(255), tableCash INT, \
+		dcRemain INT, phone_number VARCHAR(255), address VARCHAR(255), tableCash INT, \
 		accountCash INT, getCashWait INT, tablePosition VARCHAR(255), \
 		UNIQUE (username) );`,
  	dropDatabase: `DROP DATABASE IF EXISTS dtpoker;`,
@@ -19,7 +19,8 @@ module.exports = {
     email: null,
     loggedIn: false,
     sessionId: null,
-    room: 'null',
+    room: null,
+    dcRemain: 0,
     phone_number: null,
 		address: null,
 		tableCash: 0,

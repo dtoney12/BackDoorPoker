@@ -14,14 +14,32 @@ module.exports = {
 	},
 	logout: (user, room)=>{
 		db.SetUpdate(qry.updateUser, user, { loggedIn: false, sessionId: null, room: null}, 
-		()=>room.remove(user), ()=> delete user.ws);
+		()=>room.remove(user), ()=>user.ws && delete user.ws);
 	}, // FYI:  user.destroy() === false
 	disconnect: (user, room, lobby)=>{
 		if (room.type === 'lobby') {
 			module.exports.logout(user, room);
-		} else if (room.type === 'table') {
-			let disconnected = true;
-			module.exports.leaveTable(user, room, lobby, disconnected)
+		} 
+		else if (room.type === 'table') {
+			let table = room;
+			table.remove(user);
+			table.emptySeats.push(user.attributes.seat);
+			table.emptySeats.sort(function(a, b) {
+		    return a - b;
+		  });
+		  table.seat[user.attributes.seat] = null;
+	  	user.update({seat: null});
+			delete table.disconnectQueueHash[user.attributes.username]
+		  console.log(table.emptySeats)
+			db.ReturnValue('accountCash, tableCash', user)
+			.then((balances)=> {
+				let tableCash = balances.tableCash;
+				let accountCash = balances.accountCash; 
+				let newBalance = accountCash+tableCash;
+				return db.SetUpdate(qry.updateUser, user, 
+					{accountCash: newBalance, tableCash: 0, room:lobby.name})
+			})
+			.then(()=>module.exports.logout(user, lobby));
 		}
 	},
 	getCash: (user)=> {
@@ -50,52 +68,45 @@ module.exports = {
 		}})
 	},
 	joinTable: (user, lobby, table)=>{ 
-		// if (table.type==='table') {
-			let NumberOfEmpty = table.emptySeats.length;
-			if (NumberOfEmpty) {
-				if (user.attributes.tableCash >= 100) {
-					let playerSeat = table.emptySeats.splice(Math.floor(Math.random()*NumberOfEmpty),1)[0];
-					console.log('playerseat = ', playerSeat)
-					console.log(table.emptySeats);
-					table.seat[playerSeat] = user;
-					user.set({seat: playerSeat});
-					lobby.remove(user);
-					table.add(user);
-					table.joinQueue.shift();
-					table.swapInFilter(user, table.filters.default);
-					db.SetUpdate(qry.updateUser, user, {room: table.name});
-				} else {
-					user.update(status.NotEnoughTableCash(user.attributes.username));
-				}
+		let NumberOfEmpty = table.emptySeats.length;
+		if (NumberOfEmpty) {
+			if (user.attributes.tableCash >= 100) {
+				let playerSeat = table.emptySeats.splice(Math.floor(Math.random()*NumberOfEmpty),1)[0];
+				console.log('playerseat = ', playerSeat)
+				console.log(table.emptySeats);
+				table.seat[playerSeat] = user;
+				user.update({seat: playerSeat});
+				lobby.remove(user);
+				table.add(user);
+				delete table.joinQueueHash[user.attributes.username]
+				table.swapInFilter(user, table.filters.default);
+				return db.SetUpdate(qry.updateUser, user, {room: table.name});
 			} else {
-				user.update(status.tableFull(user, table));
+				user.update(status.NotEnoughTableCash(user.attributes.username));
 			}
-		// }
-	},
-	leaveTable: (user, table, lobby, disconnected)=> {
-		let vacateTable = (user, table, lobby, disconnected)=> {
-			table.remove(user);
-			table.emptySeats.push(user.attributes.seat);
-			table.emptySeats.sort(function(a, b) {
-		    return a - b;
-		  });
-		  table.leaveQueue.shift();
-		  console.log(table.emptySeats)
-			db.ReturnValue('accountCash, tableCash', user)
-			.then((balances)=> {
-				let tableCash = balances.tableCash;
-				let accountCash = balances.accountCash; 
-				let newBalance = accountCash+tableCash;
-				return db.SetUpdate(qry.updateUser, user, 
-					{accountCash: newBalance, tableCash: 0, room:lobby.name})
-			});
-			if (!disconnected) {
-				lobby.swapInFilter(user, user.attributes.filters.in);
-				lobby.add(user);
-			}
+		} else {
+			user.update(status.tableFull(user, table));
 		}
-
-		db.SetUpdate(qry.updateUser, user, { loggedIn: false, sessionId: null },
-		vacateTable(user, table, lobby, disconnected), ()=> delete user.ws);
+	},
+	leaveTable: (user, table, lobby)=> {
+		table.remove(user);
+		table.emptySeats.push(user.attributes.seat);
+		table.emptySeats.sort(function(a, b) {
+	    return a - b;
+	  });
+	  table.seat[user.attributes.seat] = null;
+	  user.update({seat: null});
+		delete table.leaveQueueHash[user.attributes.username]
+	  console.log(table.emptySeats)
+		db.ReturnValue('accountCash, tableCash', user)
+		.then((balances)=> {
+			let tableCash = balances.tableCash;
+			let accountCash = balances.accountCash; 
+			let newBalance = accountCash+tableCash;
+			return db.SetUpdate(qry.updateUser, user, 
+				{accountCash: newBalance, tableCash: 0, room:lobby.name})
+		});
+		lobby.swapInFilter(user, user.attributes.filters.in);
+		lobby.add(user);
 	},
 }

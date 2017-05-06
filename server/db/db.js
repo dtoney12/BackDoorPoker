@@ -53,18 +53,21 @@ const SetUpdate = (command, user, update, cb1, cb2)=> {
 	} else if (commandType==='INSERT') {
 		var selections = Object.keys(update).join(', ');
 	}
-	
+	// console.log('COMMAND =', command);
+	// console.log('SELECTIONS = ', selections);
+	// console.log('PLAYER ATTRIBUTES =', user.attributes)
 	return Promise.using(getConn(), function(conn) {
 		return conn.queryAsync(command, update)
 		.then(()=> conn.queryAsync(qry.selectQuery(selections), username))
-		.then((results)=> user.update(results[0]))
-		.catch((error)=> user.update(status.dbError(error)));
-	})
-	// .then(()=>cb1&&console.log(cb1.toString()))
-	.then(()=>cb1&&cb1())
+		.then((results)=>Promise.resolve(user.update(results[0])))
+		// .catch((error)=> user.update(status.dbError(error)))
+		.then(()=>cb1&&cb1())
 	.then(()=>cb2&&cb2())
 	// .then(()=>cb2&&console.log(cb2.toString()))
 	.catch((error)=> status.SetUpdateError(username))
+	})
+	// .then(()=>cb1&&console.log(cb1.toString()))
+	
 };
 
 module.exports = {
@@ -145,13 +148,13 @@ module.exports = {
 			.then(()=> conn.queryAsync(qry.insertUser, util.assign(schema.User, demo.User1)))
 			// .then(()=> cb1 && console.log(cb1.toString()))
 
-			// .then(()=> {
-			// 	return util.promiseAllTimeout(cb1.map((cb,i)=>cb(data1[i])), 500)
-			// 	.then(()=>util.promiseAllTimeout(cb2.map((cb,j)=>cb(data2[j])), 500))
-			// 	.then(()=>util.promiseAllTimeout(cb3.map((cb,k)=>cb(data3[k])), 500))
-			// 	.then(()=>util.promiseAllTimeout(cb4.map((cb,l)=>cb(data4[l])), 500))
-			// 	.catch((error)=>console.error(error))
-			// })
+			.then(()=> {
+				return util.promiseAllTimeout(cb1.map((cb,i)=>cb(data1[i])), 1000)
+				.then(()=>util.promiseAllTimeout(cb2.map((cb,j)=>cb(data2[j])), 1000))
+				.then(()=>util.promiseAllTimeout(cb3.map((cb,k)=>cb(data3[k])), 1000))
+				.then(()=>util.promiseAllTimeout(cb4.map((cb,l)=>cb(data4[l])), 1000))
+				.catch((error)=>console.error(error))
+			})
 			.catch((error)=> console.log('\n\n\nXXXXX GOT AN ERROR...error = ', error))
 			});
 		}

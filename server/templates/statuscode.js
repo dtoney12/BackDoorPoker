@@ -19,5 +19,5 @@ module.exports = {
   NotEnoughTableCash:    (username)=>{ return { code: 17,  status: "Not Enough Table Cash for "           +username,        }},
   willJoinTable:         (username)=>{ return { code: 18,  status: "Player "+username+" will join table",                   }},
   willLeaveTable:        (username)=>{ return { code: 19,  status: "Player "+username+" will leave table",                  }},
-
+  disconnected:          (username)=>{ return { code: 20,  status: "Player "+username+" disconnected",                      }},
 }
