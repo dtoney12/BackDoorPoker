@@ -20,7 +20,8 @@ var Table = Backbone.Collection.extend({
 	initialize: function () { 
 		this.on({
 			"change:message": (sender, msg)=> this.each((user)=> user.update({chats:`(${sender.attributes.username}) ${msg}`})),
-			"change:fold":    	   (sender)=> this.fold(),
+			"change:fold":    	   (sender)=> this.fold(sender),
+			"change:callBet":      (sender)=> this.call(sender),
 			"change:leaveTable":   (sender)=> this.leaveQueueJoin(sender),
 			"change:disconnect":     (user)=> this.disconnectQueueJoin(user),
 			"add": 		(user, attributesArr)=> whoIsInRoom(this, user, 'ADD to'),       // just logging
@@ -28,18 +29,21 @@ var Table = Backbone.Collection.extend({
 		});
 		this.swapInFilter =  (player, filter)=> player.inFilter = Object.keys(filter);
 		this.broadcast =        (tableUpdate)=> this.each((user)=> user.update(tableUpdate));
-		this.takenSeats = ()=> { return Object.entries(this.seat).filter((tuple)=>tuple[1]).map((tuple)=>tuple[0])};
+		this.takenSeats = 		()=> Object.entries(this.seat).filter((tuple)=>tuple[1]).map((tuple)=>tuple[0]);
 		this.changeTurnSeat = ()=> { 
+			this.turn = this.findNextSeat(this.turn);
+		};
+		this.findNextSeat = (seatNumber)=> {
 			let nextPossibleSeat = Math.min.apply(null, this.takenSeats()
-			.filter((seat)=>seat>this.turn));
+			.filter((seat)=>seat>seatNumber));
 			let nextSeat;
 			if (nextPossibleSeat!==Infinity) {
 				nextSeat = nextPossibleSeat;
 			} else {
 				nextSeat = Math.min.apply(null, this.takenSeats());
 			}
-			this.turn = nextSeat;
-		};
+			return nextSeat;
+		}
 		this.leaveQueueJoin = (player)=> {
 			if (!(player in this.leaveQueueHash)) {
 				this.leaveQueueHash[player.attributes.username]=player;
@@ -48,23 +52,28 @@ var Table = Backbone.Collection.extend({
 			}	
 		};
 		this.disconnectQueueJoin = (player)=> {
-			delete player.ws;
-			db.CheckConditional('dcRemain', player, (limit, dcRemain)=>dcRemain>limit, 0)
-			.then((hasDcRemain)=>{
-				if (hasDcRemain) {
-					console.log('DCREMAIN = ', player.attributes.dcRemain)
-					if (!(player in this.disconnectQueueHash)) {
-						this.disconnectQueueHash[player.attributes.username]=player;
-						this.disconnectQueue.push(player);
+			db.SetUpdate(qry.updateUser, player, 
+				{ sessionId: null, 
+				loggedIn: false }, 
+			()=>player.ws && delete player.ws)  
+			//sessionId must be 1st Param to render websockets send condition false
+			// .then(db.CheckConditional('dcRemain', player, (limit, dcRemain)=>dcRemain>limit, 0))
+			.then(()=>db.ReturnValue('dcRemain', player))
+			.then((dcRemain)=>{
+				if (!(player in this.disconnectQueueHash)) {
+					this.disconnectQueueHash[player.attributes.username]=player;
+					this.disconnectQueue.push(player);
+					console.log('DCREMAIN = ', dcRemain);
+					if (dcRemain>0) {
+						player.update(status.disconnected(player.attributes.username))
 						player.update({dcRound: 2});
-						return db.SetUpdate(qry.updateUser, player, {dcRemain: player.attributes.dcRemain-1})
-						.then(()=>player.update(status.disconnected(player.attributes.username)));
-					}	
-				} else {  // no remaining disconnects
-					console.log('NO REMAINING DISCONNECTS // SET PLAYER UNRESPONSIVE HERE');
-					this.leaveQueueHash[player.attributes.username]=player;
-					this.leaveQueue.push(player);
-					player.update(status.willLeaveTable(player.attributes.username))
+						return db.SetUpdate(qry.updateUser, player, 
+							{dcRemain: player.attributes.dcRemain-1})
+					}	else {  // no remaining disconnects
+						console.log('NO REMAINING DISCONNECTS // SET PLAYER UNRESPONSIVE HERE');
+						player.update(status.willLeaveTable(player.attributes.username))
+						player.update({dcRound: 0});
+					}
 				}
 			});
 		};
@@ -127,13 +136,13 @@ var Table = Backbone.Collection.extend({
 					this.leaveQueue.splice(i);
 				}
 			});
-			console.log('LEAVE QUEUE = ', this.leaveQueue)
+			// console.log('LEAVE QUEUE = ', this.leaveQueue)
 		};
 		this.serviceDisconnectQueue = ()=>{ 
 			this.disconnectQueue.forEach((player)=>{
-				console.log('servicing diconnect queue')
+				// console.log('servicing disconnect queue')
 				if (player.attributes.dcRound === 0) {
-					accounts.disconnect(player, this, lobby.users);
+					accounts.disconnect(player, this);
 				} else {
 					player.update({dcRound: player.attributes.dcRound-1});
 				}
@@ -151,84 +160,100 @@ var Table = Backbone.Collection.extend({
 					this.joinQueue.splice(i);
 				}
 			});
-			console.log('JOINQUEUE = ', this.joinQueue)
+			// console.log('JOINQUEUE = ', this.joinQueue)
 		};
 		this.serviceAnnounceStartHand = ()=> {
 			console.log('NEXT HAND WILL START MOMENTARILY');
 		};
 		this.pickDealer = ()=> {
 			this.dealer = Math.min.apply(null, this.takenSeats());
-			this.turn = this.dealer;
 			console.log('dealer = ', this.seat[this.dealer].attributes.username,' seat ', this.dealer)
 		};
 		this.placeAntes = ()=> {
-			this.playerActionsRemain = 10-this.emptySeats.length
-			this.round = 0;
+			this.smallBlind = this.findNextSeat(this.dealer);
+			this.bigBlind = this.findNextSeat(this.smallBlind);
+			this.calledBet = 1;
+			this.playersInHand = this.takenSeats().length;
+			this.round = 1;
+			this.turn = this.smallBlind;
+			console.log('ROUND = ', settings.rounds[this.round]);
 			console.log('PLACING ANTEs')
 		};
 		this.dealCards = ()=> {
 			this.deck = util.shuffledDeck(util.orderedDeck());
-			// console.log(this.deck);
-			console.log('DEALING CARDS')
 			this.each((user)=> user.update({holdCards: [this.deck.pop(), this.deck.pop()]}))
 		};
-		// Turn related
 		this.waitBetweenHandsDuration = ()=> {
 			return setTimeout(()=>{
 				clearTimeout(this.waitBetweenHands);
 				this.pollForStartTimer = this.pollForStart();
 			}, this.waitBetweenHandsTimer);
 		};
+		this.checkRoundConditions = ()=> {
+			if (this.round === 5 || this.playersInHand === 1) {
+				this.declareWinner();
+			} else if (this.checkedBet === this.playersInHand || this.calledBet === this.playersInHand) {
+				this.advanceRound();
+			} else {
+				this.changeTurnSeat();
+				this.startTurn();
+			}
+		};
+		this.advanceRound = ()=> {
+			this.round++;
+			console.log('ROUND = ', settings.rounds[this.round]);
+			if (this.round===2) { // Nothing to do on Round 1?
+				this.communityCards = [];
+				this.communityCards.push(this.deck.pop());
+				this.communityCards.push(this.deck.pop());
+				this.communityCards.push(this.deck.pop());
+				console.log('COMMUNITY CARDS = ', this.communityCards);
+			} else if (this.round === 3) {
+				this.communityCards.push(this.deck.pop());
+				console.log('TURN CARD = ', this.communityCards[3]);						
+			} else if (this.round === 4) {
+				this.communityCards.push(this.deck.pop());
+				console.log('RIVER CARD = ', this.communityCards[4]);						
+			} 
+			this.turn = this.smallBlind;
+			this.calledBet = 0;
+			this.checkedBet = 0;
+			this.checkRoundConditions();
+		};
+		this.declareWinner = ()=> {
+			this.winner = this.turn;
+			console.log('PLAYER '+this.winner+' wins!!');
+			this.waitBetweenHands = this.waitBetweenHandsDuration();
+		}
 		this.startTurn = ()=> {
 			let player = this.seat[this.turn];
-			if (this.round === 3) {
-				console.log('PLAYER '+player.attributes.username+' wins!!');
-				this.waitBetweenHands = this.waitBetweenHandsDuration();
-			} else {
-				console.log('PLAYER.SEAT =', player.attributes.seat, 'TABLE.DEALER', this.dealer);
-				if (player.attributes.seat === this.dealer) {
-					this.round++;
-					console.log('ROUND = ', this.round);
-					if (this.round === 1) {
-						this.communityCards = [];
-						this.communityCards.push(this.deck.pop());
-						this.communityCards.push(this.deck.pop());
-						this.communityCards.push(this.deck.pop());
-						console.log('COMMUNITY CARDS = ', this.communityCards);
-					} else if (this.round === 2) {
-						this.communityCards.push(this.deck.pop());
-						console.log('TURN CARD = ', this.communityCards[3]);						
-					} else if (this.round === 3) {
-						this.communityCards.push(this.deck.pop());
-						console.log('RIVER CARD = ', this.communityCards[4]);						
-					}
-				// NEW ROUND
-				}
-				player && this.swapInFilter(player, this.filters.onTurn) 
-				this.broadcast({turn: this.turn});
-				this.waitForTurn = this.turnDuration();
-			}
+			console.log('Player', this.turn, 'turn');
+			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			// this.broadcast({turn: this.turn});
+			this.waitForTurn = this.turnDuration();
 		};
 		this.turnDuration = ()=> {
 			return setTimeout(()=>{
 				clearTimeout(this.waitForTurn);
-				let player = this.seat[this.turn];
-				this.swapInFilter(player, this.filters.default);
-				this.changeTurnSeat();
-				this.startTurn();
+				let finishingTurnPlayer = this.seat[this.turn];
+				finishingTurnPlayer.handleInput({callBet: true});
+				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.checkRoundConditions();
 			}, this.timer);
 		};
 		this.changeTurnNow = ()=> {
 			clearTimeout(this.waitForTurn);
-			let player = this.seat[this.turn];
-			this.swapInFilter(player, this.filters.default);
-			this.changeTurnSeat();
-			this.startTurn();
+			let finishingTurnPlayer = this.seat[this.turn];
+			this.swapInFilter(finishingTurnPlayer, this.filters.default);
+			this.checkRoundConditions();
 		};
-		this.fold = ()=> {
-			this.playerActionsRemain = this.playerActionsRemain-1;
+		this.fold = (player)=> {
+			this.playersInHand = this.playersInHand-1;
 			this.changeTurnNow();
-		}
+		};
+		this.call = (player)=> {
+			this.calledBet++;
+		};
 	},
 });
 var table1 = new Table();

@@ -13,10 +13,10 @@ module.exports = {
 		username && password && db.login(user, room, ()=> room.add(user));
 	},
 	logout: (user, room)=>{
-		db.SetUpdate(qry.updateUser, user, { loggedIn: false, sessionId: null, room: null}, 
+		db.SetUpdate(qry.updateUser, user, { sessionId: null, loggedIn: false, room: null}, 
 		()=>room.remove(user), ()=>user.ws && delete user.ws);
 	}, // FYI:  user.destroy() === false
-	disconnect: (user, room, lobby)=>{
+	disconnect: (user, room)=>{
 		if (room.type === 'lobby') {
 			module.exports.logout(user, room);
 		} 
@@ -24,9 +24,7 @@ module.exports = {
 			let table = room;
 			table.remove(user);
 			table.emptySeats.push(user.attributes.seat);
-			table.emptySeats.sort(function(a, b) {
-		    return a - b;
-		  });
+			table.emptySeats.sort((a,b)=>a-b);
 		  table.seat[user.attributes.seat] = null;
 	  	user.update({seat: null});
 			delete table.disconnectQueueHash[user.attributes.username]
@@ -37,9 +35,10 @@ module.exports = {
 				let accountCash = balances.accountCash; 
 				let newBalance = accountCash+tableCash;
 				return db.SetUpdate(qry.updateUser, user, 
-					{accountCash: newBalance, tableCash: 0, room:lobby.name})
+					{accountCash: newBalance, 
+					tableCash: 0, 
+					room:null})
 			})
-			.then(()=>module.exports.logout(user, lobby));
 		}
 	},
 	getCash: (user)=> {

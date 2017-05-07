@@ -6,6 +6,7 @@ const log = require('./templates/log.js');
 const consoleUserUpdate = log.consoleUserUpdate();
 const whoIsInRoom = log.whoIsInRoom();
 const accounts = require('./accounts');
+const util = require('./db/util');
 
 
 const User = Backbone.Model.extend({
@@ -39,26 +40,29 @@ const User = Backbone.Model.extend({
 			//  in ------>> 
 
 			// <<---- out
-			"change:username": 			(user, value)=> this.ws && this.sendUpdate({username: value}),
-			"change:loggedIn": 			(user, value)=> this.ws && this.sendUpdate({loggedIn: value}),
-			"change:accountCash": 	(user, value)=> this.ws && this.sendUpdate({accountCash: value}),
-			"change:tableCash":   	(user, value)=> this.ws && this.sendUpdate({tableCash: value}),
-			"change:chats": 				(user, value)=> this.ws && this.sendUpdate({chats: value}),
-			"change:seat":          (user, value)=> this.ws && this.sendUpdate({seat: value}),
-			"change:holdCards":     (user, value)=> this.ws && this.sendUpdate({holdCards: value}),
-			// "change:dcRound":       (user, value)=> this.ws && this.sendUpdate({dcRound: value}),
-			// "change:dcRemain":      (user, value)=> this.ws && this.sendUpdate({dcRemain: value}),
-			"change:update": 				(user, value)=> this.ws && this.sendUpdate({update: value}),
+			"change:username": 			(user, value)=> this.sendUpdate({username: value}),
+			"change:loggedIn": 			(user, value)=> this.sendUpdate({loggedIn: value}),
+			"change:sessionId": 		(user, value)=> this.sendUpdate({sessionId: value}),
+			"change:accountCash": 	(user, value)=> this.sendUpdate({accountCash: value}),
+			"change:tableCash":   	(user, value)=> this.sendUpdate({tableCash: value}),
+			"change:chats": 				(user, value)=> this.sendUpdate({chats: value}),
+			"change:seat":          (user, value)=> this.sendUpdate({seat: value}),
+			"change:holdCards":     (user, value)=> this.sendUpdate({holdCards: value}),
+			"change:update": 				(user, value)=> this.sendUpdate({update: value}),
 		});
-		this.update = (toSend)=>{ 
-			let outUpdate = {};
-			this.outFilter.forEach((key)=>{  if (key in toSend) {
-				this.set({[key]: toSend[key]});	
-				outUpdate[key] = toSend[key];
-			}});
-			consoleUserUpdate(this, outUpdate); 
+		this.update = (updateParams)=>{ 
+			var logParams = {};
+			for (let key in updateParams)  {
+				this.set({[key]: updateParams[key]});
+				(key in this.attributes.filters.out) && (logParams[key] = updateParams[key])
+			}
+			consoleUserUpdate(this, logParams); 
 		};
-		this.sendUpdate = (toSend)=> this.ws.send(JSON.stringify(toSend));
+		this.sendUpdate = (toSend)=> {
+			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
+				this.ws.send(JSON.stringify(toSend));
+			}
+		};
 		this.sendUpdate = this.sendUpdate.bind(this);
 	},
 });

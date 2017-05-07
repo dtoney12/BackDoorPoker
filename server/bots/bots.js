@@ -14,17 +14,17 @@ module.exports = {
   tableBots: [],
   lobbyConfigs: 
     [{
-      sessionId: 'abc12',
+      sessionId: 'ROBOT',
       password: '123',
       editName: 'Fred',
     },
     { 
-      sessionId: 'abc13',
+      sessionId: 'ROBOT',
       password: '123',
       editName: 'Dan',
     },
     { 
-      sessionId: 'abc14',
+      sessionId: 'ROBOT',
       password: '123',
       editName: 'Super Junior',
     }],

@@ -33,11 +33,21 @@ const CheckConditional = (param, user, conditional, value1)=> {
 	.catch((error)=> status.CheckConditionalError(username))
 };
 
-const ReturnValue = (params, user)=> {
+const ReturnValue = (selections, user)=> {
 	let username = user.attributes.username;
 	return Promise.using(getConn(), function(conn) {
-		return conn.queryAsync(qry.selectQuery(params), username)
-		.then((result)=>Promise.resolve(result&&result[0]))
+		return conn.queryAsync(qry.selectQuery(selections), username)
+		.then((result)=>{
+			if (result&&result[0]) {
+				let count = 0;
+				for (var key in result[0]) {count++}
+				if (count>1) { 
+					return Promise.resolve(result[0]);
+				} else if (count===1) {
+					return Promise.resolve(result[0][key]);
+				}
+			}
+		})
 		.catch((error)=> status.ReturnValueError(username));
 	})
 	.catch((error)=> status.ReturnValueError(username))
@@ -59,13 +69,18 @@ const SetUpdate = (command, user, update, cb1, cb2)=> {
 	return Promise.using(getConn(), function(conn) {
 		return conn.queryAsync(command, update)
 		.then(()=> conn.queryAsync(qry.selectQuery(selections), username))
-		.then((results)=>Promise.resolve(user.update(results[0])))
-		// .catch((error)=> user.update(status.dbError(error)))
+		.then((results)=>{
+			// console.log(results)
+				user.update(results[0])})
+
+		.catch((error)=> user.update(status.dbError(error)))
+		// .then(()=>console.log('DOODODODODOD SMOETHIN INSIDE OF PROMISE USING'))
 		.then(()=>cb1&&cb1())
 	.then(()=>cb2&&cb2())
 	// .then(()=>cb2&&console.log(cb2.toString()))
 	.catch((error)=> status.SetUpdateError(username))
 	})
+	// .then(()=>console.log('DOODODODODOD SMOETHIN OUTSIDE OF PROMISE USING'))
 	// .then(()=>cb1&&console.log(cb1.toString()))
 	
 };
@@ -75,10 +90,10 @@ module.exports = {
 	CheckConditional: CheckConditional,
 	ReturnValue: ReturnValue,
 	logout: (user, removeFromRoom, deleteSession)=> {
-		SetUpdate(qry.updateUser, user, { loggedIn: false, sessionId: null }, removeFromRoom, deleteSession);
+		SetUpdate(qry.updateUser, user, { sessionId: null, loggedIn: false}, removeFromRoom, deleteSession);
 	},
 
-	login: (user, room, cb)=> {
+	login: (user, room, cb, cb2)=> {
 		let username = user.attributes.editName;
 		let enteredPassword = user.attributes.password;
 		let sessionId = user.attributes.sessionId;
@@ -101,9 +116,9 @@ module.exports = {
 									conn.queryAsync(qry.getAllFromUsername, username)
 									.then((results)=> {
 										let userData = util.extend(util.extendToCopy(schema.User, results[0]),
-											{ username: username, 
+											{ sessionId: sessionId,  
+												username: username,
 												loggedIn: true, 
-												sessionId: sessionId, 
 												room: room.name, });
 										return SetUpdate(qry.updateUser, user, userData, cb)
 										.then(()=>conn.queryAsync(qry.getAllFromUsername, username))
@@ -115,12 +130,12 @@ module.exports = {
 							} else user.update(status.unknownLoginError(username));
 						} else if (!dbPassword) { // new user
 							let newUserData = util.extend(util.extendToCopy(schema.User, user.attributes),
-								{ username: username, 
-								password: enteredPassword, 
-								loggedIn: true, 
-								sessionId: sessionId,
-								room: room.name,  });
-							return SetUpdate(qry.insertUser, user, newUserData, cb);
+								{ sessionId: sessionId,
+									username: username, 
+									password: enteredPassword, 
+									loggedIn: true, 
+									room: room.name,  });
+							return SetUpdate(qry.insertUser, user, newUserData, cb, cb2);
 						} else user.update(status.unknownLoginError(username));
 					});
 				}
