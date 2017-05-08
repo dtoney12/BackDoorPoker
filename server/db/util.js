@@ -46,47 +46,6 @@ module.exports = {
     return deck;
   },
 
-  getHighFive: (hole, board)=>{
-    let allSeven = hole.concat(board).forEach((card)=>{
-      card[0]==='J' && card[0]=11;
-      card[0]==='Q' && card[0]=12;
-      card[0]==='K' && card[0]=13;
-      card[0]==='A' && card[0]=14;
-      card[1]==='♥' && card[1]=1;
-      card[1]==='♣' && card[1]=2;
-      card[1]==='♠' && card[1]=3;
-      card[1]==='♦' && card[1]=4;
-    })
-    let highCard, pair, twoPair, set, straight, flush, fourOfAKind;
-
-    if (flush && straight) {
-      
-    } else if (fourOfAKind) {
-
-    } else if (pair && set) {
-
-    } else if (flush) {
-
-    } else if (straight) {
-
-    } else if (set) {
-
-    } else if (twoPair) {
-
-    } else if (pair) {
-
-    } else {
-      return highCard;
-    }
-
-    let getHighCard = (seven)=> {
-      return seven.reduce((accum, card)=>,0)
-    }
-  },
-
-  getWinner: (handsArray)=>{
-    
-  },
   
   promiseAllTimeout: (promises, timeout, resolvePartial=true)=> {
     return new Promise(function(resolve, reject) {

@@ -89,6 +89,13 @@ module.exports = {
     playersInHand: 0,
     calledBet: 0,
     checkedBet: 0,
+    pots: [{ 
+      playersInPot: {},
+      amount: 0,
+      time: null,
+      communityCards: [],
+      winner: null,
+    }],
     filters: {
       default: {
         message: true,
