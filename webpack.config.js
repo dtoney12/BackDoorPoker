@@ -18,7 +18,11 @@ module.exports = {
         query: {
           presets: ['react', 'es2015']
         }
-      }
+      },
+      { test: /\.(woff|png|jpg|gif)$/,
+        include: SRC_DIR,
+        loader: 'url-loader' 
+      },
     ]
   }
 };

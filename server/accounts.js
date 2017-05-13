@@ -79,7 +79,7 @@ module.exports = {
 				table.add(user);
 				delete table.joinQueueHash[user.attributes.username]
 				table.swapInFilter(user, table.filters.default);
-				return db.SetUpdate(qry.updateUser, user, {room: table.name});
+				return db.SetUpdate(qry.updateUser, user, {room: table.name}, user.sendUpdate({joinTableInvite: true}));
 			} else {
 				user.update(status.NotEnoughTableCash(user.attributes.username));
 			}
@@ -107,5 +107,6 @@ module.exports = {
 		});
 		lobby.swapInFilter(user, user.attributes.filters.in);
 		lobby.add(user);
+		user.sendUpdate({leftTable: true});
 	},
 }

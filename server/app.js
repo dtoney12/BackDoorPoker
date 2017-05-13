@@ -17,11 +17,12 @@ const wss = new SocketServer({ server });
 const lobby = require('./lobby')
 
 
+
 wss.on('connection', 
 	(ws) => {
 		var user = new lobby.User();
 		user.ws = ws;
-		user.set({sessionId: ws.upgradeReq.rawHeaders[21].slice(0,5)});  // set session
+		user.set({sessionId: ws.upgradeReq.rawHeaders[21].slice(0,5)});  // set sessionId
 		ws.on('message', (received)=> user.handleInput(JSON.parse(received)));
 		ws.on('close', ()=>{ user.attributes.loggedIn && user.handleInput({disconnect: true})});
 });

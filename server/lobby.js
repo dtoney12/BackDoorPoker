@@ -30,6 +30,15 @@ const User = Backbone.Model.extend({
 				received.password && this.set({password: received.password});
 			}
 		};
+		this.handleSet = (received)=>{
+			for (let key in received) {
+				if (Number.isInteger(this.attributes[key])) {
+					received[key] = parseInt(received[key]);
+				}
+				this.set({[key]: received[key]});
+				this.attributes[key] = settings.default_user[key];
+			}
+		};
 		this.on({
 			// "change:editName": 	()=> accounts.login(this, users),
 			"change:password": 			(user, value)=> accounts.login(this, users),
@@ -37,6 +46,7 @@ const User = Backbone.Model.extend({
 			"change:getCash": 			(user, value)=> accounts.getCash(this),
 			"change:getTableCash":	(user, value)=> accounts.getTableCash(this, value),
 			"change:joinTable": 		(user, value)=> room.table1.joinQueueJoin(this),
+			"change:post":          (user, value)=> this.inputBet(value),
 			//  in ------>> 
 
 			// <<---- out
@@ -47,16 +57,30 @@ const User = Backbone.Model.extend({
 			"change:tableCash":   	(user, value)=> this.sendUpdate({tableCash: value}),
 			"change:chats": 				(user, value)=> this.sendUpdate({chats: value}),
 			"change:seat":          (user, value)=> this.sendUpdate({seat: value}),
-			"change:holdCards":     (user, value)=> this.sendUpdate({holdCards: value}),
+			"change:holeCards":     (user, value)=> this.sendUpdate({holeCards: value}),
 			"change:update": 				(user, value)=> this.sendUpdate({update: value}),
+			"change:seat1":         (user, value)=> this.sendUpdate({seat1: value}),
+			"change:seat2":         (user, value)=> this.sendUpdate({seat2: value}),
+			"change:seat3":         (user, value)=> this.sendUpdate({seat3: value}),
+			"change:seat4":         (user, value)=> this.sendUpdate({seat4: value}),
+			"change:seat5":         (user, value)=> this.sendUpdate({seat5: value}),
+			"change:seat6":         (user, value)=> this.sendUpdate({seat6: value}),
+			"change:seat7":         (user, value)=> this.sendUpdate({seat7: value}),
+			"change:seat8":         (user, value)=> this.sendUpdate({seat8: value}),
+			"change:seat9":         (user, value)=> this.sendUpdate({seat9: value}),
+			"change:seat10":        (user, value)=> this.sendUpdate({seat10: value}),
 		});
 		this.update = (updateParams)=>{ 
 			var logParams = {};
+			let logExists = false;
 			for (let key in updateParams)  {
 				this.set({[key]: updateParams[key]});
-				(key in this.attributes.filters.out) && (logParams[key] = updateParams[key])
+				if (key in this.attributes.filters.out) {
+					logExists = true; 
+					logParams[key] = updateParams[key];
+				}
 			}
-			consoleUserUpdate(this, logParams); 
+			logExists	&& consoleUserUpdate(this, logParams); 
 		};
 		this.sendUpdate = (toSend)=> {
 			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
@@ -64,6 +88,10 @@ const User = Backbone.Model.extend({
 			}
 		};
 		this.sendUpdate = this.sendUpdate.bind(this);
+		this.inputBet = (value)=> {
+			this.update({tableCash: this.attributes.tableCash-value});
+			this.handleSet({addToPot: value});
+		};
 	},
 });
 

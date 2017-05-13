@@ -2,10 +2,12 @@
 const lobby = require('../lobby');
 const Promise = require('bluebird');
 
-const Fred = new lobby.User();
-const Dan = new lobby.User();
+const Fredinator = new lobby.User();
+const LieutenantDan = new lobby.User();
 const SuperJunior = new lobby.User();
-const botUsers = [Fred, Dan, SuperJunior]
+const MadMarcus = new lobby.User();
+const Bobs = new lobby.User();
+const botUsers = [Fredinator, LieutenantDan, SuperJunior, MadMarcus, Bobs]
 
 module.exports = {
   lobbyBots: [],
@@ -16,12 +18,22 @@ module.exports = {
     [{
       sessionId: 'ROBOT',
       password: '123',
-      editName: 'Fred',
+      editName: 'Fredinator',
     },
     { 
       sessionId: 'ROBOT',
       password: '123',
-      editName: 'Dan',
+      editName: 'Lieutenant Dan',
+    },
+    { 
+      sessionId: 'ROBOT',
+      password: '123',
+      editName: 'Mad Marcus',
+    },
+    { 
+      sessionId: 'ROBOT',
+      password: '123',
+      editName: 'Bobs UpandDown',
     },
     { 
       sessionId: 'ROBOT',
@@ -30,6 +42,12 @@ module.exports = {
     }],
   getCashConfigs: 
     [{
+      getCash: true,
+    },
+    { 
+      getCash: true,
+    },
+    { 
       getCash: true,
     },
     { 
@@ -47,6 +65,12 @@ module.exports = {
     },
     { 
       getTableCash: 1000,
+    },
+    { 
+      getTableCash: 1000,
+    },
+    { 
+      getTableCash: 1000,
     }],
   tableConfigs: 
     [{
@@ -57,10 +81,16 @@ module.exports = {
     },
     { 
       joinTable: true,
+    },
+    { 
+      joinTable: true,
+    },
+    { 
+      joinTable: true,
     }],
 }
 
-for (var i=0; i<3; i++) {
+for (var i=0; i<5; i++) {
   module.exports.lobbyBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getTableCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))

@@ -2,62 +2,38 @@
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
-<header>
-<div class="chatWindow"></div>
-</header>
+<body>
           <div class="forms"/>
-            <p id='server-time'></p>
-            <p>Enter your name</p>
               <form action="#" id="nameButton" method="post">
                 <input type="text" id="editName"/>
-                <input type="submit"/>
+                <input type="submit" value="Enter Username"/>
               </form>
-            <p>Enter password</p>
               <form action="#" id="passwordButton" method="post">
                 <input type="text" id="password"/>
-                <input type="submit"/>
+                <input type="submit" value="Enter Password"/>
               </form>
-            <p>Enter a message</p>
               <form action="#" id="messageButton" method="post">
                 <input type="text" id="message"/>
-                <input type="submit"/>
+                <input type="submit" value="Say Something"/>
               </form>
-            <p>Replenish Cash</p>
-              <form action="#" id="getCashButton" method="post">
-                <input type="submit" id="getCash"/>
-              </form>
-            <p>Transfer to Table Cash</p>
               <form action="#" id="getTableCashButton" method="post">
                 <input type="text" id="getTableCash"/>
-                <input type="submit"/>
+                <input type="submit"  value="Transfer to Table Cash"/>
               </form>
-            <p>Join the Table</p>
+              <form action="#" id="getCashButton" method="post">
+                <input type="submit" id="getCash" value="Daily Cash Up"/>
+              </form>
               <form action="#" id="joinTableButton" method="post">
-                <input type="submit" id="joinTable"/>
+                <input type="submit" id="joinTable" value="Join Table"/>
               </form>
-            <p>Fold</p>
-              <form action="#" id="foldButton" method="post">
-                <input type="submit" id="fold"/>
-              </form>
-            <p>Set Rejoin Wait Timer</p>
-              <form action="#" id="rejoinWaitTimerButton" method="post">
-              <input type="text" id="rejoinWaitTimer"/>
-                <input type="submit"/>
-              </form>
-            <p>Leave Table</p>
-              <form action="#" id="leaveTableButton" method="post">
-                <input type="submit" id="leaveTable"/>
-              </form>
-            <p>Log Out</p>
               <form action="#" id="logoutButton" method="post">
-                <input type="submit" id="logout"/>
+                <input type="submit" id="logout" value="Log Out"/>
               </form>
           </div>
-  <!-- <body background="pokertable.png"> -->
-<div id="room" class="clearfix"></div>
-    
+          <div id="room"></div>
+      
+  </body>
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="session.js"></script>
-    <script type="text/javascript" src="bundle.js"></script>
-  </body>
+<!--     <script type="text/javascript" src="bundle.js"></script> -->
 </html>

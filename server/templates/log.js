@@ -6,7 +6,7 @@ module.exports = {
     return (user, update)=> {
       console.log('\n|------ log # '+index+' -------');
       console.log(user.attributes.username?`| USERNAME: ${user.attributes.username}`:`| ID: ${user.attributes.sessionId}`)
-      Object.keys(update).forEach((key)=> console.log(`|   ${key}: ${update[key]}`))
+      Object.keys(update).forEach((key)=> console.log(`|   ${key}: ${JSON.stringify(update[key])}`))
       console.log('|----------------------\n');
       index++;
     }

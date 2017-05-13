@@ -163,13 +163,13 @@ module.exports = {
 			.then(()=> conn.queryAsync(qry.insertUser, util.assign(schema.User, demo.User1)))
 			// .then(()=> cb1 && console.log(cb1.toString()))
 
-			.then(()=> {
-				return util.promiseAllTimeout(cb1.map((cb,i)=>cb(data1[i])), 1000)
-				.then(()=>util.promiseAllTimeout(cb2.map((cb,j)=>cb(data2[j])), 1000))
-				.then(()=>util.promiseAllTimeout(cb3.map((cb,k)=>cb(data3[k])), 1000))
-				.then(()=>util.promiseAllTimeout(cb4.map((cb,l)=>cb(data4[l])), 1000))
-				.catch((error)=>console.error(error))
-			})
+			// .then(()=> {
+			// 	return util.promiseAllTimeout(cb1.map((cb,i)=>cb(data1[i])), 1000)
+			// 	.then(()=>util.promiseAllTimeout(cb2.map((cb,j)=>cb(data2[j])), 1000))
+			// 	.then(()=>util.promiseAllTimeout(cb3.map((cb,k)=>cb(data3[k])), 1000))
+			// 	.then(()=>util.promiseAllTimeout(cb4.map((cb,l)=>cb(data4[l])), 1000))
+			// 	.catch((error)=>console.error(error))
+			// })
 			.catch((error)=> console.log('\n\n\nXXXXX GOT AN ERROR...error = ', error))
 			});
 		}
