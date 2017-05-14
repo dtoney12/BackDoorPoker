@@ -74,6 +74,7 @@ module.exports = {
         rejoinWaitTimer: true,
         holeCards: true,
         dcRound: true,
+        dcRemain: true,
         seat1: true,
         seat2: true,
         seat3: true,

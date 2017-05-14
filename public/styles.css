@@ -27,7 +27,7 @@ table {
 #room {
   position: relative;
 }
-.table-image-div {z-index: -1;
+.table-image-div {
   z-index: -1;
   width:  100%;
   height: 100%;
@@ -45,14 +45,32 @@ table {
   left: 48%;
   position: absolute;
 }
-/*#leaveTable {
-  z-index: 5;
-}*/
-/*.card._10Hearts {
-  max-width: 100px;
-  height: auto;
-  z-index: 1;
-} */
+.card._reverse {
+  width: 4%;
+  top: 43%;
+  left: 50%;
+  position: absolute;
+}
+.card._10Clubs {
+  width: 4%;
+  top: 45%;
+  left: 52%;
+  position: absolute;
+}
+.community-cards {
+  width: 4%;
+  top: 47%;
+  left: 54%;
+  position: absolute;
+}
+.community-cards-show {
+  width: 4%;
+  top: 49%;
+  left: 56%;
+  position: absolute;
+/* content: url();*/
+}
+
 /*.clearfix:after { 
   content: "."; 
   visibility: hidden; 

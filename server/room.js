@@ -86,19 +86,28 @@ var Table = Backbone.Collection.extend({
 			});
 		};
 		this.joinQueueJoin = (player)=> {
+			let playerName = player.attributes.username;
 			if (player.attributes.tableCash >= 100) {
-				if (!(player in this.joinQueueHash)) {
-					this.joinQueueHash[player.attributes.username]=player;
-					this.joinQueue.push(player);
-					player.update(status.willJoinTable(player.attributes.username))
+				if (!(playerName in this.joinQueueHash)) {
+					if (!(playerName in this.leaveQueueHash) && !(playerName in this.disconnectQueueHash)) {
+						this.joinQueueHash[playerName]=player;
+						this.joinQueue.push(player);
+						player.update(status.willJoinTable(playerName));
+					} else if (playerName in this.leaveQueueHash) {
+						player.update(status.waitForLeaveTable(playerName));
+					} else if (playerName in this.disconnectQueueHash) {
+						//  Need to restore session here instead of making player wait
+						player.update(status.waitForDisconnect(playerName));    //   <----- restore session when you have time to write
+					}
 				}	
 			} else {
-				player.update(status.NotEnoughTableCash(player.attributes.username));
+				player.update(status.NotEnoughTableCash(playerName));
 			}
 		};
 		this.pollForStart = ()=> {
 			return setInterval(()=>{
-				if (this.emptySeats.length <= 8) {
+				let numberPlayers = 10-this.emptySeats.length-this.disconnectQueue.length-this.leaveQueue.length;
+				if (numberPlayers >= 2) {
 					clearInterval(this.pollForStartTimer);
 					this.serviceTransitions(
 						this.checkEnoughTableCash,

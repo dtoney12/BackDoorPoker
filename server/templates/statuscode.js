@@ -19,5 +19,7 @@ module.exports = {
   NotEnoughTableCash:    (username)=>{ return { code: 17,  status: "Not Enough Table Cash for "           +username,        }},
   willJoinTable:         (username)=>{ return { code: 18,  status: "Player "+username+" will join table",                   }},
   willLeaveTable:        (username)=>{ return { code: 19,  status: "Player "+username+" will leave table",                  }},
-  disconnected:          (username)=>{ return { code: 20,  status: "Player "+username+" disconnected",                      }},
+  waitForLeaveTable:     (username)=>{ return { code: 20,  status: "Please wait for "+username+" will leave table",         }},
+  waitForDisconnect:     (username)=>{ return { code: 21,  status: "Please wait for "+username+" will disconnect",          }},
+  disconnected:          (username)=>{ return { code: 22,  status: "Player "+username+" disconnected",                      }},
 }

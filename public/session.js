@@ -1,14 +1,14 @@
 $(document).ready(function() {
-	var HOST = location.origin.replace(/^http/, 'ws')
-	var ws = new WebSocket(HOST);
-    var wsSend = function(eventX, type, bool) {
+	let HOST = location.origin.replace(/^http/, 'ws')
+	const ws = new WebSocket(HOST);
+    window.ws = ws;
+    const wsSend = function(eventX, type, bool) {
     	eventX && eventX.preventDefault();
     	let sendObj = {};
     	sendObj[type] = document.getElementById(type).value || bool;
-    	sendObj.username = window.username;
     	ws.send( JSON.stringify(sendObj) );
     }
-    // $.getScript("bundle.js");
+
     let wsListenerFunctionCreate = function(setStateCallback) {
         let logNumber = 0;
         let listenerFunction = function (update) {
@@ -25,10 +25,14 @@ $(document).ready(function() {
         };
         return listenerFunction;
     }; 
-    ws.onmessage = wsListenerFunctionCreate();
-    window.ws = ws;
     window.wsListenerFunctionCreate = wsListenerFunctionCreate;
+    ws.onmessage = wsListenerFunctionCreate();
 
+    // fast login
+    setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 200);
+    setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 400);
+    setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 600);
+    setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 800);
 
 	$('#nameButton').submit(function(event) {
 		event.preventDefault();
@@ -59,7 +63,6 @@ $(document).ready(function() {
 		event.preventDefault();
 		wsSend(event, 'logout', true);
 	});
-
 });
 
 
