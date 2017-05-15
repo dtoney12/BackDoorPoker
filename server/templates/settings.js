@@ -122,18 +122,6 @@ module.exports = {
     checkedBet: 0,
     // currentBet: 0,  // need to compare bet against currentBet to start sidePots
     addToPot: 0,
-    playerCash: {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-      6: 0,
-      7: 0,
-      8: 0,
-      9: 0,
-      10: 0,
-    },
     pots: [{ 
       value: 0,
       callAmount: 0,
@@ -144,25 +132,28 @@ module.exports = {
       communityCards: [], 
     }],
     filters: {
-      default: {
-        message: true,
-        leaveTable: true,
-        disconnect: true,
-      },
-      smallBlind: {
-        message: true,
-        post: true,
-        leaveTable: true,
-        disconnect: true,
-      },
-      onTurn: {
-        message: true,
-        fold: true,
-        leaveTable: true,
-        disconnect: true,
-      },
-      postTurn: {
+      in: {
+        default: {
+          clientReady: true,
+          message: true,
+          leaveTable: true,
+          disconnect: true,
+        },
+        smallBlind: {
+          message: true,
+          post: true,
+          leaveTable: true,
+          disconnect: true,
+        },
+        onTurn: {
+          message: true,
+          fold: true,
+          leaveTable: true,
+          disconnect: true,
+        },
+        postTurn: {
 
+        },
       },
     },
     emptySeats: [1,2,3,4,5,6,7,8,9,10],
@@ -172,7 +163,7 @@ module.exports = {
     joinQueueHash: {},
     disconnectQueue: [],
     disconnectQueueHash: {},
-    seat: {
+    seat: { // empty = null for takeSeats()
       1: null,
       2: null,
       3: null,

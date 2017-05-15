@@ -19,12 +19,13 @@ var Table = Backbone.Collection.extend({
 	model: lobby.User,
 	initialize: function () { 
 		this.on({
+			"change:clientReady":     	(user)=> user.outFilter.forEach((attr)=>user.sendUpdate({[attr]: user.attributes[attr]})),
 			"change:message":    (sender, msg)=> this.each((user)=> user.update({chats:`(${sender.attributes.username}) ${msg}`})),
-			// "change:tableCash":(sender, value)=> this.updateAll(sender, value, 'tableCash'),
+			// "change:tableCash":(sender, value)=> this.updateAllPlayers(sender, value, 'tableCash'),
 			"change:addToPot": (sender, value)=> this.callPot(sender, value, this.pots[0]),
-			"change:post":     (sender, value)=> this.updateAll(sender, value, 'post'),
-			"change:check":    (sender, value)=> this.updateAll(sender, value, 'check'),
-			"change:bet": 	   (sender, value)=> this.updateAll(sender, value, 'bet'),
+			"change:post":     (sender, value)=> this.updateAllPlayers(sender, value, 'post'),
+			"change:check":    (sender, value)=> this.updateAllPlayers(sender, value, 'check'),
+			"change:bet": 	   (sender, value)=> this.updateAllPlayers(sender, value, 'bet'),
 			"change:fold":    	      (sender)=> this.fold(sender),
 			"change:callBet":         (sender)=> this.call(sender),
 			"change:leaveTable":      (sender)=> this.leaveQueueJoin(sender),
@@ -36,7 +37,7 @@ var Table = Backbone.Collection.extend({
 		});
 		this.swapInFilter =   (player, filter)=> player.inFilter = Object.keys(filter);
 		// this.broadcast =         (tableUpdate)=> this.each((user)=> user.update(tableUpdate));
-		this.updateAll = (sender, value, attr)=> this.each((user)=> user.update({ ["seat"+sender.attributes.seat]: {[attr]: value} }));
+		this.updateAllPlayers = (sender, value, attr)=> this.each((user)=> user.update({ ["seat"+sender.attributes.seat]: {[attr]: value} }));
 		this.takenSeats = 		              ()=> Object.entries(this.seat).filter((tuple)=>tuple[1]).map((tuple)=>tuple[0]);
 		this.changeTurnSeat =               ()=> { 
 			this.turn = this.findNextSeat(this.turn);
@@ -53,13 +54,19 @@ var Table = Backbone.Collection.extend({
 			return nextSeat;
 		}
 		this.leaveQueueJoin = (player)=> {
-			if (!(player in this.leaveQueueHash)) {
-				this.leaveQueueHash[player.attributes.username]=player;
+			let playerName = player.attributes.username;
+			if (!(playerName in this.leaveQueueHash)) {
+				this.leaveQueueHash[playerName]=player;
 				this.leaveQueue.push(player);
-				player.update(status.willLeaveTable(player.attributes.username))
+				player.update(status.willLeaveTable(playerName))
 			}	
 		};
+		this.serviceLeaveQueue = ()=> {
+			this.leaveQueue.forEach((player)=>accounts.leaveTable(player, this, lobby.users));
+			this.leaveQueue = [];
+		};
 		this.disconnectQueueJoin = (player)=> {
+			let playerName = player.attributes.username;
 			db.SetUpdate(qry.updateUser, player, 
 				{ sessionId: null, 
 				loggedIn: false }, 
@@ -68,22 +75,34 @@ var Table = Backbone.Collection.extend({
 			// .then(db.CheckConditional('dcRemain', player, (limit, dcRemain)=>dcRemain>limit, 0))
 			.then(()=>db.ReturnValue('dcRemain', player))
 			.then((dcRemain)=>{
-				if (!(player in this.disconnectQueueHash)) {
-					this.disconnectQueueHash[player.attributes.username]=player;
+				if (!(playerName in this.disconnectQueueHash)) {
+					this.disconnectQueueHash[playerName]=player;
 					this.disconnectQueue.push(player);
 					console.log('DCREMAIN = ', dcRemain);
 					if (dcRemain>0) {
-						player.update(status.disconnected(player.attributes.username))
+						player.update(status.disconnected(playerName))
 						player.update({dcRound: 2});
 						return db.SetUpdate(qry.updateUser, player, 
 							{dcRemain: player.attributes.dcRemain-1})
 					}	else {  // no remaining disconnects
 						console.log('NO REMAINING DISCONNECTS // SET PLAYER UNRESPONSIVE HERE');
-						player.update(status.willLeaveTable(player.attributes.username))
+						player.update(status.willLeaveTable(playerName))
 						player.update({dcRound: 0});
 					}
 				}
 			});
+		};
+		this.serviceDisconnectQueue = ()=>{ 
+			let nextDisconnectRound = [];
+			this.disconnectQueue.forEach((player)=>{
+				if (player.attributes.dcRound === 0) {
+					accounts.disconnect(player, this);
+				} else {
+					player.update({dcRound: player.attributes.dcRound-1});
+					nextDisconnectRound.push(player);
+				}
+			});
+			this.disconnectQueue = nextDisconnectRound;
 		};
 		this.joinQueueJoin = (player)=> {
 			let playerName = player.attributes.username;
@@ -92,6 +111,7 @@ var Table = Backbone.Collection.extend({
 					if (!(playerName in this.leaveQueueHash) && !(playerName in this.disconnectQueueHash)) {
 						this.joinQueueHash[playerName]=player;
 						this.joinQueue.push(player);
+						this.swapInFilter(player, this.filters.in.default);
 						player.update(status.willJoinTable(playerName));
 					} else if (playerName in this.leaveQueueHash) {
 						player.update(status.waitForLeaveTable(playerName));
@@ -103,6 +123,30 @@ var Table = Backbone.Collection.extend({
 			} else {
 				player.update(status.NotEnoughTableCash(playerName));
 			}
+		};
+		this.serviceJoinQueue = ()=> {
+			let nextJoinRound = [];
+			this.joinQueue.forEach((player, i)=>{
+				let playerName = player.attributes.username;
+				let NumberOfEmpty = this.emptySeats.length;
+				if (NumberOfEmpty===0) {
+					player.update(status.tableFull(table));
+					nextJoinRound.push(player);
+				} else if (player.attributes.tableCash < 100) {
+					player.update(status.NotEnoughTableCash(playerName));
+					nextJoinRound.push(player);
+				} else {
+					accounts.joinTable(player, lobby.users, this);
+					delete this.joinQueueHash[playerName];
+				}
+			});
+			this.joinQueue = nextJoinRound;
+			// this.joinQueue.forEach((player, i)=>{
+			// 	if (!(player.attributes.username in this.joinQueueHash)) {
+			// 		this.joinQueue.splice(i, 1);
+			// 	}
+			// });
+			// console.log('JOINQUEUE = ', this.joinQueue)
 		};
 		this.pollForStart = ()=> {
 			return setInterval(()=>{
@@ -155,44 +199,12 @@ var Table = Backbone.Collection.extend({
 				}
 			})
 		};
-		this.serviceLeaveQueue = ()=> {
-			this.leaveQueue.forEach((player)=>accounts.leaveTable(player, this, lobby.users));
-			this.leaveQueue.forEach((player, i)=>{
-				if (!(player.attributes.username in this.leaveQueueHash)) {
-					this.leaveQueue.splice(i);
-				}
-			});
-			// console.log('LEAVE QUEUE = ', this.leaveQueue)
-		};
-		this.serviceDisconnectQueue = ()=>{ 
-			this.disconnectQueue.forEach((player)=>{
-				// console.log('servicing disconnect queue')
-				if (player.attributes.dcRound === 0) {
-					accounts.disconnect(player, this);
-				} else {
-					player.update({dcRound: player.attributes.dcRound-1});
-				}
-			});
-			this.disconnectQueue.forEach((player, i)=>{
-				if (!(player.attributes.username in this.disconnectQueueHash)) {
-					this.disconnectQueue.splice(i, 1);
-				}
-			});
-		};
-		this.serviceJoinQueue = ()=> {
-			this.joinQueue.forEach((player)=>accounts.joinTable(player, lobby.users, this));
-			this.joinQueue.forEach((player, i)=>{
-				if (!(player.attributes.username in this.joinQueueHash)) {
-					this.joinQueue.splice(i);
-				}
-			});
-			// console.log('JOINQUEUE = ', this.joinQueue)
-		};
 		this.serviceAnnounceStartHand = ()=> {
 			console.log('NEXT HAND WILL START MOMENTARILY');
 		};
 		this.pickDealer = ()=> {
 			this.dealer = Math.min.apply(null, this.takenSeats());
+			console.log('dealer seat = ', this.dealer)
 			console.log('dealer = ', this.seat[this.dealer].attributes.username,' seat ', this.dealer)
 		};
 		this.placeAntes = ()=> {
@@ -211,7 +223,9 @@ var Table = Backbone.Collection.extend({
 		};
 		this.dealCards = ()=> {
 			this.deck = util.shuffledDeck(util.orderedDeck());
-			this.each((user)=> user.update({holeCards: [this.deck.pop(), this.deck.pop()]}))
+			for (var i = 1; i <=10; i++) {
+				this.seat[i] && this.seat[i].update({holeCards: [ this.deck.pop(), this.deck.pop() ] })
+			}
 		};
 		this.waitBetweenHandsDuration = ()=> {
 			return setTimeout(()=>{
@@ -258,7 +272,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			// player.handleSet( {post: this.bigBlindAmount} );
 			this.waitForTurn = this.turnDuration();
 		};
@@ -267,7 +281,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.changeTurnSeat();
 				this.startTurn1();
 			}, this.timer);
@@ -275,7 +289,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn1 = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			player.handleSet( {post: 10} );
 			this.waitForTurn = this.turnDuration1();
 		};
@@ -284,7 +298,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.changeTurnSeat();
 				this.startTurn2();
 			}, this.timer);
@@ -292,7 +306,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn2 = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			player.handleSet( {post: 100} );
 			this.waitForTurn = this.turnDuration2();
 		};
@@ -301,7 +315,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.changeTurnSeat();
 				this.startTurn3();
 			}, this.timer);
@@ -309,7 +323,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn3 = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			player.handleSet( {post: 20} );
 			this.waitForTurn = this.turnDuration3();
 		};
@@ -318,7 +332,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.changeTurnSeat();
 				this.startTurn4();
 			}, this.timer);
@@ -326,7 +340,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn4 = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			player.handleSet( {post: 15} );
 			this.waitForTurn = this.turnDuration4();
 		};
@@ -335,7 +349,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.changeTurnSeat();
 				this.startTurn5();
 			}, this.timer);
@@ -343,7 +357,7 @@ var Table = Backbone.Collection.extend({
 		this.startTurn5 = ()=> {
 			let player = this.seat[this.turn];
 			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.onTurn)   //player && ?
+			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
 			player.handleSet( {post: 250} );
 			this.waitForTurn = this.turnDuration5();
 		};
@@ -352,7 +366,7 @@ var Table = Backbone.Collection.extend({
 				clearTimeout(this.waitForTurn);
 				let finishingTurnPlayer = this.seat[this.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.default);
+				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 				this.checkRoundConditions();
 			}, this.timer);
 		};		
@@ -362,7 +376,7 @@ var Table = Backbone.Collection.extend({
 		this.changeTurnNow = ()=> {
 			clearTimeout(this.waitForTurn);
 			let finishingTurnPlayer = this.seat[this.turn];
-			this.swapInFilter(finishingTurnPlayer, this.filters.default);
+			this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
 			this.checkRoundConditions();
 		};
 		this.fold = (player)=> {

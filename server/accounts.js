@@ -67,25 +67,16 @@ module.exports = {
 		}})
 	},
 	joinTable: (user, lobby, table)=>{ 
+		let playerName = user.attributes.username;
 		let NumberOfEmpty = table.emptySeats.length;
-		if (NumberOfEmpty) {
-			if (user.attributes.tableCash >= 100) {
-				let playerSeat = table.emptySeats.splice(Math.floor(Math.random()*NumberOfEmpty),1)[0];
-				console.log('playerseat = ', playerSeat)
-				console.log(table.emptySeats);
-				table.seat[playerSeat] = user;
-				user.update({seat: playerSeat});
-				lobby.remove(user);
-				table.add(user);
-				delete table.joinQueueHash[user.attributes.username]
-				table.swapInFilter(user, table.filters.default);
-				return db.SetUpdate(qry.updateUser, user, {room: table.name}, user.sendUpdate({joinTableInvite: true}));
-			} else {
-				user.update(status.NotEnoughTableCash(user.attributes.username));
-			}
-		} else {
-			user.update(status.tableFull(user, table));
-		}
+		let playerSeat = table.emptySeats.splice(Math.floor(Math.random()*NumberOfEmpty),1)[0];
+		console.log('playerseat = ', playerSeat)
+		console.log(table.emptySeats);
+		table.seat[playerSeat] = user;
+		user.update({seat: playerSeat});
+		lobby.remove(user);
+		table.add(user);
+		return db.SetUpdate(qry.updateUser, user, {room: table.name}, ()=>user.sendUpdate({joinTableInvite: true}));
 	},
 	leaveTable: (user, table, lobby)=> {
 		table.remove(user);

@@ -72,22 +72,21 @@ const User = Backbone.Model.extend({
 		});
 		this.update = (updateParams)=>{ 
 			var logParams = {};
-			let logExists = false;
+			let shouldConsoleLog = false;
 			for (let key in updateParams)  {
 				this.set({[key]: updateParams[key]});
 				if (key in this.attributes.filters.out) {
-					logExists = true; 
+					shouldConsoleLog = true; 
 					logParams[key] = updateParams[key];
 				}
 			}
-			logExists	&& consoleUserUpdate(this, logParams); 
+			shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
 		};
 		this.sendUpdate = (toSend)=> {
 			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
 				this.ws.send(JSON.stringify(toSend));
 			}
 		};
-		this.sendUpdate = this.sendUpdate.bind(this);
 		this.inputBet = (value)=> {
 			this.update({tableCash: this.attributes.tableCash-value});
 			this.handleSet({addToPot: value});
