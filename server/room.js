@@ -15,33 +15,58 @@ const util = require('./db/util');
 db.initDb(bots.lobbyBots, bots.getCashBots, bots.getTableCashBots, bots.tableBots, 
 					bots.lobbyConfigs, bots.getCashConfigs, bots.getTableCashConfigs, bots.tableConfigs)
 
+// const AddState = Backbone.Model.extend({ defaults: settings.state });
+// const t1State = this.add(new AddState());
+// const t1 = t1State.attributes;
+// t1.setState = ()=>t1State.set;
+
 var Table = Backbone.Collection.extend({
-	model: lobby.User,
 	initialize: function () { 
+		const State = Backbone.Model.extend({ defaults: settings.state });
+		const table1State = this.add(new State());
+		const state = table1State.attributes;
+		this.setState =  (update)=>{ for (let key in update) { table1State.set({[key]: update[key]}); }};		
 		this.on({
-			"change:clientReady":     	(user)=> user.outFilter.forEach((attr)=>user.sendUpdate({[attr]: user.attributes[attr]})),
-			"change:message":    (sender, msg)=> this.each((user)=> user.update({chats:`(${sender.attributes.username}) ${msg}`})),
-			// "change:tableCash":(sender, value)=> this.updateAllPlayers(sender, value, 'tableCash'),
+			"change:clientReady":     	(user)=> this.updatePlayerOfSeatStates(user),		//user.outFilter.forEach((attr)=>user.sendUpdate({[attr]: user.attributes[attr]})),
+			"change:message":    (sender, msg)=> this.each((user)=> user.attributes.type && user.update({chats:`(${sender.attributes.username}) ${msg}`})),
+			// "change:tableCash":(sender, value)=> this.updateOfPlayer(sender, value, 'tableCash'),
 			"change:addToPot": (sender, value)=> this.callPot(sender, value, this.pots[0]),
-			"change:post":     (sender, value)=> this.updateAllPlayers(sender, value, 'post'),
-			"change:check":    (sender, value)=> this.updateAllPlayers(sender, value, 'check'),
-			"change:bet": 	   (sender, value)=> this.updateAllPlayers(sender, value, 'bet'),
+			"change:post":     (sender, value)=> this.updateOfPlayer(sender, value, 'post'),
+			"change:check":    (sender, value)=> this.updateOfPlayer(sender, value, 'check'),
+			"change:bet": 	   (sender, value)=> this.updateOfPlayer(sender, value, 'bet'),
 			"change:fold":    	      (sender)=> this.fold(sender),
 			"change:callBet":         (sender)=> this.call(sender),
 			"change:leaveTable":      (sender)=> this.leaveQueueJoin(sender),
 			"change:disconnect":        (user)=> this.disconnectQueueJoin(user),
-			"add": 		   (user, attributesArr)=> { whoIsInRoom(this, user, 'ADD to');
-				user.outFilter.forEach((key)=> user.sendUpdate({[key]: user.attributes[key]}));
-			},
-			"remove":    (user, attributesArr)=> whoIsInRoom(this, user, 'REMOVE from'),  // just logging
+			"add": 		   (user, attributesArr)=> { this.loadPlayerToState(user); whoIsInRoom(this, user, 'ADD to'); }, 
+			"remove":    (user, attributesArr)=> { this.unloadPlayerFromState(user); whoIsInRoom(this, user, 'REMOVE from'); },  // just logging
+
+			"change:dealer":    			(state, value)=> this.sendUpdateAll({dealer: value}),
+			"change:smallBlindSeat":  (state, value)=> this.sendUpdateAll({smallBlindSeat: value}),
+			"change:bigBlindSeat":    (state, value)=> this.sendUpdateAll({bigBlindSeat: value}),
+			"change:round":     			(state, value)=> this.sendUpdateAll({round: value}),
+			"change:turn":      			(state, value)=> this.sendUpdateAll({turn: value}),
+			"change:communityCards":  (state, value)=> this.sendUpdateAll({communityCards: value}),
+		});														
+
+		this.swapInFilter =           (player, filter)=>  player.inFilter = Object.keys(filter);
+		this.addToInFilter =          (player, filter)=>	player.inFilter = util.extendToArray(player.inFilter, filter);
+		this.removeFromInFilter =     (player, filter)=>  player.inFilter = util.unExtendFromArray(player.inFilter, filter);
+
+		this.loadPlayerToState =     					(player)=>  state.seat[player.attributes.seat] = player.attributes;
+		this.unloadPlayerFromState = 					(player)=>  state.seat[player.attributes.seat] = null;  //untested
+
+		this.updatePlayerOfSeatStates =       (player)=>  Object.values(state.seat).forEach((playerState, i)=> {
+				if (playerState) {
+					for (let key in playerState) {
+						(key in state.filters.otherPlayerOut) && player.sendUpdate({ seat: {[i+1]: {[key]: state.seat[i+1][key] }}});
+					}
+				}
 		});
-		this.swapInFilter =   (player, filter)=> player.inFilter = Object.keys(filter);
-		// this.broadcast =         (tableUpdate)=> this.each((user)=> user.update(tableUpdate));
-		this.updateAllPlayers = (sender, value, attr)=> this.each((user)=> user.update({ ["seat"+sender.attributes.seat]: {[attr]: value} }));
-		this.takenSeats = 		              ()=> Object.entries(this.seat).filter((tuple)=>tuple[1]).map((tuple)=>tuple[0]);
-		this.changeTurnSeat =               ()=> { 
-			this.turn = this.findNextSeat(this.turn);
-		};
+		this.sendUpdateAll =             (tableUpdate)=>  this.each((user)=> user.attributes.type && user.sendUpdate(tableUpdate));
+		this.updateOfPlayer =    (player, value, attr)=>  this.each((user)=> user.attributes.type && user.update({ ["_"+player.attributes.seat+"_"+attr]: value}));
+		this.takenSeats = 		                  ()=>  Object.entries(this.seat).filter((tuple)=>tuple[1]).map((tuple)=>tuple[0]);
+		this.changeTurnSeat =                   ()=>  this.setState({turn: this.findNextSeat(state.turn)});
 		this.findNextSeat = (seatNumber)=> {
 			let nextPossibleSeat = Math.min.apply(null, this.takenSeats()
 			.filter((seat)=>seat>seatNumber));
@@ -53,6 +78,86 @@ var Table = Backbone.Collection.extend({
 			}
 			return nextSeat;
 		}
+		this.pollForStart = ()=> {
+			return setInterval(()=>{
+				let numberPlayers = 10-this.emptySeats.length-this.disconnectQueue.length-this.leaveQueue.length;
+				if (numberPlayers >= 2) {
+					clearInterval(this.pollForStartTimer);
+					this.serviceTransitions(
+						this.checkEnoughTableCash,
+						this.serviceLeaveQueue,
+						this.serviceDisconnectQueue,
+						this.serviceJoinQueue,
+						this.serviceAnnounceStartHand,
+						this.pickDealer,
+						this.placeAntes,
+						this.dealCards,
+						this.startTurn
+					);
+				} else {
+					this.serviceLeaveQueue();
+					this.serviceDisconnectQueue();
+					this.serviceJoinQueue();
+				}
+			}, this.pollTimer)
+		};
+		// Transitions are processed by serviceTransitions()
+		this.serviceTransitions = function() {
+			let transFuncs = Array.prototype.slice.call(arguments);
+			let i = 0;
+			if (transFuncs[i]) {
+				transFuncs[i]();
+				state.waitForTransitions = this.transitionsDuration(transFuncs, i)
+			}
+		};
+		this.transitionsDuration = (transFuncs, i)=>{
+			return setTimeout(()=>{
+				clearTimeout(state.waitForTransitions);
+				i++;
+				if (transFuncs[i]) {
+					transFuncs[i]();
+					state.waitForTransitions = this.transitionsDuration(transFuncs, i);
+				}
+			}, state.transitionsTimer);
+		};
+		this.joinQueueJoin = (player)=> {
+			let playerName = player.attributes.username;
+			if (player.attributes.tableCash >= 100) {
+				if (!(playerName in this.joinQueueHash)) {
+					if (!(playerName in this.leaveQueueHash) && !(playerName in this.disconnectQueueHash)) {
+						this.joinQueueHash[playerName]=player;
+						this.joinQueue.push(player);
+						this.swapInFilter(player, this.filters.in.default);
+						player.update(status.willJoinTable(playerName));
+					} else if (playerName in this.leaveQueueHash) {
+						player.update(status.waitForLeaveTable(playerName));
+					} else if (playerName in this.disconnectQueueHash) {
+						//  Need to restore session here instead of making player wait
+						player.update(status.waitForDisconnect(playerName));    //   <----- restore session when you have time to write
+					}
+				}	
+			} else {
+				player.update(status.NotEnoughTableCash(playerName));
+			}
+		};
+		this.serviceJoinQueue = ()=> {
+			let nextJoinRound = [];
+			this.joinQueue.forEach((player, i)=>{
+				let playerName = player.attributes.username;
+				let NumberOfEmpty = this.emptySeats.length;
+				if (NumberOfEmpty===0) {
+					player.update(status.tableFull(table));
+					nextJoinRound.push(player);
+				} else if (player.attributes.tableCash < 100) {
+					player.update(status.NotEnoughTableCash(playerName));
+					nextJoinRound.push(player);
+				} else {
+					accounts.joinTable(player, lobby.users, this);
+					delete this.joinQueueHash[playerName];
+				}
+			});
+			this.joinQueue = nextJoinRound;
+		};
 		this.leaveQueueJoin = (player)=> {
 			let playerName = player.attributes.username;
 			if (!(playerName in this.leaveQueueHash)) {
@@ -104,96 +209,10 @@ var Table = Backbone.Collection.extend({
 			});
 			this.disconnectQueue = nextDisconnectRound;
 		};
-		this.joinQueueJoin = (player)=> {
-			let playerName = player.attributes.username;
-			if (player.attributes.tableCash >= 100) {
-				if (!(playerName in this.joinQueueHash)) {
-					if (!(playerName in this.leaveQueueHash) && !(playerName in this.disconnectQueueHash)) {
-						this.joinQueueHash[playerName]=player;
-						this.joinQueue.push(player);
-						this.swapInFilter(player, this.filters.in.default);
-						player.update(status.willJoinTable(playerName));
-					} else if (playerName in this.leaveQueueHash) {
-						player.update(status.waitForLeaveTable(playerName));
-					} else if (playerName in this.disconnectQueueHash) {
-						//  Need to restore session here instead of making player wait
-						player.update(status.waitForDisconnect(playerName));    //   <----- restore session when you have time to write
-					}
-				}	
-			} else {
-				player.update(status.NotEnoughTableCash(playerName));
-			}
-		};
-		this.serviceJoinQueue = ()=> {
-			let nextJoinRound = [];
-			this.joinQueue.forEach((player, i)=>{
-				let playerName = player.attributes.username;
-				let NumberOfEmpty = this.emptySeats.length;
-				if (NumberOfEmpty===0) {
-					player.update(status.tableFull(table));
-					nextJoinRound.push(player);
-				} else if (player.attributes.tableCash < 100) {
-					player.update(status.NotEnoughTableCash(playerName));
-					nextJoinRound.push(player);
-				} else {
-					accounts.joinTable(player, lobby.users, this);
-					delete this.joinQueueHash[playerName];
-				}
-			});
-			this.joinQueue = nextJoinRound;
-			// this.joinQueue.forEach((player, i)=>{
-			// 	if (!(player.attributes.username in this.joinQueueHash)) {
-			// 		this.joinQueue.splice(i, 1);
-			// 	}
-			// });
-			// console.log('JOINQUEUE = ', this.joinQueue)
-		};
-		this.pollForStart = ()=> {
-			return setInterval(()=>{
-				let numberPlayers = 10-this.emptySeats.length-this.disconnectQueue.length-this.leaveQueue.length;
-				if (numberPlayers >= 2) {
-					clearInterval(this.pollForStartTimer);
-					this.serviceTransitions(
-						this.checkEnoughTableCash,
-						this.serviceLeaveQueue,
-						this.serviceDisconnectQueue,
-						this.serviceJoinQueue,
-						this.serviceAnnounceStartHand,
-						this.pickDealer,
-						this.placeAntes,
-						this.dealCards,
-						this.startTurn
-					);
-				} else {
-					this.serviceLeaveQueue();
-					this.serviceDisconnectQueue();
-					this.serviceJoinQueue();
-				}
-			}, this.pollTimer)
-		};
-		// Transitions are processed by serviceTransitions()
-		this.serviceTransitions = function() {
-			let transFuncs = Array.prototype.slice.call(arguments);
-			let i = 0;
-			if (transFuncs[i]) {
-				transFuncs[i]();
-				this.waitForTransitions = this.transitionsDuration(transFuncs, i)
-			}
-		};
-		this.transitionsDuration = (transFuncs, i)=>{
-			return setTimeout(()=>{
-				clearTimeout(this.waitForTransitions);
-				i++;
-				if (transFuncs[i]) {
-					transFuncs[i]();
-					this.waitForTransitions = this.transitionsDuration(transFuncs, i);
-				}
-			}, this.transitionsTimer);
-		};
 		// Transition types
 		this.checkEnoughTableCash = ()=> {
 			this.each((player)=>{
-				if (player.attributes.tableCash < this.bigBlindAmount) {
+				if (player.attributes.tableCash < state.bigBlindAmount) {
 					this.leaveQueueJoin(player);
 					player.update(status.NotEnoughTableCash(player.attributes.username));
 				}
@@ -203,40 +222,41 @@ var Table = Backbone.Collection.extend({
 			console.log('NEXT HAND WILL START MOMENTARILY');
 		};
 		this.pickDealer = ()=> {
-			this.dealer = Math.min.apply(null, this.takenSeats());
-			console.log('dealer seat = ', this.dealer)
-			console.log('dealer = ', this.seat[this.dealer].attributes.username,' seat ', this.dealer)
+			this.setState({ dealer: Math.min.apply(null, this.takenSeats()) });
+			console.log('dealer = ', this.seat[state.dealer].attributes.username,' seat ', state.dealer)
 		};
 		this.placeAntes = ()=> {
-			this.smallBlindSeat = this.findNextSeat(this.dealer);
-			let smallBlindPlayer = this.seat[this.smallBlindSeat];
+			this.setState({smallBlindSeat: this.findNextSeat(state.dealer) });
+			let smallBlindPlayer = this.seat[state.smallBlindSeat];
 			// smallBlindPlayer.handleSet( {post: this.smallBlindAmount} );
-			this.bigBlindSeat = this.findNextSeat(this.smallBlind);
-			let bigBlindPlayer = this.seat[this.bigBlindSeat];
+			this.setState({bigBlindSeat: this.findNextSeat(state.smallBlindSeat) });
+			let bigBlindPlayer = this.seat[state.bigBlindSeat];
 			// bigBlindPlayer.handleSet( {post: this.bigBlindAmount} );
-			this.calledBet = 1;
-			this.playersInHand = this.takenSeats().length;
-			this.round = 1;
-			this.turn = this.findNextSeat(this.bigBlindSeat);
-			console.log('ROUND = ', settings.rounds[this.round]);
+			this.setState({calledBet: 1 });
+			this.setState({playersInHand: this.takenSeats().length });
+			this.setState({round: 1 });
+			this.setState({turn: this.findNextSeat(state.bigBlindSeat) });
+			console.log('ROUND = ', state.roundNames[state.round]);
 			console.log('PLACING ANTEs');
 		};
 		this.dealCards = ()=> {
-			this.deck = util.shuffledDeck(util.orderedDeck());
+			this.setState({deck: util.shuffledDeck(util.orderedDeck()) });
 			for (var i = 1; i <=10; i++) {
-				this.seat[i] && this.seat[i].update({holeCards: [ this.deck.pop(), this.deck.pop() ] })
+				if (this.seat[i]) {
+					let playerReceivingCards = this.seat[i];
+					playerReceivingCards.update({holeCards: [ state.deck.pop(), state.deck.pop() ] });
+					this.each((otherPlayer)=> { 
+						if (otherPlayer.attributes.username !== playerReceivingCards.attributes.username) {
+							playerReceivingCards.sendUpdate({ ["seat"+otherPlayer.attributes.seat]: {holeCards: 'reverse'} });
+						}
+					});
+				}
 			}
 		};
-		this.waitBetweenHandsDuration = ()=> {
-			return setTimeout(()=>{
-				clearTimeout(this.waitBetweenHands);
-				this.pollForStartTimer = this.pollForStart();
-			}, this.waitBetweenHandsTimer);
-		};
 		this.checkRoundConditions = ()=> {
-			if (this.round === 5 || this.playersInHand === 1) {
+			if (state.round === 5 || state.playersInHand === 1) {
 				this.declareWinner();
-			} else if (this.checkedBet === this.playersInHand || this.calledBet === this.playersInHand) {
+			} else if (state.checkedBet === state.playersInHand || state.calledBet === state.playersInHand) {
 				this.advanceRound();
 			} else {
 				this.changeTurnSeat();
@@ -244,139 +264,144 @@ var Table = Backbone.Collection.extend({
 			}
 		};
 		this.advanceRound = ()=> {
-			this.round++;
-			console.log('ROUND = ', settings.rounds[this.round]);
-			if (this.round===2) { // Nothing to do on Round 1?
-				this.communityCards = [];
-				this.communityCards.push(this.deck.pop());
-				this.communityCards.push(this.deck.pop());
-				this.communityCards.push(this.deck.pop());
-				console.log('COMMUNITY CARDS = ', this.communityCards);
-			} else if (this.round === 3) {
-				this.communityCards.push(this.deck.pop());
-				console.log('TURN CARD = ', this.communityCards[3]);						
-			} else if (this.round === 4) {
-				this.communityCards.push(this.deck.pop());
-				console.log('RIVER CARD = ', this.communityCards[4]);						
+			this.setState({round: state.round+1 });
+			console.log('ROUND = ', settings.rounds[state.round]);
+			if (state.round===2) { // Nothing to do on Round 1?
+				this.setState({communityCards: state.communityCards.push(state.deck.pop()) });
+				this.setState({communityCards: state.communityCards.push(state.deck.pop()) });
+				this.setState({communityCards: state.communityCards.push(state.deck.pop()) });
+				console.log('COMMUNITY CARDS = ', state.communityCards);
+			} else if (state.round === 3) {
+				this.setState({communityCards: state.communityCards.push(state.deck.pop()) });
+				console.log('TURN CARD = ', state.communityCards[3]);						
+			} else if (state.round === 4) {
+				this.setState({communityCards: state.communityCards.push(state.deck.pop()) });
+				console.log('RIVER CARD = ', state.communityCards[4]);						
 			} 
-			this.turn = this.smallBlind;
-			this.calledBet = 0;
-			this.checkedBet = 0;
+			this.setState({turn: state.smallBlindSeat});
+			this.setState({calledBet: 0 });
+			this.setState({checkedBet: 0 });
 			this.checkRoundConditions();
 		};
 		this.declareWinner = ()=> {
 			this.winner = this.turn;
 			console.log('PLAYER '+this.winner+' wins!!');
-			this.waitBetweenHands = this.waitBetweenHandsDuration();
-		}
+			state.waitBetweenHands = this.waitBetweenHandsDuration();
+		};
+		this.waitBetweenHandsDuration = ()=> {
+			return setTimeout(()=>{
+				clearTimeout(this.waitBetweenHands);
+				this.pollForStartTimer = this.pollForStart();
+			}, state.waitBetweenHandsTimer);
+		};
 		this.startTurn = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			// player.handleSet( {post: this.bigBlindAmount} );
-			this.waitForTurn = this.turnDuration();
+			state.waitForTurn = this.turnDuration();
 		};
 		this.turnDuration = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.changeTurnSeat();
 				this.startTurn1();
-			}, this.timer);
+			}, state.turnTimer);
 		};
 		this.startTurn1 = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			player.handleSet( {post: 10} );
-			this.waitForTurn = this.turnDuration1();
+			state.waitForTurn = this.turnDuration1();
 		};
 		this.turnDuration1 = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.changeTurnSeat();
 				this.startTurn2();
-			}, this.timer);
+			}, state.turnTimer);
 		};
 		this.startTurn2 = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			player.handleSet( {post: 100} );
-			this.waitForTurn = this.turnDuration2();
+			state.waitForTurn = this.turnDuration2();
 		};
 		this.turnDuration2 = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.changeTurnSeat();
 				this.startTurn3();
-			}, this.timer);
+			}, state.turnTimer);
 		};
 		this.startTurn3 = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			player.handleSet( {post: 20} );
-			this.waitForTurn = this.turnDuration3();
+			state.waitForTurn = this.turnDuration3();
 		};
 		this.turnDuration3 = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.changeTurnSeat();
 				this.startTurn4();
-			}, this.timer);
+			}, state.turnTimer);
 		};
 		this.startTurn4 = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			player.handleSet( {post: 15} );
-			this.waitForTurn = this.turnDuration4();
+			state.waitForTurn = this.turnDuration4();
 		};
 		this.turnDuration4 = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.changeTurnSeat();
 				this.startTurn5();
-			}, this.timer);
+			}, state.turnTimer);
 		};
 		this.startTurn5 = ()=> {
-			let player = this.seat[this.turn];
-			console.log('Player', this.turn, 'turn');
-			this.swapInFilter(player, this.filters.in.onTurn)   //player && ?
+			let player = this.seat[state.turn];
+			console.log('Player', state.turn, 'turn');
+			this.addToInFilter(player, state.filters.onTurn)   //player && ?
 			player.handleSet( {post: 250} );
-			this.waitForTurn = this.turnDuration5();
+			state.waitForTurn = this.turnDuration5();
 		};
 		this.turnDuration5 = ()=> {
 			return setTimeout(()=>{
-				clearTimeout(this.waitForTurn);
-				let finishingTurnPlayer = this.seat[this.turn];
+				clearTimeout(state.waitForTurn);
+				let finishingTurnPlayer = this.seat[state.turn];
 				// finishingTurnPlayer.handleSet({callBet: true});
-				this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+				this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 				this.checkRoundConditions();
-			}, this.timer);
+			}, state.turnTimer);
 		};		
 
 
 
 		this.changeTurnNow = ()=> {
-			clearTimeout(this.waitForTurn);
-			let finishingTurnPlayer = this.seat[this.turn];
-			this.swapInFilter(finishingTurnPlayer, this.filters.in.default);
+			clearTimeout(state.waitForTurn);
+			let finishingTurnPlayer = this.seat[state.turn];
+			this.removeFromInFilter(finishingTurnPlayer, state.filters.onTurn);
 			this.checkRoundConditions();
 		};
 		this.fold = (player)=> {
@@ -478,10 +503,15 @@ var Table = Backbone.Collection.extend({
 		}
 	},
 });
-var table1 = new Table();
-table1 = Object.assign(table1, settings.table1);
-table1.pollForStartTimer = table1.pollForStart();
 
+const table1 = Object.assign(new Table(), settings.table1);
+// const State = Backbone.Model.extend({ defaults: settings.state });
+// const tableState = table1.add(new State());
+// const state = tableState.attributes;
+// table1.state = state;
+
+
+table1.pollForStartTimer = table1.pollForStart();
 module.exports = {
 	table1: table1,
 }

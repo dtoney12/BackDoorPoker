@@ -10,14 +10,15 @@ document.addEventListener("DOMContentLoaded", (e)=> {
       let logNumber = 0;
       return listener = (update)=> {
           update = JSON.parse(update.data);
+          console.log(`update(${logNumber++}): `,update);
           (pokerSetState) && pokerSetState(update);
           if ('joinTableInvite' in update) {
             let loadPokerScript = document.createElement('script');
             loadPokerScript.setAttribute('type', 'text/javascript');
             loadPokerScript.setAttribute('src', 'bundle.js');
             document.getElementById('room').appendChild(loadPokerScript);
+            document.getElementById('forms-container').remove(document.getElementById('forms'));
           }
-          // console.log(`update(${logNumber++}): `,update);
       };
   }; 
   window.wsCreateListener = wsCreateListener;
@@ -25,9 +26,9 @@ document.addEventListener("DOMContentLoaded", (e)=> {
 
   // fast login
   setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 200);
-  setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 400);
-  setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 600);
-  setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 800);
+  setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 700);
+  setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 1200);
+  setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 1600);
 
 	document.getElementById('nameButton').submit((event)=>wsSend(event, 'editName'));
 	document.getElementById('passwordButton').submit((event)=>wsSend(event, 'password'));

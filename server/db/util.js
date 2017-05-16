@@ -22,6 +22,38 @@ module.exports = {
     return x;
   },
 
+  extendToArray: (targetArray, addParamsObject)=> {
+    let targetArrayToObject = {};
+    targetArray.forEach((element)=> {
+      targetArrayToObject[element] = true;
+    });
+    for (let x in addParamsObject) {
+      if (!(x in targetArrayToObject)) {
+        targetArray.push(x);
+      }
+    }
+    return targetArray;
+  },
+
+  unExtend: (target, stripParams)=> {  //untested
+    for (let x in target) {
+      if (x in stripParams) {
+        delete target[x];
+      }
+    }
+    return target;
+  },
+
+  unExtendFromArray: (targetArray, stripParamsObject)=> {
+    return targetArray.reduce((accum, element)=>{
+      if (element in stripParamsObject) {
+        return accum;
+      } else {
+        return accum.concat([element]);
+      }
+    }, []);
+  },
+
   orderedDeck: ()=> {
     let suits = [ '♥', '♣', '♠', '♦' ];
     let values = [ 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K' ];

@@ -22,7 +22,7 @@ module.exports = {
       console.log('| ||                          || |');
       console.log('| \\/                          \\/ |');
       console.log(' ---------------------------------');
-      room.each((user, i)=> console.log(`|   USERNAME: ${user.attributes.username}  ID:  ${user.attributes.sessionId}`));
+      room.each((user, i)=> user.attributes.type && console.log(`|   USERNAME: ${user.attributes.username}  ID:  ${user.attributes.sessionId}`));
       console.log('|---------------------------------\n');
       index++;
     }

@@ -5,7 +5,8 @@ body {
  	font-weight: 100;
   margin: 0px;
 }
-table {
+/*table {
+  z-index: -1;
   width: 250px;
   margin-right: 0px;
   margin-left: auto;
@@ -15,7 +16,7 @@ table {
  	font-size: 13;
  	font-weight: 100;
  	overflow:hidden;
-}
+}*/
 .forms {
   width: 30%;
   float: left;
@@ -32,44 +33,279 @@ table {
   width:  100%;
   height: 100%;
   background-size: cover;
-/*  width: inherit;
-  height: inherit;
-  background-size: inherit;*/
   background-repeat: no-repeat;
   background-attachment:fixed;
   background-position:center; 
 }
 .card {
-  width: 4%;
-  top: 41%;
-  left: 48%;
+  z-index: 5;
   position: absolute;
 }
-.card._reverse {
-  width: 4%;
-  top: 43%;
-  left: 50%;
+.holeCard1 {
+  width: 20%;
+}
+.holeCard2 {
+  width: 20%;
+}
+.community-card-container {
+  width: 21%;
+  height: 10%;
+  top: 44%;
+  left: 39%;
+  color: blue;
+  display: inline-block;
   position: absolute;
 }
-.card._10Clubs {
-  width: 4%;
-  top: 45%;
-  left: 52%;
-  position: absolute;
+.community-card {
+  width: 17%;
 }
-.community-cards {
-  width: 4%;
-  top: 47%;
-  left: 54%;
-  position: absolute;
-}
-.community-cards-show {
-  width: 4%;
-  top: 49%;
-  left: 56%;
-  position: absolute;
+.community-card-show {
+  width: 3.3%;
 /* content: url();*/
 }
+.community-card1 {
+  left: 0%;
+}
+.community-card2 {
+  left: 20%;
+}
+.community-card3 {
+  left: 40%;
+}
+.community-card4 {
+  left: 60%;
+}
+.community-card5 {
+  left: 80%;
+}
+/*._reverse {  
+  top: 45%;
+  left: 50%;
+}
+._10Clubs {
+  top: 45%;
+  left: 52%;
+}
+*/
+.table {
+  z-index: 4;
+  width: 100%;
+  position: absolute;
+}
+table {
+  color: #00afff;
+}
+
+
+/* SEATS */
+
+.seat {
+  display: inline-block;
+  position: absolute;
+}
+.seat-bottom {
+  z-index: 3;
+  width: 17%;
+  height: 28%;
+  top: 54%;
+  left: 39%;
+  /*background-color: blue;*/
+}
+.bottom-table.table {
+  top: 60%;
+  left: 13%;
+}
+.bottom-card.holeCard1 {
+    top: 7%;
+    left: 37%;
+}
+.bottom-card.holeCard2 {
+    top: 7%;
+    left: 60%;
+}
+.seat-bottom-left {
+  z-index: 3;
+  width: 17%;
+  height: 28%;
+  top: 52%;
+  left: 17%;
+  /*background-color: red;*/
+}
+.bottom-left-table.table {
+  top: 55%;
+  left: 0%;
+}
+.bottom-left-card.holeCard1 {
+    top: 8%;
+    left: 75%;
+}
+.bottom-left-card.holeCard2 {
+    top: 8%;
+    left: 98%;
+}
+.seat-lower-left {
+  z-index: 2;
+  width: 17%;
+  height: 28%;
+  top: 40%;
+  left: 8%;
+  /*background-color: green;*/
+}
+.lower-left-table.table {
+  top: 25%;
+  left: -13%;
+}
+.lower-left-card.holeCard1 {
+    top: 25%;
+    left: 71%;
+}
+.lower-left-card.holeCard2 {
+    top: 25%;
+    left: 94%;
+}
+.seat-upper-left {
+  z-index: 1;
+  width: 17%;
+  height: 28%;
+  top: 23%;
+  left: 13%;
+  /*background-color: brown;*/
+}
+.upper-left-table.table {
+  top: 10%;
+  left: -15%;
+}
+.upper-left-card.holeCard1 {
+    top: 45%;
+    left: 65%;
+}
+.upper-left-card.holeCard2 {
+    top: 45%;
+    left: 88%;
+}
+.seat-top-left {
+  z-index: 0;
+  width: 17%;
+  height: 28%;
+  top: 18%;
+  left: 24%;
+  /*background-color: cyan;*/
+}
+.top-left-table.table {
+  top: -10%;
+  left: 15%;
+}
+.top-left-card.holeCard1 {
+    top: 52%;
+    left: 65%;
+}
+.top-left-card.holeCard2 {
+    top: 52%;
+    left: 88%;
+}
+.seat-top {
+  z-index: 0;
+  width: 17%;
+  height: 28%;
+  top: 18%;
+  left: 42%;
+  /*background-color: yellow;*/
+}
+.top-table.table {
+  top: -15%;
+  left: 15%;
+}
+.top-card.holeCard1 {
+    top: 57%;
+    left: 32%;
+}
+.top-card.holeCard2 {
+    top: 57%;
+    left: 55%;
+}
+.seat-top-right {
+  z-index: 0;
+  width: 17%;
+  height: 28%;
+  top: 16%;
+  left: 59%;
+  /*background-color: purple;*/
+}
+.top-right-table.table {
+  top: -10%;
+  left: 13%;
+}
+.top-right-card.holeCard1 {
+    top: 55%;
+    left: 7%;
+}
+.top-right-card.holeCard2 {
+    top: 55%;
+    left: 30%;
+}
+.seat-upper-right {
+  z-index: 1;
+  width: 17%;
+  height: 28%;
+  top: 24%;
+  left: 69%;
+  /*background-color: white;*/
+}
+.upper-right-table.table {
+  top: 5%;
+  left: 50%;
+}
+.upper-right-card.holeCard1 {
+    top: 50%;
+    left: 2%;
+}
+.upper-right-card.holeCard2 {
+    top: 50%;
+    left: 25%;
+}
+.seat-lower-right {
+  z-index: 2;
+  width: 17%;
+  height: 28%;
+  top: 40%;
+  left: 71%;
+  /*background-color: orange;*/
+}
+.lower-right-table.table {
+  top: 30%;
+  left: 70%;
+}
+.lower-right-card.holeCard1 {
+    top: 32%;
+    left: 0%;
+}
+.lower-right-card.holeCard2 {
+    top: 32%;
+    left: 23%;
+}
+.seat-bottom-right {
+  z-index: 3;
+  width: 17%;
+  height: 28%;
+  top: 54%;
+  left: 61%;
+  /*background-color: blue;*/
+}
+.bottom-right-table.table {
+  top: 50%;
+  left: 35%;
+}
+.bottom-right-card.holeCard1 {
+    top: 0%;
+    left: 0%;
+}
+.bottom-right-card.holeCard2 {
+    top: 0%;
+    left: 23%;
+}
+
+
+
 
 /*.clearfix:after { 
   content: "."; 

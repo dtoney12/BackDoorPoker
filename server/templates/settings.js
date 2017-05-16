@@ -1,5 +1,6 @@
 module.exports = {
   default_user: {
+    type: 'user',
     username: '',
     editName: '',
     password: '',
@@ -97,28 +98,11 @@ module.exports = {
     type: 'lobby',
   },
   table1: {
-    name: 'TABLE1',
     type: 'table',
-    dealer: null,
-    smallBlindSeat: null,
-    bigBlindSeat: null,
-    smallBlindAmount: 10,
-    bigBlindAmount: 20,
-    deck: [],
-    communityCards: [],
+    name: 'TABLE1',
     pollTimer: 2000,
-    transitionsTimer: 1000,
-    waitBetweenHandsTimer: 2000,
-    timer: 2000,
-    turn: 1,
-    round: 0,
     winner: null,
     pollForStartTimer: null,
-    waitForTurn: null,
-    waitForTransitions: null,
-    waitBetweenHands: null,
-    playersInHand: 0,
-    calledBet: 0,
     checkedBet: 0,
     // currentBet: 0,  // need to compare bet against currentBet to start sidePots
     addToPot: 0,
@@ -138,21 +122,6 @@ module.exports = {
           message: true,
           leaveTable: true,
           disconnect: true,
-        },
-        smallBlind: {
-          message: true,
-          post: true,
-          leaveTable: true,
-          disconnect: true,
-        },
-        onTurn: {
-          message: true,
-          fold: true,
-          leaveTable: true,
-          disconnect: true,
-        },
-        postTurn: {
-
         },
       },
     },
@@ -176,13 +145,62 @@ module.exports = {
       10: null,
     },
   },
-  rounds: {
-    1: 'Pre-Flop',
-    2: 'Flop',
-    3: 'Turn',
-    4: 'River',
-    5: 'Select Winner',
-  },
-
+  state: {
+    dealer: null,
+    deck: [],
+    communityCards: [],
+    smallBlindSeat: null,
+    bigBlindSeat: null,
+    smallBlindAmount: 10,
+    bigBlindAmount: 20,
+    playersInHand: 0,
+    calledBet: 0,
+    round: 0,
+    roundNames: {
+      1: 'Pre-Flop',
+      2: 'Flop',
+      3: 'Turn',
+      4: 'River',
+      5: 'Select Winner',
+    },
+    turn: 1,
+    expectIn: {
+      call: true,
+      bet: true,
+      fold: true,
+    },
+    filters: {
+      onTurn: {
+        fold: true,
+      },
+      smallBlind: {
+        post: true,
+      },
+      otherPlayerOut: {
+        username: true,
+        tableCash: true,
+        playerAction: true,
+        playerState: true,
+      }
+    },
+    waitForTurn: null,
+    turnTimer: 2000,
+    waitBetweenHands: null,
+    waitBetweenHandsTimer: 2000,
+    waitForTransitions: null,
+    transitionsTimer: 1000,
+    seat: { // empty = null for takeSeats()  
+      1: null, // seats are player.attributes reference
+      2: null,
+      3: null,
+      4: null,
+      5: null,
+      6: null,
+      7: null,
+      8: null,
+      9: null,
+      10: null,
+    },
+  }
 }
 

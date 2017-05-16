@@ -120,7 +120,7 @@ module.exports = {
 												username: username,
 												loggedIn: true, 
 												room: room.name, });
-										return SetUpdate(qry.updateUser, user, userData, cb)
+										return SetUpdate(qry.updateUser, user, userData, cb, cb2)
 										.then(()=>conn.queryAsync(qry.getAllFromUsername, username))
 										.then((results)=>user.update(results[0]))
 										.catch((error)=>user.update(status.getAccount(username)))});

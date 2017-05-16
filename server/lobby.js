@@ -14,6 +14,7 @@ const User = Backbone.Model.extend({
 	initialize: function () { 
 		this.inFilter = Object.keys(this.attributes.filters.in);
 		this.outFilter = Object.keys(this.attributes.filters.out);
+		this.attributes.setState = this.set;
 		this.handleInput =   (received)=>{
 			if (this.attributes.loggedIn) {
 				this.inFilter.forEach((key)=>{  
