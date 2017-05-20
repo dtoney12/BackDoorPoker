@@ -97,3 +97,17 @@ for (var i=0; i<5; i++) {
   module.exports.tableBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
 }
 
+module.exports.logic = (bot, state)=> {
+  let callAmount = bot.attributes.leftToCall;
+  if (!!callAmount) {
+    return {call: callAmount};
+  } else {
+    return {check: true};
+  }
+}
+
+
+
+
+
+

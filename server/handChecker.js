@@ -1,44 +1,37 @@
 
-//   var orderedDeck = ()=> {
-//     let suits = [ '♥', '♣', '♠', '♦' ];
-//     let values = [ 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K' ];
-//     let deck = [];
-
-//     suits.forEach(function(suit) {
-//       values.forEach(function(value) {
-//         deck.push(value + suit);
-//       });
-//     });
-
-//     return deck;
-// }
-// var shuffledDeck = (deck)=> {
-//     for (var i = deck.length - 1; i > 0; i--) {
-//         var j = Math.floor(Math.random() * (i + 1));
-//         var temp = deck[i];
-//         deck[i] = deck[j];
-//         deck[j] = temp;
-//     }
-//     return deck;
-// }
-
 module.exports.checkHand = (hole, board)=>{
 
   let copy = (array)=> array.slice(0);
 
-  let allSeven = hole.concat(board).map((card, i)=>{
+  let allSeven = hole.concat(board).map((card)=> {
     let suit = card.slice(-1)
     let rank = card.slice(0,-1);
-    if (parseInt(rank)) rank = parseInt(rank);
-    if (rank==='J') rank=11;
-    if (rank==='Q') rank=12;
-    if (rank==='K') rank=13;
-    if (rank==='A') rank=14;
-    if (suit==='♥') suit='Hearts';
-    if (suit==='♣') suit='Clubs';
-    if (suit==='♠') suit='Spades';
-    if (suit==='♦') suit='Diamonds';
-    card = [rank, suit]
+    
+    if (parseInt(rank)) {
+      rank = parseInt(rank);
+    }
+
+    if (rank==='J') {
+      rank=11;
+    } else if (rank==='Q') {
+      rank=12;
+    } else if (rank==='K') {
+      rank=13;
+    } else if (rank==='A') {
+      rank=14;
+    }
+
+    if (suit==='♥') {
+      suit='Hearts';
+    } else if (suit==='♣') {
+      suit='Clubs';
+    } else if (suit==='♠') {
+      suit='Spades';
+    } else if (suit==='♦') {
+      suit='Diamonds';
+    }
+
+    card = [rank, suit];
     return card;
   })
   // .sort((a,b)=>b[0]-a[0])
@@ -268,8 +261,8 @@ module.exports.checkHand = (hole, board)=>{
   };
   inspectCard();
 
-  console.log('All Seven:')
-  console.log(hole.concat(board));
+  // console.log('All Seven:')
+  // console.log(hole.concat(board));
   // console.log('HighCards:')
   // console.log(matches.highCards);
   for (var x in matches) {
@@ -288,7 +281,7 @@ module.exports.checkHand = (hole, board)=>{
       for (let i = 0; i < (15-x.length); i++) {
         spaces = spaces.concat(' ');
       }
-      console.log(x+spaces+'\n',matches[x]);
+      // console.log(x+spaces+'\n',matches[x]);
     }
   }
   
@@ -303,7 +296,7 @@ module.exports.checkHand = (hole, board)=>{
         highIndexes = indexes;
       }
     }
-    console.log(highCard)
+    // console.log(highCard)
     // fill the remaining slots up to 5 with non-used ranked high cards
     let highIndexesArray = highIndexes.split(',').map((index)=>parseInt(index))
     let highIndexesArrayOriginalLength = highIndexesArray.length
@@ -334,17 +327,23 @@ module.exports.checkHand = (hole, board)=>{
     return results;
   }
 
-  if (matches.straightFlush.count) return getHighestOfType(matches.straightFlush.cards, 1)
-  else if (matches.fourOfAKind.count) return getHighestOfType(matches.fourOfAKind.cards, 2)
-  else if (matches.fullHouse.count) return getHighestOfType(matches.fullHouse.cards, 3)
-  else if (matches.flush.count) return getHighestOfType(matches.flush.cards, 4)
+  if (matches.straightFlush.count) return getHighestOfType(matches.straightFlush.cards, 9)
+  else if (matches.fourOfAKind.count) return getHighestOfType(matches.fourOfAKind.cards, 8)
+  else if (matches.fullHouse.count) return getHighestOfType(matches.fullHouse.cards, 7)
+  else if (matches.flush.count) return getHighestOfType(matches.flush.cards, 6)
   else if (matches.straight.count) return getHighestOfType(matches.straight.cards, 5)
-  else if (matches.set.count) return getHighestOfType(matches.set.cards, 6)
-  else if (matches.twoPair.count) return getHighestOfType(matches.twoPair.cards, 7)
-  else if (matches.pair.count) return getHighestOfType(matches.pair.cards, 8)
-  else return getHighestOfType(matches.returnHighCards, 9);
+  else if (matches.set.count) return getHighestOfType(matches.set.cards, 4)
+  else if (matches.twoPair.count) return getHighestOfType(matches.twoPair.cards, 3)
+  else if (matches.pair.count) return getHighestOfType(matches.pair.cards, 2)
+  else return getHighestOfType(matches.returnHighCards, 1);
 }
 
+// module.exports.compareAllHands = (handsArray)=> {
+//   // each hand formatted as follows:  { indexes: [ 1, 0, 2, 5, 6 ], type: 5 } 
+//   handsArray.forEach((hand)=>{
+    
+//   })
+// }
 // var deck = shuffledDeck(orderedDeck());
 // var hole = [deck.pop(),deck.pop()];
 // var board = [deck.pop(),deck.pop(),deck.pop(),deck.pop(),deck.pop()];
@@ -368,8 +367,11 @@ module.exports.checkHand = (hole, board)=>{
 
 // var hole = ['4♥', '5♣'];
 // var board = ['3♥', '3♣', '4♦', '2♥', 'A♥'];
+// var hole = ['4♥', 'A♣'];
+// var board = ['8♥', '8♣', '4♦', '6♥', 'A♥'];
 
 // var highfive = module.exports.checkHand(hole, board);
 // console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
+// BEST HAND (indexes, type) = { indexes: [ 1, 0, 2, 5, 6 ], type: 5 } 
 
 

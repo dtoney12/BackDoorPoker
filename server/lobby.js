@@ -12,12 +12,12 @@ const util = require('./db/util');
 const User = Backbone.Model.extend({
 	defaults: settings.default_user,
 	initialize: function () { 
-		this.inFilter = Object.keys(this.attributes.filters.in);
-		this.outFilter = Object.keys(this.attributes.filters.out);
+		this.attributes.inFilter = Object.keys(this.attributes.filters.in);
+		this.attributes.outFilter = Object.keys(this.attributes.filters.out);
 		this.attributes.setState = this.set;
 		this.handleInput =   (received)=>{
 			if (this.attributes.loggedIn) {
-				this.inFilter.forEach((key)=>{  
+				this.attributes.inFilter.forEach((key)=>{  
 					if (key in received) {
 						if (Number.isInteger(this.attributes[key])) {
 							received[key] = parseInt(received[key]);
@@ -31,7 +31,7 @@ const User = Backbone.Model.extend({
 				received.password && this.set({password: received.password});
 			}
 		};
-		this.handleSet = (received)=>{
+		this.handleSet = (received)=>{  //handleSet is unfiltered
 			for (let key in received) {
 				if (Number.isInteger(this.attributes[key])) {
 					received[key] = parseInt(received[key]);
@@ -47,7 +47,6 @@ const User = Backbone.Model.extend({
 			"change:getCash": 			(user, value)=> accounts.getCash(this),
 			"change:getTableCash":	(user, value)=> accounts.getTableCash(this, value),
 			"change:joinTable": 		(user, value)=> room.table1.joinQueueJoin(this),
-			"change:post":          (user, value)=> this.inputBet(value),
 			//  in ------>> 
 
 			// <<---- out
@@ -56,9 +55,11 @@ const User = Backbone.Model.extend({
 			"change:sessionId": 		(user, value)=> this.sendUpdate({sessionId: value}),
 			"change:accountCash": 	(user, value)=> this.sendUpdate({accountCash: value}),
 			"change:tableCash":   	(user, value)=> this.sendUpdate({tableCash: value}),
+			"change:leftToCall":    (user, value)=> this.sendUpdate({leftToCall: value}),
 			"change:chats": 				(user, value)=> this.sendUpdate({chats: value}),
 			"change:seat":          (user, value)=> this.sendUpdate({seat: value}),
-			"change:holeCards":     (user, value)=> this.sendUpdate({holeCards: value}),
+			"change:inFilter":      (user, value)=> this.sendUpdate({inFilter: value}),
+			// "change:holeCards":     (user, value)=> this.sendUpdate({holeCards: value}),
 			"change:update": 				(user, value)=> this.sendUpdate({update: value}),
 			"change:seat1":         (user, value)=> this.sendUpdate({seat1: value}),
 			"change:seat2":         (user, value)=> this.sendUpdate({seat2: value}),
@@ -71,7 +72,7 @@ const User = Backbone.Model.extend({
 			"change:seat9":         (user, value)=> this.sendUpdate({seat9: value}),
 			"change:seat10":        (user, value)=> this.sendUpdate({seat10: value}),
 		});
-		this.update = (updateParams)=>{ 
+		this.update = (updateParams)=>{ // updates user.attributes and logs to server console
 			var logParams = {};
 			let shouldConsoleLog = false;
 			for (let key in updateParams)  {
@@ -88,10 +89,6 @@ const User = Backbone.Model.extend({
 				this.ws.send(JSON.stringify(toSend));
 			}
 		};
-		this.inputBet = (value)=> {
-			this.update({tableCash: this.attributes.tableCash-value});
-			this.handleSet({addToPot: value});
-		};
 	},
 });
 
@@ -104,7 +101,7 @@ const UsersGroup = Backbone.Collection.extend({
 			"add": 		      (user, attributesArr)=> whoIsInRoom(this, user, 'ADD to'),       // just logging
 			"remove":       (user, attributesArr)=> whoIsInRoom(this, user, 'REMOVE from'),  // just logging
 		});
-		this.swapInFilter =  (player, filter)=> player.inFilter = Object.keys(filter);
+		this.swapInFilter =  (player, filter)=> player.handleSet({inFilter: Object.keys(filter)});
 	},
 });
 

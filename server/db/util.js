@@ -22,7 +22,7 @@ module.exports = {
     return x;
   },
 
-  extendToArray: (targetArray, addParamsObject)=> {
+  extendKeysToArray: (targetArray, addParamsObject)=> {
     let targetArrayToObject = {};
     targetArray.forEach((element)=> {
       targetArrayToObject[element] = true;
@@ -32,6 +32,7 @@ module.exports = {
         targetArray.push(x);
       }
     }
+    // console.log('in util, targetArray = ', targetArray)
     return targetArray;
   },
 
@@ -78,7 +79,38 @@ module.exports = {
     return deck;
   },
 
-  
+  integerCardValue: (card)=> {
+    let suit = card.slice(-1)
+    let rank = card.slice(0,-1);
+
+    if (parseInt(rank)) {
+      rank = parseInt(rank);
+    }
+
+    if (rank==='J') {
+      rank=11;
+    } else if (rank==='Q') {
+      rank=12;
+    } else if (rank==='K') {
+      rank=13;
+    } else if (rank==='A') {
+      rank=14;
+    }
+
+    if (suit==='♥') {
+      suit='Hearts';
+    } else if (suit==='♣') {
+      suit='Clubs';
+    } else if (suit==='♠') {
+      suit='Spades';
+    } else if (suit==='♦') {
+      suit='Diamonds';
+    }
+
+    card = [rank,suit];
+    return card;
+  },
+
   promiseAllTimeout: (promises, timeout, resolvePartial=true)=> {
     return new Promise(function(resolve, reject) {
         let results = [],
