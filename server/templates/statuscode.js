@@ -22,4 +22,5 @@ module.exports = {
   waitForLeaveTable:     (username)=>{ return { code: 20,  status: "Please wait for "+username+" will leave table",         }},
   waitForDisconnect:     (username)=>{ return { code: 21,  status: "Please wait for "+username+" will disconnect",          }},
   disconnected:          (username)=>{ return { code: 22,  status: "Player "+username+" disconnected",                      }},
+  changeTurnsCycling:            ()=>{ return { code: 23,  status: "Change Turns has cycled back to original player turn",  }},
 }

@@ -37,6 +37,17 @@ body {
   background-attachment:fixed;
   background-position:center; 
 }
+.announceUpdate {
+  width: 50%;
+  height: 2%;
+  top: 1.5%;
+  left: 25%;
+  font-size: 13;
+  background-color: white;
+  color: black;
+  display: inline-block;
+  position: absolute;
+}
 .card {
   z-index: 5;
   position: absolute;
@@ -257,20 +268,20 @@ table {
   z-index: 0;
   width: 17%;
   height: 28%;
-  top: 6%;
-  left: 59%;
+  top: 8%;
+  left: 61%;
   /*background-color: purple;*/
 }
 .top-right-table.table {
-  top: -8%;
-  left: 13%;
+  top: -5%;
+  left: 16%;
 }
 .top-right-card.holeCard1 {
-    top: 79%;
+    top: 75%;
     left: 7%;
 }
 .top-right-card.holeCard2 {
-    top: 79%;
+    top: 75%;
     left: 30%;
 }
 .seat-upper-right {
@@ -286,11 +297,11 @@ table {
   left: 50%;
 }
 .upper-right-card.holeCard1 {
-    top: 45%;
+    top: 47%;
     left: -3%;
 }
 .upper-right-card.holeCard2 {
-    top: 45%;
+    top: 47%;
     left: 20%;
 }
 .seat-lower-right {
@@ -336,6 +347,13 @@ table {
 
 
 
+.highlight {
+  border: 2px solid #dadada;
+  border-radius: 7px;
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+}
 
 /*.clearfix:after { 
   content: "."; 
