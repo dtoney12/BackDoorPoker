@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", (e)=> { 
 	// const ws = new WebSocket(location.origin.replace(/^http/, 'ws'));
-  const ws = new WebSocket('ws://backdoorpoker-dev.us-west-1.elasticbeanstalk.com:3000');
+  const ws = new WebSocket('ws://backdoorpoker-dev.us-west-1.elasticbeanstalk.com:443');
   window.ws = ws;
   const wsSend = function(event, type, booleanValue) {
   	event.preventDefault();
@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", (e)=> {
   ws.onmessage = wsCreateListener();
 
   // fast login
-  setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 200);
-  setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 700);
-  setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 1200);
-  setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 1600);
+  setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 1800);
+  setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 2000);
+  setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 2200);
+  setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 2400);
 
 	document.getElementById('nameButton').submit((event)=>wsSend(event, 'editName'));
 	document.getElementById('passwordButton').submit((event)=>wsSend(event, 'password'));
