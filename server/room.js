@@ -39,6 +39,7 @@ var Table = Backbone.Collection.extend({
 			"change:raise":         (sender, value)=> this.inputBet(sender, value, 'raise'),
 			"change:allIn":  	      (sender, value)=> this.inputBet(sender, value, 'allIn'),
 			"change:show":  	      (sender, value)=> this.updateAllAboutPlayer(sender, sender.attributes.holeCards, 'holeCards'),
+			"change:inFilter":     (user, inFilter)=> this.updateInputOptions(user, inFilter),
 
 			// build these into update all players of player State
 			"change:leaveTable":           (sender)=> this.leaveQueueJoin(sender),
@@ -60,7 +61,32 @@ var Table = Backbone.Collection.extend({
 		this.swapInFilter =           (player, filter)=>  player.set({inFilter: Object.keys(filter)});
 		this.addTurnFilter =                  (player)=>	player.set({inFilter: util.extendKeysToArray(player.attributes.inFilter, state.filterForTurn)});
 		this.removeTurnFilter =               (player)=>  player.set({inFilter: util.unExtendFromArray(player.attributes.inFilter, state.filterForTurn)});
-
+		this.updateInputOptions =   (player, inFilter)=>  {
+			let inputOptions = util.copy(state.filters.inDefault);
+			inFilter.forEach((input)=>{
+				if (input=== 'check' || input==='fold') {
+					inputOptions[input] = true;
+				} else if (input === 'call') {
+					let amountToCall = player.attributes.leftToCall;
+					if (player.attributes.tableCash >= amountToCall) {
+						inputOptions[input] = amountToCall;
+					}
+				} else if (input === 'bet') {
+					let minBet = state.bigBlindAmount;
+					if (player.attributes.tableCash >= minBet) {
+						inputOptions[input] = minBet;
+					}
+				} else if (input === 'raise') {
+					let minRaise = player.attributes.leftToCall + state.bigBlindAmount;
+					if (player.attributes.tableCash >= minRaise) {
+						inputOptions[input] = minRaise;
+					}
+				} else if (input === 'allIn') {
+					inputOptions[input] = player.attributes.tableCash;
+				}
+			});
+			player.sendUpdate({inputOptions: inputOptions});
+		};
 		this.loadPlayerToState =     					(player)=>  {
 			let seatNumber = player.attributes.seat;
 			state.seat[seatNumber] = player.attributes;
@@ -70,14 +96,22 @@ var Table = Backbone.Collection.extend({
 		}
 		this.unloadPlayerFromState = 					(player)=>  state.seat[player.attributes.seat] = null;  //untested
 
-		this.updatePlayerOfSeatStates =       (player)=>  Object.values(state.seat).forEach((playerAttributesEntry, i)=> {
-				if (playerAttributesEntry) {
-					for (let key in playerAttributesEntry) {
-						let seatNumber = i+1;
-						(key in state.filters.otherPlayerOut) && player.sendUpdate({seat:{ [seatNumber]: {[key]: state.seat[seatNumber][key] }}});
+		this.updatePlayerOfSeatStates =       (player)=>{
+			if (!(player.attributes.clientReceived)) {  // block player from spamming clientReady
+				Object.values(state.seat).forEach((playerAttributesEntry, i)=> {
+					if (playerAttributesEntry) {
+						for (let key in playerAttributesEntry) {
+							let seatNumber = i+1;
+							(key in state.filters.otherPlayerOut) && player.sendUpdate({seat:{ [seatNumber]: {[key]: state.seat[seatNumber][key] }}});
+						}
 					}
-				}
-		});
+				});
+				player.sendUpdate({tableCash: player.attributes.tableCash });  // can update more client attributes here if necessary
+				player.update({clientReceived: true });
+			} else {
+				player.update(status.clientAlreadyReceived(player.attributes.username));
+			}
+		};
 		this.updateAll = 									   		 (update)=>  this.each((user)=> user.attributes.type && user.update(update));
 		this.sendUpdateAll =                (tableUpdate)=>  this.each((user)=> user.attributes.type && user.sendUpdate(tableUpdate));
 		this.updateAllAboutPlayer =(player, update, attr)=>  {
@@ -90,13 +124,16 @@ var Table = Backbone.Collection.extend({
 		};
 
 		this.inputBet = 			(player, value, betType)=>  {
-			if ((betType in state.calledBetIncrementTypes) || ((betType === 'post') && (player.attributes.seat === state.bigBlindSeat) )) {
-				this.setState({calledBet: state.calledBet+1 });
+			if ((betType==='call') || (betType==='bet') || ((betType === 'post') && (player.attributes.seat === state.bigBlindSeat) )) {
 				this.setState({betPlaced: true });
+				this.setState({calledBet: state.calledBet+1 });
+			} else if (betType==='raise') {
+				this.setState({betPlaced: true });
+				this.setState({calledBet: 0 });
 			}
 			player.update({tableCash: player.attributes.tableCash-value});
 			player.update({playerAction: {[betType]: value} });
-			let copyOfPots = util.copy(state.pots)
+			let copyOfPots = util.copy(state.pots);
 			this.callPot(player, value, copyOfPots[0], copyOfPots);
 			this.setState({pots: copyOfPots});
 			if (betType!=='post') {
@@ -127,7 +164,7 @@ var Table = Backbone.Collection.extend({
 			while (nextPossibleTurn!==state.turn) {
 				if (!('fold' in nextSeatAction)) {
 					this.setState({turn: nextPossibleTurn});
-					break;
+					return;
 				}
 				nextPossibleTurn = this.findNextSeat(nextPossibleTurn);
 				nextSeatAction = state.seat[nextPossibleTurn].playerAction;
@@ -159,7 +196,8 @@ var Table = Backbone.Collection.extend({
 						this.serviceAnnounceStartHand,
 						this.pickDealer,
 						this.announceRound,
-						this.placeAntes,
+						this.placeSmallBlind,
+						this.placeBigBlind,
 						this.dealCards,
 						this.checkRoundConditions
 					);
@@ -336,16 +374,22 @@ var Table = Backbone.Collection.extend({
 			this.setState({update: 'NEXT HAND WILL START MOMENTARILY' });
 		};
 		this.pickDealer = ()=> {
-			this.setState({ dealer: Math.min.apply(null, this.takenSeats()) });
+			if (!state.dealer) {
+				this.setState({dealer: Math.min.apply(null, this.takenSeats()) });
+			} else {
+				this.setState({dealer: this.findNextSeat(state.dealer) });
+			}
 			this.setState({ update: `Dealer: Player ${state.dealer}: ${this.seat[state.dealer].attributes.username}` });
 		};
 		this.announceRound = ()=> {
 			this.setState({update: 'ROUND = '+settings.state.roundNames[state.round] });
 		};
-		this.placeAntes = ()=> {
+		this.placeSmallBlind = ()=> {
 			this.setState({smallBlindSeat: this.findNextSeat(state.dealer) });
 			let smallBlindPlayer = this.seat[state.smallBlindSeat];
 			smallBlindPlayer.handleSet( {post: state.smallBlindAmount} );
+		};
+		this.placeBigBlind = ()=> {
 			this.setState({bigBlindSeat: this.findNextSeat(state.smallBlindSeat) });
 			let bigBlindPlayer = this.seat[state.bigBlindSeat];
 			bigBlindPlayer.handleSet( {post: state.bigBlindAmount} );
@@ -367,19 +411,22 @@ var Table = Backbone.Collection.extend({
 			}
 		};
 		this.startTurn = ()=> {
-			state.turnCounter++;
 			let player = this.seat[state.turn];
 			// console.log("\n\n--------------------");
 			// console.log("| START TURN");
-			console.log('Player', state.turn, 'turn');
-
+			// console.log('Player', state.turn, 'turn');
+			// console.log('BEGIN TURN TURNCOUNTER =', state.turnCounter)
 			this.calculateLeftToCall(player);
 			this.addTurnFilter(player);
-			this.setState({update: `Player ${player.attributes.seat}: ${player.attributes.username} turn` });
-			// console.log('player.infilter =',player.attributes.inFilter)
-			state.waitForTurn = this.turnDuration(state.turnCounter);
+			// this.setState({update: `Player ${player.attributes.seat}: ${player.attributes.username} turn` });
+			// console.log('player.infilter =',player.attributes.inFilter);
+			if (player.attributes.sessionId==='ROBOT') {
+				state.waitForTurn = this.turnDuration(state.turnCounter, state.turnTimerRobot);
+			} else {
+				state.waitForTurn = this.turnDuration(state.turnCounter, state.turnTimer);
+			}
 		};
-		this.turnDuration = (turnCounter)=> {
+		this.turnDuration = (turnCounter, timer)=> {
 			return setTimeout(()=>{
 				let player = this.seat[state.turn];
 				if (state.betPlaced) {
@@ -397,14 +444,16 @@ var Table = Backbone.Collection.extend({
 					}
 				}
 				if (turnCounter===state.turnCounter) {
-					// console.log('NO INPUT RECEIVED, FOLDING', seat);
+					// console.log('NO INPUT RECEIVED GIVEN TURNCOUNTER =', turnCounter);
+					// console.log('STATE.TURNCOUNTER =', state.turnCounter);
 					player.handleSet({fold: true});
 					// console.log("| EXPIRATION:    END TURN");
 					// console.log("--------------------");
 				}
-			}, state.turnTimer);
+			}, timer);
 		};
 		this.changeTurnNow = ()=> {
+			state.turnCounter++;
 			let player = this.seat[state.turn];
 			// console.log('this.seat[state.turn] name= ', this.seat[state.turn].attributes.username)
 			this.removeTurnFilter(player);
@@ -544,7 +593,8 @@ var Table = Backbone.Collection.extend({
 			let cardIndex = 0;
 			let possibleWinners = util.copy(pot.playersInPot)
 			for (let playerSeat in possibleWinners) {
-				if (state.seat[playerSeat].fold===true) {
+				let playerAction = state.seat[playerSeat].playerAction;
+				if ('fold' in playerAction) {
 					delete possibleWinners[playerSeat];
 				}
 			}
@@ -616,8 +666,8 @@ var Table = Backbone.Collection.extend({
 			pot.playersInPot[player.attributes.seat] = { playerName: player.attributes.username, putIn: putIn || 0 };
 		};
 		this.callPot = 	 (player, remainingBetValue, pot, potsArray)=> {
-			console.log('remainingbetValue = ', remainingBetValue)
-			console.log('entering pot =', pot)
+			// console.log('remainingbetValue = ', remainingBetValue)
+			// console.log('entering pot =', pot)
 			let playerSeat = player.attributes.seat;
 			if ( !(playerSeat in pot.playersInPot) ) {
 				this.addPlayerInPot(player, pot);
@@ -698,8 +748,8 @@ var Table = Backbone.Collection.extend({
 					remainingBetValue = 0;
 				}
 			}
-			console.log('POTS = ')
-			potsArray.forEach((pot)=> console.log(pot));
+			// console.log('POTS = ')
+			// potsArray.forEach((pot)=> console.log(pot));
 		};
 		this.calculateLeftToCall = (player)=> {
 			let totalLeftToCall = 0;

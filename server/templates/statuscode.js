@@ -23,4 +23,5 @@ module.exports = {
   waitForDisconnect:     (username)=>{ return { code: 21,  status: "Please wait for "+username+" will disconnect",          }},
   disconnected:          (username)=>{ return { code: 22,  status: "Player "+username+" disconnected",                      }},
   changeTurnsCycling:            ()=>{ return { code: 23,  status: "Change Turns has cycled back to original player turn",  }},
+  clientAlreadyReceived: (username)=>{ return { code: 24,  status: "Player "+username+" re-requesting Client update",       }},
 }

@@ -23,17 +23,17 @@ module.exports = {
   },
 
   extendKeysToArray: (targetArray, addParamsObject)=> {
+    let returnArray = targetArray.slice();
     let targetArrayToObject = {};
-    targetArray.forEach((element)=> {
+    returnArray.forEach((element)=> {
       targetArrayToObject[element] = true;
     });
     for (let x in addParamsObject) {
       if (!(x in targetArrayToObject)) {
-        targetArray.push(x);
+        returnArray.push(x);
       }
     }
-    // console.log('in util, targetArray = ', targetArray)
-    return targetArray;
+    return returnArray;
   },
 
   unExtend: (target, stripParams)=> {  //untested
