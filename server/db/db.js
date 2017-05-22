@@ -11,10 +11,11 @@ const status = require('../templates/statuscode');
 const util = require('./util')
 
 const pool = mysql.createPool(
+	(process.env.RDS_HOSTNAME &&
 	{host     : process.env.RDS_HOSTNAME,
   user     : process.env.RDS_USERNAME,
   password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT} ||
+  port     : process.env.RDS_PORT}) ||
 
   process.env.CLEARDB_DATABASE_URL ||	
 
