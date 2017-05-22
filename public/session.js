@@ -24,12 +24,15 @@ document.addEventListener("DOMContentLoaded", (e)=> {
   }; 
   window.wsCreateListener = wsCreateListener;
   ws.onmessage = wsCreateListener();
+  ws.onopen = ()=>console.log("Opening a connection...");
+  ws.onerror = (error)=>console.log("Connection error = ", error);
+  ws.onclose = ()=>console.log("Connection closed...");
 
   // fast login
-  setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 1800);
-  setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 2000);
-  setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 2200);
-  setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 2400);
+  setTimeout(()=>ws.send(JSON.stringify({editName: 'dts', password: '123'})), 3800);
+  // setTimeout(()=>ws.send(JSON.stringify({getCash: true})), 2000);
+  // setTimeout(()=>ws.send(JSON.stringify({getTableCash: 300})), 2200);
+  // setTimeout(()=>ws.send(JSON.stringify({joinTable: true})), 2400);
 
 	document.getElementById('nameButton').submit((event)=>wsSend(event, 'editName'));
 	document.getElementById('passwordButton').submit((event)=>wsSend(event, 'password'));
