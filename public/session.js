@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", (e)=> { 
 	// const ws = new WebSocket(location.origin.replace(/^http/, 'ws'));
-  const ws = new WebSocket('http://backdoorpoker-dev.us-west-1.elasticbeanstalk.com:3000');
+  const ws = new WebSocket('ws://backdoorpoker-dev.us-west-1.elasticbeanstalk.com');
   window.ws = ws;
   const wsSend = function(event, type, booleanValue) {
   	event.preventDefault();
