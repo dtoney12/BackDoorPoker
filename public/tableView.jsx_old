@@ -1,0 +1,16 @@
+    componentWillMount() {
+        window.ws.onmessage = window.wsCreateListener((update)=>this.setTableState(update));
+    }
+    componentDidMount() {
+        console.log('client is ready')
+        this.wsSend({clientReady: true});
+    }
+    componentDidUpdate() {
+        if (this.state.leftTable===true) {
+            window.ws.onmessage = window.wsCreateListener();
+            ReactDOM.unmountComponentAtNode(document.getElementById('room'));
+        }
+    }
+    wsSend(update) {
+        window.ws.send(JSON.stringify(update));
+    }

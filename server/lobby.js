@@ -41,7 +41,7 @@ const User = Backbone.Model.extend({
 			}
 		};
 		this.on({
-			// "change:editName": 	()=> accounts.login(this, users),
+			"change:clientReady":     	   (user)=> room.table1.updatePlayerOfSeatStates(user),
 			"change:password": 			(user, value)=> accounts.login(this, users),
 			"change:logout": 				(user, value)=> accounts.logout(this, users),
 			"change:getCash": 			(user, value)=> accounts.getCash(this),

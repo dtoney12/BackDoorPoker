@@ -68,6 +68,7 @@ module.exports = {
         message: true,
         logout: true,
         disconnect: true,
+        clientReady: true,
       },
       out: {
         username: true,
@@ -150,6 +151,7 @@ module.exports = {
     betPlaced: false,
     checkedBet: 0,
     calledBet: 0,
+    allInBet: 0,
     calledBetIncrementTypes: {
       bet: true,
       call: true,

@@ -1,5 +1,5 @@
 
-module.exports.checkHand = (hole, board)=>{
+module.exports.checkHand = (hole, board, cardsOnTable)=>{
 
   let copy = (array)=> array.slice(0);
 
@@ -300,11 +300,11 @@ module.exports.checkHand = (hole, board)=>{
     // fill the remaining slots up to 5 with non-used ranked high cards
     let highIndexesArray = highIndexes.split(',').map((index)=>parseInt(index))
     let highIndexesArrayOriginalLength = highIndexesArray.length
-    let numberfillCards = 5-highIndexes.length;
+    // let numberfillCards = 5-highIndexes.length;
     let fillIndex = 0;
     for (let i = highIndexesArrayOriginalLength; i < 5; i++) {  
       let fillCardFound = false;
-      while (!fillCardFound) {
+      while ( !fillCardFound && (fillIndex < (cardsOnTable||7)) ) {
         fillCardFound = true;
         for (var j = 0; j < highIndexesArrayOriginalLength; j++) {
           if (matches.highCards[fillIndex][2]===highIndexesArray[j]) {
@@ -359,8 +359,8 @@ module.exports.checkHand = (hole, board)=>{
 // var hole = ['4♦', '2♦'];
 // var board = ['A♥', '7♥', '10♦', '2♣', 'J♣'];
 // var hole = ['4♥', '4♣'];
-// var board = ['2♥', 'A♣', 'A♦', 'A♥', 'A♠'];
-// var hole = ['10♥', 'Q♣'];
+// var board = [];
+// var hole = ['A♥', 'Q♣'];
 // var board = ['10♣', 'J♣', 'K♣', 'A♠', 'A♣'];
 // var hole = ['A♥', 'Q♦'];
 // var board = ['2♥', 'A♣', 'A♦', 'A♠', 'Q♠'];
@@ -370,7 +370,10 @@ module.exports.checkHand = (hole, board)=>{
 // var hole = ['4♥', 'A♣'];
 // var board = ['8♥', '8♣', '4♦', '6♥', 'A♥'];
 
-// var highfive = module.exports.checkHand(hole, board);
+// var hole = ['A♥', 'Q♣'];
+// var board = ['10♣', 'A♠', '5♦', '6♥', '7♣'];
+
+// var highfive = module.exports.checkHand(hole, board, 2);
 // console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
 // BEST HAND (indexes, type) = { indexes: [ 1, 0, 2, 5, 6 ], type: 5 } 
 
