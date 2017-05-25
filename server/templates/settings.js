@@ -12,7 +12,7 @@ module.exports = {
     clientReceived: false,
     accountCash: 0,
     getCash: false,
-    getTableCash: 0,
+    getTableCash: -1,  // this must be a number for Number.isInteger check on handleInput
     getCashWait: 0,
     rejoinWaitTimer: 0,
     message: '',

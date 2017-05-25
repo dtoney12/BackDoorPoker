@@ -10,7 +10,7 @@ module.exports = {
 		let username = user.attributes.editName && (user.attributes.editName.length > 0);
 		let password = user.attributes.password && (user.attributes.password.length > 0);
 		let sessionId = user.attributes.sessionId;
-		username && password && db.login(user, room, ()=> room.add(user));
+		username && password && db.login(user, room, ()=> room.add(user), ()=>user.update(status.logInSuccess(user.attributes.username)));
 	},
 	logout: (user, room)=>{
 		db.SetUpdate(qry.updateUser, user, { sessionId: null, loggedIn: false, room: null}, 
@@ -44,27 +44,32 @@ module.exports = {
 	getCash: (user)=> {
 		if (user.attributes.accountCash < 100) {
 			if (!user.attributes.getCashWait) {
-				db.SetUpdate(qry.updateUser, user, {accountCash: 1000, getCashWait: 1440});
+				db.SetUpdate(qry.updateUser, user, {accountCash: 1000, getCashWait: 1440}, ()=>user.update(status.getCashSuccess(user.attributes.username)));
 			} else {
 				user.update(status.waitCash());
 			}
 		}
 	},
 	getTableCash: (user, getAmount)=> {
-		db.CheckConditional('accountCash', user, (get, account)=>get<=account, getAmount)
-		.then((result)=>{ 
-			if (result===true) {
-				db.ReturnValue('accountCash, tableCash', user)
-				.then((balances)=> {
-					let tableCash = balances.tableCash;
-					let accountCash = balances.accountCash; 
-					let newAccountBalance = accountCash-getAmount;
-					let newTableBalance = tableCash+getAmount;
-					return db.SetUpdate(qry.updateUser, user, 
-						{accountCash: newAccountBalance, tableCash: newTableBalance})})
+		if (getAmount > 0) {
+			db.CheckConditional('accountCash', user, (get, account)=>get<=account, getAmount)
+			.then((result)=>{ 
+				if (result===true) {
+					db.ReturnValue('accountCash, tableCash', user)
+					.then((balances)=> {
+						let tableCash = balances.tableCash;
+						let accountCash = balances.accountCash; 
+						let newAccountBalance = accountCash-getAmount;
+						let newTableBalance = tableCash+getAmount;
+						return db.SetUpdate(qry.updateUser, user, 
+							{accountCash: newAccountBalance, tableCash: newTableBalance}
+							,()=>user.update(status.getTableCash(user.attributes.username, getAmount)))})
+			} else {
+				user.update(status.NotEnoughAccountCash(user.attributes.username));
+			}});
 		} else {
-			user.update(status.NotEnoughAccountCash(user.attributes.username));
-		}})
+			user.update(status.tableCashError(user.attributes.username, getAmount));
+		}
 	},
 	joinTable: (user, lobby, table)=>{ 
 		let playerName = user.attributes.username;

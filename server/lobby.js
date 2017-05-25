@@ -53,10 +53,12 @@ const User = Backbone.Model.extend({
 			"change:username": 			(user, value)=> this.sendUpdate({username: value}),
 			"change:loggedIn": 			(user, value)=> this.sendUpdate({loggedIn: value}),
 			"change:sessionId": 		(user, value)=> this.sendUpdate({sessionId: value}),
+			"change:status": 		  	(user, value)=> this.sendUpdate({status: value}),
 			"change:accountCash": 	(user, value)=> this.sendUpdate({accountCash: value}),
 			"change:tableCash":   	(user, value)=> this.sendUpdate({tableCash: value}),
 			"change:leftToCall":    (user, value)=> this.sendUpdate({leftToCall: value}),
 			"change:chats": 				(user, value)=> this.sendUpdate({chats: value}),
+			"change:room":          (user, value)=> this.sendUpdate({room: value}),
 			"change:seat":          (user, value)=> this.sendUpdate({seat: value}),
 			// "change:inFilter":      (user, value)=> this.sendUpdate({inFilter: value}),
 			// "change:holeCards":     (user, value)=> this.sendUpdate({holeCards: value}),
@@ -76,6 +78,9 @@ const User = Backbone.Model.extend({
 			var logParams = {};
 			let shouldConsoleLog = false;
 			for (let key in updateParams)  {
+				if (key==='status') {
+					this.attributes.status = null; // keep sending status updates, so must reset
+				}
 				this.set({[key]: updateParams[key]});
 				if (key in this.attributes.filters.out) {
 					shouldConsoleLog = true; 
@@ -101,7 +106,7 @@ const UsersGroup = Backbone.Collection.extend({
 			"add": 		      (user, attributesArr)=> whoIsInRoom(this, user, 'ADD to'),       // just logging
 			"remove":       (user, attributesArr)=> whoIsInRoom(this, user, 'REMOVE from'),  // just logging
 		});
-		this.swapInFilter =  (player, filter)=> player.handleSet({inFilter: Object.keys(filter)});
+		this.swapInFilter =  (player, filter)=> player.set({inFilter: Object.keys(filter)});
 	},
 });
 

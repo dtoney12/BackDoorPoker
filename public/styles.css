@@ -17,13 +17,55 @@ body {
  	font-weight: 100;
  	overflow:hidden;
 }*/
-.forms {
+/*.forms {
   width: 30%;
   float: left;
   clear float right;
   clear float align-content: left;
   overflow:hidden;
   margin: 8px;
+}*/
+
+.lobby-inputs-container {
+  z-index: 9;
+  border: 1px;
+  min-width: 170px;
+  min-height: 130px;
+  float: left;
+  /*background-color: blue;*/
+  border-size: 2px;
+  border-style: solid;
+  border-color: aqua;
+  position: relative;
+  overflow: auto;
+}
+.lobby-forms-box {
+  min-width: 145px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /*background-color: red;*/
+
+}
+.cash-displays {
+  width: 90%;
+  height: 100%;
+  font-size: 13;
+  color: black;
+  font-weight: 600;
+  border-style: solid;
+  border-color: aqua;
+  position: relative;
+  display: inline-block;
+  background-color: gray;
+}
+.status-display {
+  font-size: 13;
+  color: aqua;
+  position: absolute;
+  top: 3.5%;
+  left: 25%;
 }
 #room {
   position: relative;
@@ -433,6 +475,29 @@ table {
   outline: none;
   border-color: #9ecaed;
   box-shadow: 0 0 10px #9ecaed;
+}
+
+.hideMe {
+    -moz-animation: cssAnimation 0s ease-in 5s forwards;
+    -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+    -o-animation: cssAnimation 0s ease-in 5s forwards;
+    animation: cssAnimation 0s ease-in 5s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+@keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+}
+@-webkit-keyframes cssAnimation {
+    to {
+        width:0;
+        height:0;
+        visibility:hidden;
+    }
 }
 
 /*.clearfix:after { 
