@@ -101,7 +101,13 @@ module.exports = {
 			let accountCash = balances.accountCash; 
 			let newBalance = accountCash+tableCash;
 			return db.SetUpdate(qry.updateUser, user, 
-				{accountCash: newBalance, tableCash: 0, room:lobby.name})
+				{accountCash: newBalance, tableCash: 0, room:lobby.name},
+				()=>{	
+					if (user.attributes.sessionId==='ROBOT') {
+						user.attributes.tableCash = 1000;
+					}
+					module.exports.joinTable(user, lobby, table);  // log bots back in
+				});
 		});
 		lobby.swapInFilter(user, user.attributes.filters.in);
 		lobby.add(user);

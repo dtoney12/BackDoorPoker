@@ -90,7 +90,7 @@ const User = Backbone.Model.extend({
 					logParams[key] = updateParams[key];
 				}
 			}
-			// shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
+			shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
 		};
 		this.sendUpdate = (toSend)=> {
 			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {

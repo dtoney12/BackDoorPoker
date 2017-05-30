@@ -11,7 +11,7 @@ const TommyBoy = new lobby.User();
 const Marks = new lobby.User();
 const Benz = new lobby.User();
 const RandomGuy = new lobby.User();
-const botUsers = [Fredinator, LieutenantDan, SuperJunior, MadMarcus, Tinkerer, TommyBoy, Marks, Benz, RandomGuy]
+const botUsers = [Fredinator, LieutenantDan, SuperJunior, MadMarcus, Tinkerer, TommyBoy, Benz, Marks, RandomGuy]
 // const botUsers = [Fredinator, LieutenantDan, SuperJunior, MadMarcus, Tinkerer]
 
 
@@ -54,12 +54,12 @@ module.exports = {
     { 
       sessionId: 'ROBOT',
       password: '123',
-      editName: 'Marks OnYourShirt',
+      editName: 'Benz',
     },
     { 
       sessionId: 'ROBOT',
       password: '123',
-      editName: 'Benz',
+      editName: 'Marks OnYourShirt',
     },
     { 
       sessionId: 'ROBOT',
@@ -152,7 +152,7 @@ module.exports = {
     }],                
 }
 
-for (var i=0; i<5; i++) {
+for (var i=0; i<7; i++) {
   module.exports.lobbyBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getTableCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
