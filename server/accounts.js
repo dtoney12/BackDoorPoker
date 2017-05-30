@@ -10,7 +10,8 @@ module.exports = {
 		let username = user.attributes.editName && (user.attributes.editName.length > 0);
 		let password = user.attributes.password && (user.attributes.password.length > 0);
 		let sessionId = user.attributes.sessionId;
-		username && password && db.login(user, room, ()=> room.add(user), ()=>user.update(status.logInSuccess(user.attributes.username)));
+		// username && password && db.login(user, room, ()=> room.add(user), ()=>user.update(status.logInSuccess(user.attributes.username)));
+		username && password && db.login(user, room, ()=>user.update(status.logInSuccess(user.attributes.username)));
 	},
 	logout: (user, room)=>{
 		db.SetUpdate(qry.updateUser, user, { sessionId: null, loggedIn: false, room: null}, 

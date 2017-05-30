@@ -50,7 +50,7 @@ var Table = Backbone.Collection.extend({
 			// build these into update all players of player State
 			"change:leaveTable":           (sender)=> this.leaveQueueJoin(sender),
 			"change:disconnect":             (user)=> this.disconnectQueueJoin(user),
-			"add": 		        (user, attributesArr)=> { this.loadPlayerToState(user); whoIsInRoom(this, user, 'ADD to'); }, 
+			"add": 		        (user, attributesArr)=> { this.loadPlayerToState(user); whoIsInRoom(this, user, 'ADD to') }, 
 			"remove":         (user, attributesArr)=> { this.unloadPlayerFromState(user); whoIsInRoom(this, user, 'REMOVE from'); },  // just logging
 
 			// table state changes
@@ -110,13 +110,14 @@ var Table = Backbone.Collection.extend({
 		this.unloadPlayerFromState = 					(player)=>  state.seat[player.attributes.seat] = null;  //untested
 
 		this.updatePlayerOfSeatStates =       (player)=>{
-			console.log('XXXXXXXXXX UPDATEING XXXXX');
 			if (!(player.attributes.clientReceived)) {  // block player from spamming clientReady
 				Object.values(state.seat).forEach((playerAttributesEntry, i)=> {
-					if (playerAttributesEntry) {
+					if (!!playerAttributesEntry) {
 						for (let key in playerAttributesEntry) {
 							let seatNumber = i+1;
-							(key in state.filters.otherPlayerOut) && player.sendUpdate({seat:{ [seatNumber]: {[key]: state.seat[seatNumber][key] }}});
+							if (key in state.filters.otherPlayerOut) {
+								player.sendUpdate({seat:{ [seatNumber]: {[key]: state.seat[seatNumber][key] }}});
+							}
 						}
 					}
 				});

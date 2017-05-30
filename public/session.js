@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", (e)=> {
       let logNumber = 0;
       return listener = (update)=> {
           update = JSON.parse(update.data);
-          // console.log(`update(${logNumber++}): `,update);
+          console.log(`update(${logNumber++}): `,update);
           (pokerSetState) && pokerSetState(update);
       };
   }; 

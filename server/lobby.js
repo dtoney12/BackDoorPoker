@@ -15,6 +15,7 @@ const User = Backbone.Model.extend({
 		this.attributes.inFilter = Object.keys(this.attributes.filters.in);
 		this.attributes.outFilter = Object.keys(this.attributes.filters.out);
 		this.attributes.setState = this.set;
+		users.add(this);
 		this.handleInput =   (received)=>{
 			if (this.attributes.loggedIn) {
 				this.attributes.inFilter.forEach((key)=>{  
@@ -26,6 +27,8 @@ const User = Backbone.Model.extend({
 						(key!=='editName' && key!=='password') ? this.attributes[key] = settings.default_user[key] : null; // using && causes "Invalid left-hand side in assignment"
 					}
 				});
+			} else if (received.clientReady===true) {
+				this.set({clientReady: true });
 			} else if (received.editName || received.password) {
 				received.editName && this.set({editName: received.editName});
 				received.password && this.set({password: received.password});
@@ -87,7 +90,7 @@ const User = Backbone.Model.extend({
 					logParams[key] = updateParams[key];
 				}
 			}
-			shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
+			// shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
 		};
 		this.sendUpdate = (toSend)=> {
 			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
