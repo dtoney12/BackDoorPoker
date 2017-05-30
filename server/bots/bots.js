@@ -152,7 +152,7 @@ module.exports = {
     }],                
 }
 
-for (var i=0; i<8; i++) {
+for (var i=0; i<5; i++) {
   module.exports.lobbyBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
   module.exports.getTableCashBots.push(Promise.promisify(botUsers[i].set.bind(botUsers[i]),{multiArgs: true}))
