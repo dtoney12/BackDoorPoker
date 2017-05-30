@@ -1,6 +1,6 @@
 'use strict';
 const Backbone = require('backbone');
-const settings = require('./templates/settings.js');
+const settings = require('./templates/settings');
 const status = require('./templates/statuscode');
 const log = require('./templates/log.js');
 const consoleUserUpdate = log.consoleUserUpdate();

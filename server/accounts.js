@@ -84,6 +84,7 @@ module.exports = {
 		return db.SetUpdate(qry.updateUser, user, {room: table.name}, ()=>user.sendUpdate({joinTableInvite: true}));
 	},
 	leaveTable: (user, table, lobby)=> {
+		user.sendUpdate({playerAction: {} });
 		table.remove(user);
 		table.emptySeats.push(user.attributes.seat);
 		table.emptySeats.sort(function(a, b) {
@@ -103,6 +104,6 @@ module.exports = {
 		});
 		lobby.swapInFilter(user, user.attributes.filters.in);
 		lobby.add(user);
-		user.sendUpdate({leftTable: true});
+		user.sendUpdate({leftTable: true });
 	},
 }
