@@ -157,7 +157,7 @@ module.exports.playTurn = (bot, state)=> {
   } else if (highCard==='A') {
     highCard = 14;
   }
-  console.log(bot.attributes.holeCards.concat(state.communityCards));
+  // console.log(bot.attributes.holeCards.concat(state.communityCards));
   let handType = checkedHand.type;
   let handRankValueThisRound = handRankValue[roundName][handType];
   let confidence = module.exports.guageConfidence(checkedHand.indexes, handType);
