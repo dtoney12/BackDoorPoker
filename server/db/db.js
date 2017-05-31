@@ -26,7 +26,7 @@ const pool = mysql.createPool(
 
 const getConn = ()=> {
   return pool.getConnectionAsync().disposer(function(connection) {
-      connection.release();
+      connection.end();  // .release() not releasing, so trying .end()
   });
 };
 
