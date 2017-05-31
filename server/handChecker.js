@@ -374,7 +374,7 @@ var hole = ['10♥', '9♣'];
 var board = ['10♣', '3♠', '5♦', '3♥', '9♥'];
 
 var highfive = module.exports.checkHand(hole, board, 7);
-console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
+// console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
 // BEST HAND (indexes, type) = { indexes: [ 1, 0, 2, 5, 6 ], type: 5 } 
 
 

@@ -50,8 +50,12 @@ var Table = Backbone.Collection.extend({
 			// build these into update all players of player State
 			"change:leaveTable":           (sender)=> this.leaveQueueJoin(sender),
 			"change:disconnect":             (user)=> this.disconnectQueueJoin(user),
-			"add": 		        (user, attributesArr)=> { this.loadPlayerToState(user); whoIsInRoom(this, user, 'ADD to') }, 
-			"remove":         (user, attributesArr)=> { this.unloadPlayerFromState(user); whoIsInRoom(this, user, 'REMOVE from'); },  // just logging
+			"add": 		        (user, attributesArr)=> { this.loadPlayerToState(user); 
+				// whoIsInRoom(this, user, 'ADD to') 
+			}, 
+			"remove":         (user, attributesArr)=> { this.unloadPlayerFromState(user); 
+				// whoIsInRoom(this, user, 'REMOVE from'); 
+			},  // just logging
 
 			// table state changes
 			"change:update":    			       (state, value)=> this.sendUpdateAll({update: value}),
@@ -110,7 +114,7 @@ var Table = Backbone.Collection.extend({
 		this.unloadPlayerFromState = 					(player)=>  state.seat[player.attributes.seat] = null;  //untested
 
 		this.updatePlayerOfSeatStates =       (player)=>{
-			if (!(player.attributes.clientReceived)) {  // block player from spamming clientReady
+			if (true||(!(player.attributes.clientReceived))) {  // block player from spamming clientReady
 				Object.values(state.seat).forEach((playerAttributesEntry, i)=> {
 					if (!!playerAttributesEntry) {
 						for (let key in playerAttributesEntry) {
@@ -123,7 +127,7 @@ var Table = Backbone.Collection.extend({
 				});
 				this.sendBlankOtherPlayerHoleCards(player);
 				player.sendUpdate({tableCash: player.attributes.tableCash });  // can update more client attributes here if necessary
-				// player.update({clientReceived: true });
+				player.sendUpdate({clientReceived: true });
 			} else {
 				player.update(status.clientAlreadyReceived(player.attributes.username));
 			}
@@ -521,7 +525,7 @@ var Table = Backbone.Collection.extend({
 			this.checkRoundConditions();
 		};
 		this.checkRoundConditions = ()=> {
-			console.log('altogether:', Math.max(state.checkedBet+state.allInBet, state.calledBet+state.allInBet), 'checkedBet:', state.checkedBet, 'calledBet:', state.calledBet, 'allInBet:', state.allInBet, 'playersInHand:', state.playersInHand);
+			// console.log('altogether:', Math.max(state.checkedBet+state.allInBet, state.calledBet+state.allInBet), 'checkedBet:', state.checkedBet, 'calledBet:', state.calledBet, 'allInBet:', state.allInBet, 'playersInHand:', state.playersInHand);
 			if (state.round ===  5 || state.playersInHand === 1) {
 				this.waitBeforeDeclareWinners();
 			} else if ((state.checkedBet+state.allInBet) === state.playersInHand || (state.calledBet + state.allInBet) === state.playersInHand) {
@@ -684,7 +688,7 @@ var Table = Backbone.Collection.extend({
 						highSoFar.winners[potSeat].handChecked = true;
 						let checkedHand = handChecker.checkHand(player.attributes.holeCards, state.communityCards, 7);
 						player.update({topFiveCardIndexes: checkedHand.indexes });
-						console.log('player', potSeat, 'hand checked = ', checkedHand);
+						// console.log('player', potSeat, 'hand checked = ', checkedHand);
 						let rankedHand = checkedHand.indexes.map((index)=>{
 							if (index===0 || index===1) {
 								return util.integerCardValue(player.attributes.holeCards[index]);

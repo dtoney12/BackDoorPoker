@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", (e)=> {
       let logNumber = 0;
       return listener = (update)=> {
           update = JSON.parse(update.data);
+          if ('clientReceived' in update) {
+            console.log('GOT UPDATE!!!!');
+          }
           // console.log(`update(${logNumber++}): `,update);
           (pokerSetState) && pokerSetState(update);
       };

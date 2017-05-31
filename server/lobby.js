@@ -42,7 +42,7 @@ const User = Backbone.Model.extend({
 			}
 		};
 		this.on({
-			"change:clientReady":     	   (user)=> room.table1.updatePlayerOfSeatStates(user),
+			"change:clientReady":     	   (user)=> {console.log('clientReady received'); room.table1.updatePlayerOfSeatStates(user);},
 			"change:password": 			(user, value)=> accounts.login(this, users),
 			"change:logout": 				(user, value)=> accounts.logout(this, users),
 			"change:getCash": 			(user, value)=> accounts.getCash(this),
@@ -88,11 +88,15 @@ const User = Backbone.Model.extend({
 					logParams[key] = updateParams[key];
 				}
 			}
-			shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
+			// shouldConsoleLog	&& consoleUserUpdate(this, logParams); 
 		};
 		this.sendUpdate = (toSend)=> {
-			if ( !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
-				this.ws.send(JSON.stringify(toSend));
+			if ( this.ws && !!this.attributes.sessionId && !(this.attributes.sessionId === 'ROBOT') ) {
+				if (this.ws.readyState != this.ws.OPEN){
+          console.error('Client state is ' + this.ws.readyState);
+        }	else {
+           this.ws.send(JSON.stringify(toSend));
+        }
 			}
 		};
 	},
@@ -104,8 +108,8 @@ const UsersGroup = Backbone.Collection.extend({
 		this.on({
 			"change:message":       (sender, msg)=> this.each((user)=> user.update({chats:`(${sender.attributes.username}) ${msg}`})),
 			"change:disconnect":    (user, value)=> accounts.disconnect(user, this),
-			"add": 		      (user, attributesArr)=> whoIsInRoom(this, user, 'ADD to'),       // just logging
-			"remove":       (user, attributesArr)=> whoIsInRoom(this, user, 'REMOVE from'),  // just logging
+			// "add": 		      (user, attributesArr)=> whoIsInRoom(this, user, 'ADD to'),       // just logging
+			// "remove":       (user, attributesArr)=> whoIsInRoom(this, user, 'REMOVE from'),  // just logging
 		});
 		this.swapInFilter =  (player, filter)=> player.set({inFilter: Object.keys(filter)});
 	},

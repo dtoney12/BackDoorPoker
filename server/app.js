@@ -25,6 +25,9 @@ wss.on('connection',
 		user.ws = ws;
 		user.set({sessionId: ws.upgradeReq.rawHeaders[21].slice(0,5)});  // set sessionId
 		ws.on('message', (received)=> user.handleInput(JSON.parse(received)));
-		ws.on('close', ()=>{ user.attributes.loggedIn && user.handleInput({disconnect: true})});
+		ws.on('close', ()=>{
+      delete user.ws;
+      user.attributes.loggedIn && user.handleInput({disconnect: true})
+    });
 });
 

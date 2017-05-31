@@ -162,17 +162,17 @@ module.exports.playTurn = (bot, state)=> {
   let handRankValueThisRound = handRankValue[roundName][handType];
   let confidence = module.exports.guageConfidence(checkedHand.indexes, handType);
   let handValue = Math.round(state.bigBlindAmount * cardRankValue[highCard] * handRankValueThisRound * confidence * 100)/100;
-  console.log('highCard = ', highCard,'CardRankValue = ', cardRankValue[highCard], 'HandRankValue=',handRankValueThisRound, 'confidence', confidence);
+  // console.log('highCard = ', highCard,'CardRankValue = ', cardRankValue[highCard], 'HandRankValue=',handRankValueThisRound, 'confidence', confidence);
   let callAmount = bot.attributes.leftToCall;
   let minRaise = callAmount + state.bigBlindAmount;
   let ifCallRoundCallAmount = callAmount + bot.attributes.callAmountThisRound;
   let ifRaiseRoundRaiseAmount = ifCallRoundCallAmount + state.bigBlindAmount;
   let aggressionLevel = Math.ceil(Math.random()*3); // random from 1 and 4
   let betAggressionFactor = Math.round(module.exports.factorBetAggression(aggressionLevel, state.round, handType)*1000)/1000
-  console.log('Aggression level', aggressionLevel, 'Aggression Factor', betAggressionFactor);
+  // console.log('Aggression level', aggressionLevel, 'Aggression Factor', betAggressionFactor);
   let wouldBetAmount = Math.round(handValue*betAggressionFactor*100)/100;
   wouldBetToMilkAmount = Math.round(module.exports.wouldBetToMilkValue(aggressionLevel, state, wouldBetAmount)*10)/10
-  console.log('HandValue/ WouldBet / WouldBet (milkValue) = ', handValue + ' / '+ wouldBetAmount +' / '+ wouldBetToMilkAmount);
+  // console.log('HandValue/ WouldBet / WouldBet (milkValue) = ', handValue + ' / '+ wouldBetAmount +' / '+ wouldBetToMilkAmount);
   let floorNearestTenDown = Math.floor(wouldBetToMilkAmount/10)*10;
 
   if (!!callAmount) {
