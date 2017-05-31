@@ -51,10 +51,10 @@ var Table = Backbone.Collection.extend({
 			"change:leaveTable":           (sender)=> this.leaveQueueJoin(sender),
 			"change:disconnect":             (user)=> this.disconnectQueueJoin(user),
 			"add": 		        (user, attributesArr)=> { this.loadPlayerToState(user); 
-				// whoIsInRoom(this, user, 'ADD to') 
+				whoIsInRoom(this, user, 'ADD to') 
 			}, 
 			"remove":         (user, attributesArr)=> { this.unloadPlayerFromState(user); 
-				// whoIsInRoom(this, user, 'REMOVE from'); 
+				whoIsInRoom(this, user, 'REMOVE from'); 
 			},  // just logging
 
 			// table state changes
