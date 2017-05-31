@@ -9,6 +9,7 @@ module.exports = {
     seat: null,
     loggedIn: false,
     logout: false,
+    clientReady: false,
     clientReceived: false,
     accountCash: 0,
     getCash: false,

@@ -123,7 +123,7 @@ var Table = Backbone.Collection.extend({
 				});
 				this.sendBlankOtherPlayerHoleCards(player);
 				player.sendUpdate({tableCash: player.attributes.tableCash });  // can update more client attributes here if necessary
-				player.update({clientReceived: true });
+				// player.update({clientReceived: true });
 			} else {
 				player.update(status.clientAlreadyReceived(player.attributes.username));
 			}
