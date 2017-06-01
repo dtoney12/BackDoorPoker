@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", (e)=> { 
   const ws = new WebSocket(location.origin.replace(/^http/, 'ws'));
-  // const ws = new WebSocket('ws://backdoorpoker-dev.us-west-1.elasticbeanstalk.com');
-  // const ws = new WebSocket('ws://127.0.0.1');
   window.ws = ws;
   const wsSend = function(event, type, booleanValue) {
     event.preventDefault();
@@ -9,13 +7,8 @@ document.addEventListener("DOMContentLoaded", (e)=> {
   }
 
   let wsCreateListener = (pokerSetState)=> {
-      let logNumber = 0;
       return listener = (update)=> {
           update = JSON.parse(update.data);
-          if ('clientReceived' in update) {
-            console.log('GOT UPDATE!!!!');
-          }
-          // console.log(`update(${logNumber++}): `,update);
           (pokerSetState) && pokerSetState(update);
       };
   }; 
@@ -28,6 +21,6 @@ document.addEventListener("DOMContentLoaded", (e)=> {
 
   let loadPokerScript = document.createElement('script');
   loadPokerScript.setAttribute('type', 'text/javascript');
-  loadPokerScript.setAttribute('src', 'bundle.js');
+  loadPokerScript.setAttribute('src', 'script.js');
   document.getElementById('room').appendChild(loadPokerScript);
 });

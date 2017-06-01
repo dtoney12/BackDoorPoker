@@ -640,6 +640,7 @@ var Table = Backbone.Collection.extend({
 								` pot $${pot.value}`;
 						}
 						let potWonCash = pot.value / ((Object.keys(pot.winners).length) || 1)
+						potWonCash = (Math.round(potWonCash*100))/100;
 						player.update({tableCash: player.attributes.tableCash + potWonCash });
 					}
 					console.log(winnerAnnounce+'\n');
