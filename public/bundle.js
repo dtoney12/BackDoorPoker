@@ -6933,7 +6933,7 @@ class Pot extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
           className: 'pot-chips-description' },
         !!this.props.potType ? this.props.potType + ': ' : null
       ),
-      __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_object_entries___default()(this.state).map((chipStackEntry, i) => {
+      __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_object_entries___default()(this.state).map(function (chipStackEntry, i) {
         var chipStackName = chipStackEntry[0];
         var chipStackCount = chipStackEntry[1];
         if (chipStackCount > 0) {
