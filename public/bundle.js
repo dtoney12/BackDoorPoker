@@ -6903,17 +6903,17 @@ class Pot extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
     }
   }
   updateStacks(potValue) {
-    for (let i = 0; i < this.props.chipTypes.length; i++) {
-      let chipType = this.props.chipTypes[i];
-      let nextChipType = this.props.chipTypes[i + 1] || 50000;
-      let stackLimit;
+    for (var i = 0; i < this.props.chipTypes.length; i++) {
+      var chipType = this.props.chipTypes[i];
+      var nextChipType = this.props.chipTypes[i + 1] || 50000;
+      var stackLimit;
       if (chipType === 25 || chipType === 2500) {
         stackLimit = 3;
       } else {
         stackLimit = 4;
       }
-      let stackTypeIndex = `chips${chipType}_stack`;
-      let chipStackCount = 0;
+      var stackTypeIndex = `chips${chipType}_stack`;
+      var chipStackCount = 0;
       while (potValue % nextChipType !== 0 && chipStackCount <= stackLimit) {
         // stackLimit condition only a precaution
         chipStackCount++;
@@ -6934,8 +6934,8 @@ class Pot extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
         !!this.props.potType ? this.props.potType + ': ' : null
       ),
       __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_object_entries___default()(this.state).map((chipStackEntry, i) => {
-        let chipStackName = chipStackEntry[0];
-        let chipStackCount = chipStackEntry[1];
+        var chipStackName = chipStackEntry[0];
+        var chipStackCount = chipStackEntry[1];
         if (chipStackCount > 0) {
           return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement('img', {
             key: i,
@@ -9793,7 +9793,7 @@ class Seat extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
         this.props.seat.tableCash
       ) : null,
       this.props.seat.playerAction ? __WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_object_entries___default()(this.props.seat.playerAction).map((action, i) => {
-        let amount = action[1];
+        var amount = action[1];
         if (amount === true) {
           return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
             'div',
@@ -10199,9 +10199,9 @@ class Pots extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
             'tbody',
             null,
              false ? this.props.pots.map(function (pot, i) {
-              let value = String(pot.value);
-              let potType = pot.sidePot ? 'sidepot' : 'main_pot';
-              let playersInPot = _Object$values(pot.playersInPot).map(seat => ' ' + seat.playerName.slice(0, 10).replace(/\s+/g, '_') + '_$' + seat.putIn).join(',');
+              var value = String(pot.value);
+              var potType = pot.sidePot ? 'sidepot' : 'main_pot';
+              var playersInPot = _Object$values(pot.playersInPot).map(seat => ' ' + seat.playerName.slice(0, 10).replace(/\s+/g, '_') + '_$' + seat.putIn).join(',');
               // console.log('playersInPot =', playersInPot);
               return React.createElement(
                 'div',
@@ -10723,15 +10723,15 @@ class TableView extends __WEBPACK_IMPORTED_MODULE_3_react___default.a.Component 
             if ('tableCash' in update) {
                 console.log('TABLECASH SET TO ', this.state.tableCash);
             }
-            for (let playerSeat in update.seat) {
+            for (var playerSeat in update.seat) {
                 // possible multiple updates functionality in future
-                let serverSideSeatUpdate = update.seat[playerSeat];
+                var serverSideSeatUpdate = update.seat[playerSeat];
                 if ('winningCards' in serverSideSeatUpdate) {
                     // update winning community cards for css highlighting
                     this.setState({ winningCommunityCards: serverSideSeatUpdate.winningCards.slice(2) });
                 }
-                let clientSideSeatState = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_object_assign___default()({}, this.state[playerSeat]);
-                let updatedState = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_object_assign___default()(clientSideSeatState, serverSideSeatUpdate); // copy state first then 
+                var clientSideSeatState = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_object_assign___default()({}, this.state[playerSeat]);
+                var updatedState = __WEBPACK_IMPORTED_MODULE_2_babel_runtime_core_js_object_assign___default()(clientSideSeatState, serverSideSeatUpdate); // copy state first then 
                 this.setState({ [playerSeat]: updatedState });
             }
         } else {
@@ -10745,7 +10745,7 @@ class TableView extends __WEBPACK_IMPORTED_MODULE_3_react___default.a.Component 
         }
     }
     grabImages() {
-        let context = this;
+        var context = this;
         context.tableBackground.backgroundImage = "url(" + __WEBPACK_IMPORTED_MODULE_5__Images_table_jpg___default.a + ")";
         context.dealerButton = __webpack_require__(106);
         const suits = ['♥', '♣', '♠', '♦'];
@@ -10753,12 +10753,12 @@ class TableView extends __WEBPACK_IMPORTED_MODULE_3_react___default.a.Component 
         context.deck.reverse = __webpack_require__(61);
         suits.forEach(function (suit) {
             values.forEach(function (value) {
-                let cardName = value + suit;
+                var cardName = value + suit;
                 context.deck[cardName] = __webpack_require__(108)(`./${cardName}.png`);
             });
         });
         context.chipTypes.forEach(chipValue => {
-            for (let i = 1; i < 5; i++) {
+            for (var i = 1; i < 5; i++) {
                 context.chips[`chips${chipValue}_stack${i}`] = __webpack_require__(109)(`./chips${chipValue}_stack${i}.png`);
             }
         });
