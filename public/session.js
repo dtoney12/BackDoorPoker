@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
   window.ws = ws;
   const wsSend = function(event, type, booleanValue) {
     event.preventDefault();
-    ws.send( JSON.stringify({ [type]: document.getElementById(type).value || booleanValue }) );
+    let value = document.getElementById(type).value;
+    let toSend = { [type]: value || booleanValue };
+    ws.send(JSON.stringify(toSend));
   }
 
   let wsCreateListener = function(pokerSetState) {
