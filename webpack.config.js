@@ -17,6 +17,7 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['react', 'es2015'],
+          plugins: ['babel-plugin-transform-object-entries'],
         },
       },
       { test: /\.(woff|png|jpg|gif)$/,
