@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
   window.ws = ws;
   let wsCreateListener = function(pokerSetState) {
       let logNumber = 0;
-      return listener = (update)=> {
+      return listener = function(update) {
           update = JSON.parse(update.data);
           (pokerSetState) && pokerSetState(update);
       };
