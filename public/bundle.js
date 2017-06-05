@@ -10676,6 +10676,21 @@ var TableView = function (_React$Component) {
                     return target;
                 };
             }
+            if (!Object.values) {
+                Object.values = function values(O) {
+                    return reduce(keys(O), function (v, k) {
+                        return concat(v, typeof k === 'string' && isEnumerable(O, k) ? [O[k]] : []);
+                    }, []);
+                };
+            }
+
+            if (!Object.entries) {
+                Object.entries = function entries(O) {
+                    return reduce(keys(O), function (e, k) {
+                        return concat(e, typeof k === 'string' && isEnumerable(O, k) ? [[k, O[k]]] : []);
+                    }, []);
+                };
+            }
         }
     }, {
         key: 'componentDidUpdate',
