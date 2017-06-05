@@ -16,10 +16,7 @@ module.exports = {
         include: SRC_DIR,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2017'],
-          plugins: [
-            ["transform-runtime"],
-          ],
+          presets: ['react', 'es2015'],
         },
       },
       { test: /\.(woff|png|jpg|gif)$/,
