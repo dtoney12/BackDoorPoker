@@ -16,7 +16,7 @@ module.exports = {
         include: SRC_DIR,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015']
+          presets: ['react', 'es2017']
         }
       },
       { test: /\.(woff|png|jpg|gif)$/,

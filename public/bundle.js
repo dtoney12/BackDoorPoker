@@ -6734,40 +6734,19 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAACjCAMAAAB2
 
 /***/ }),
 /* 54 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Pot = function (_React$Component) {
-  _inherits(Pot, _React$Component);
-
-  function Pot(props) {
-    _classCallCheck(this, Pot);
-
-    var _this = _possibleConstructorReturn(this, (Pot.__proto__ || Object.getPrototypeOf(Pot)).call(this));
-
-    _this.state = {
+class Pot extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+  constructor(props) {
+    super();
+    this.state = {
       chips1_stack: 0,
       chips5_stack: 0,
       chips25_stack: 0,
@@ -6776,76 +6755,63 @@ var Pot = function (_React$Component) {
       chips2500_stack: 0,
       chips10000_stack: 0
     };
-    _this.potValue = 0;
-    _this.updateStacks = _this.updateStacks.bind(_this);
-    return _this;
+    this.potValue = 0;
+    this.updateStacks = this.updateStacks.bind(this);
   }
-
-  _createClass(Pot, [{
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      if (this.props.value !== this.potValue) {
-        // console.log('updateStacks says potValue=', this.props.value);
-        this.updateStacks(this.props.value);
-        this.potValue = this.props.value;
+  componentDidUpdate() {
+    if (this.props.value !== this.potValue) {
+      // console.log('updateStacks says potValue=', this.props.value);
+      this.updateStacks(this.props.value);
+      this.potValue = this.props.value;
+    }
+  }
+  updateStacks(potValue) {
+    for (let i = 0; i < this.props.chipTypes.length; i++) {
+      let chipType = this.props.chipTypes[i];
+      let nextChipType = this.props.chipTypes[i + 1] || 50000;
+      let stackLimit;
+      if (chipType === 25 || chipType === 2500) {
+        stackLimit = 3;
+      } else {
+        stackLimit = 4;
       }
-    }
-  }, {
-    key: 'updateStacks',
-    value: function updateStacks(potValue) {
-      for (var i = 0; i < this.props.chipTypes.length; i++) {
-        var chipType = this.props.chipTypes[i];
-        var nextChipType = this.props.chipTypes[i + 1] || 50000;
-        var stackLimit = void 0;
-        if (chipType === 25 || chipType === 2500) {
-          stackLimit = 3;
-        } else {
-          stackLimit = 4;
-        }
-        var stackTypeIndex = 'chips' + chipType + '_stack';
-        var chipStackCount = 0;
-        while (potValue % nextChipType !== 0 && chipStackCount <= stackLimit) {
-          // stackLimit condition only a precaution
-          chipStackCount++;
-          potValue -= chipType;
-        }
-        // console.log('setting stacktypeIndex of', stackTypeIndex, 'to chip count', chipStackCount);
-        this.setState(_defineProperty({}, stackTypeIndex, chipStackCount));
+      let stackTypeIndex = `chips${chipType}_stack`;
+      let chipStackCount = 0;
+      while (potValue % nextChipType !== 0 && chipStackCount <= stackLimit) {
+        // stackLimit condition only a precaution
+        chipStackCount++;
+        potValue -= chipType;
       }
+      // console.log('setting stacktypeIndex of', stackTypeIndex, 'to chip count', chipStackCount);
+      this.setState({ [stackTypeIndex]: chipStackCount });
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
+  }
+  render() {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'div',
+      { className: this.props.classNameProp },
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'span',
+        {
+          className: 'pot-chips-description' },
+        !!this.props.potType ? this.props.potType + ': ' : null
+      ),
+      Object.entries(this.state).map((chipStackEntry, i) => {
+        let chipStackName = chipStackEntry[0];
+        let chipStackCount = chipStackEntry[1];
+        if (chipStackCount > 0) {
+          return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+            key: i,
+            className: chipStackName + ' chip',
+            src: this.props.chips[chipStackName + chipStackCount]
+          });
+        }
+      })
+    );
+  }
+}
 
-      return _react2.default.createElement(
-        'div',
-        { className: this.props.classNameProp },
-        _react2.default.createElement(
-          'span',
-          {
-            className: 'pot-chips-description' },
-          !!this.props.potType ? this.props.potType + ': ' : null
-        ),
-        Object.entries(this.state).map(function (chipStackEntry, i) {
-          var chipStackName = chipStackEntry[0];
-          var chipStackCount = chipStackEntry[1];
-          if (chipStackCount > 0) {
-            return _react2.default.createElement('img', {
-              key: i,
-              className: chipStackName + ' chip',
-              src: _this2.props.chips[chipStackName + chipStackCount]
-            });
-          }
-        })
-      );
-    }
-  }]);
-
-  return Pot;
-}(_react2.default.Component);
-
-exports.default = Pot;
+/* harmony default export */ __webpack_exports__["a"] = (Pot);
 
 /***/ }),
 /* 55 */
@@ -9563,241 +9529,157 @@ module.exports = ReactPropTypesSecret;
 
 /***/ }),
 /* 82 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pot_jsx__ = __webpack_require__(54);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
 
-var _react2 = _interopRequireDefault(_react);
-
-var _pot = __webpack_require__(54);
-
-var _pot2 = _interopRequireDefault(_pot);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Seat = function (_React$Component) {
-  _inherits(Seat, _React$Component);
-
-  function Seat(props) {
-    _classCallCheck(this, Seat);
-
-    var _this = _possibleConstructorReturn(this, (Seat.__proto__ || Object.getPrototypeOf(Seat)).call(this));
-
-    _this.state = {
+class Seat extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+  constructor(props) {
+    super();
+    this.state = {
       avatar: null
     };
-    return _this;
   }
-
-  _createClass(Seat, [{
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      if (!this.state.avatar && this.props.seat.username) {
-        if (!!this.props.avatars[this.props.seat.username]) {
-          this.setState({ avatar: this.props.avatars[this.props.seat.username] });
-        } else if (!!this.props.avatars['Avatar' + this.props.seatNumber]) {
-          this.setState({ avatar: this.props.avatars['Avatar' + this.props.seatNumber] });
-        }
+  componentDidUpdate() {
+    if (!this.state.avatar && this.props.seat.username) {
+      if (!!this.props.avatars[this.props.seat.username]) {
+        this.setState({ avatar: this.props.avatars[this.props.seat.username] });
+      } else if (!!this.props.avatars['Avatar' + this.props.seatNumber]) {
+        this.setState({ avatar: this.props.avatars['Avatar' + this.props.seatNumber] });
       }
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      return _react2.default.createElement(
+  }
+  render() {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'div',
+      { className: 'seat seat-' + this.props.seat.location },
+      this.props.seat.holeCards[0] ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { className: this.props.seat.winningCards[0] ? 'card holeCard1 ' + this.props.seat.location + '-card highlight highlight-radius' : 'card holeCard1 ' + this.props.seat.location + '-card',
+        src: this.props.deck[this.props.seat.holeCards[0]] }) : null,
+      this.props.seat.holeCards[1] ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { className: this.props.seat.winningCards[1] ? 'card holeCard2 ' + this.props.seat.location + '-card highlight highlight-radius' : 'card holeCard2 ' + this.props.seat.location + '-card',
+        src: this.props.deck[this.props.seat.holeCards[1]] }) : null,
+      this.props.dealer === this.props.seatNumber ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { className: 'dealer-button ' + this.props.seat.location, src: this.props.dealerButton }) : null,
+      this.state.avatar ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', { className: this.props.turn === this.props.seatNumber ? 'avatar highlight' : 'avatar',
+        src: this.state.avatar }) : null,
+      this.props.seat.username ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        { className: 'seat seat-' + this.props.seat.location },
-        this.props.seat.holeCards[0] ? _react2.default.createElement('img', { className: this.props.seat.winningCards[0] ? 'card holeCard1 ' + this.props.seat.location + '-card highlight highlight-radius' : 'card holeCard1 ' + this.props.seat.location + '-card',
-          src: this.props.deck[this.props.seat.holeCards[0]] }) : null,
-        this.props.seat.holeCards[1] ? _react2.default.createElement('img', { className: this.props.seat.winningCards[1] ? 'card holeCard2 ' + this.props.seat.location + '-card highlight highlight-radius' : 'card holeCard2 ' + this.props.seat.location + '-card',
-          src: this.props.deck[this.props.seat.holeCards[1]] }) : null,
-        this.props.dealer === this.props.seatNumber ? _react2.default.createElement('img', { className: 'dealer-button ' + this.props.seat.location, src: this.props.dealerButton }) : null,
-        this.state.avatar ? _react2.default.createElement('img', { className: this.props.turn === this.props.seatNumber ? 'avatar highlight' : 'avatar',
-          src: this.state.avatar }) : null,
-        this.props.seat.username ? _react2.default.createElement(
-          'div',
-          { className: 'username' },
-          this.props.seat.username
-        ) : null,
-        this.props.seat.tableCash ? _react2.default.createElement(
-          'div',
-          { className: this.props.seat.location + '-tableCash tableCash' },
-          '$',
-          this.props.seat.tableCash
-        ) : null,
-        this.props.seat.playerAction ? Object.entries(this.props.seat.playerAction).map(function (action, i) {
-          var amount = action[1];
-          if (amount === true) {
-            return _react2.default.createElement(
+        { className: 'username' },
+        this.props.seat.username
+      ) : null,
+      this.props.seat.tableCash ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        { className: this.props.seat.location + '-tableCash tableCash' },
+        '$',
+        this.props.seat.tableCash
+      ) : null,
+      this.props.seat.playerAction ? Object.entries(this.props.seat.playerAction).map((action, i) => {
+        let amount = action[1];
+        if (amount === true) {
+          return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { key: i,
+              className: this.props.seat.location + '-playerAction playerAction' },
+            action[0]
+          );
+        } else if (amount > 0) {
+          return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { key: i },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'div',
-              { key: i,
-                className: _this2.props.seat.location + '-playerAction playerAction' },
-              action[0]
-            );
-          } else if (amount > 0) {
-            return _react2.default.createElement(
-              'div',
-              { key: i },
-              _react2.default.createElement(
-                'div',
-                {
-                  className: _this2.props.seat.location + '-playerAction playerAction' },
-                action[0] + ' $' + amount
-              ),
-              _react2.default.createElement(_pot2.default, {
-                value: amount,
-                chips: _this2.props.chips,
-                chipTypes: _this2.props.chipTypes,
-                classNameProp: _this2.props.seat.location + '-chips-container seat-chips-container'
-              })
-            );
-          }
-        }) : null
-      );
-    }
-  }]);
+              {
+                className: this.props.seat.location + '-playerAction playerAction' },
+              action[0] + ' $' + amount
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__pot_jsx__["a" /* default */], {
+              value: amount,
+              chips: this.props.chips,
+              chipTypes: this.props.chipTypes,
+              classNameProp: this.props.seat.location + '-chips-container seat-chips-container'
+            })
+          );
+        }
+      }) : null
+    );
+  }
+}
 
-  return Seat;
-}(_react2.default.Component);
-
-exports.default = Seat;
+/* harmony default export */ __webpack_exports__["a"] = (Seat);
 
 /***/ }),
 /* 83 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var CommunityCards = function (_React$Component) {
-    _inherits(CommunityCards, _React$Component);
-
-    function CommunityCards(props) {
-        _classCallCheck(this, CommunityCards);
-
-        var _this = _possibleConstructorReturn(this, (CommunityCards.__proto__ || Object.getPrototypeOf(CommunityCards)).call(this));
-
-        _this.state = {};
-        return _this;
+class CommunityCards extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {};
     }
 
-    _createClass(CommunityCards, [{
-        key: 'render',
-        value: function render() {
-            return this.props.communityCard1 ? _react2.default.createElement(
-                'div',
-                { className: 'community-card-container' },
-                _react2.default.createElement('img', {
-                    className: this.props.winningCommunityCards[0] ? 'card community-card community-card1 highlight' : 'card community-card community-card1',
-                    src: this.props.communityCard1
-                }),
-                _react2.default.createElement('img', {
-                    className: this.props.winningCommunityCards[1] ? 'card community-card community-card2 highlight' : 'card community-card community-card2',
-                    src: this.props.communityCard2
-                }),
-                _react2.default.createElement('img', {
-                    className: this.props.winningCommunityCards[2] ? 'card community-card community-card3 highlight' : 'card community-card community-card3',
-                    src: this.props.communityCard3
-                }),
-                _react2.default.createElement('img', {
-                    className: this.props.winningCommunityCards[3] ? 'card community-card community-card4 highlight' : 'card community-card community-card4',
-                    src: this.props.communityCard4
-                }),
-                _react2.default.createElement('img', {
-                    className: this.props.winningCommunityCards[4] ? 'card community-card community-card5 highlight' : 'card community-card community-card5',
-                    src: this.props.communityCard5
-                })
-            ) : null;
-        }
-    }]);
+    render() {
+        return this.props.communityCard1 ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'community-card-container' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                className: this.props.winningCommunityCards[0] ? 'card community-card community-card1 highlight' : 'card community-card community-card1',
+                src: this.props.communityCard1
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                className: this.props.winningCommunityCards[1] ? 'card community-card community-card2 highlight' : 'card community-card community-card2',
+                src: this.props.communityCard2
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                className: this.props.winningCommunityCards[2] ? 'card community-card community-card3 highlight' : 'card community-card community-card3',
+                src: this.props.communityCard3
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                className: this.props.winningCommunityCards[3] ? 'card community-card community-card4 highlight' : 'card community-card community-card4',
+                src: this.props.communityCard4
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                className: this.props.winningCommunityCards[4] ? 'card community-card community-card5 highlight' : 'card community-card community-card5',
+                src: this.props.communityCard5
+            })
+        ) : null;
+    }
+}
 
-    return CommunityCards;
-}(_react2.default.Component);
-
-exports.default = CommunityCards;
+/* harmony default export */ __webpack_exports__["a"] = (CommunityCards);
 
 /***/ }),
 /* 84 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__raiseinput_jsx__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__betinput_jsx__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__getTableCash_jsx__ = __webpack_require__(94);
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
 
-var _react2 = _interopRequireDefault(_react);
 
-var _raiseinput = __webpack_require__(95);
 
-var _raiseinput2 = _interopRequireDefault(_raiseinput);
-
-var _betinput = __webpack_require__(93);
-
-var _betinput2 = _interopRequireDefault(_betinput);
-
-var _getTableCash = __webpack_require__(94);
-
-var _getTableCash2 = _interopRequireDefault(_getTableCash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Inputs = function (_React$Component) {
-    _inherits(Inputs, _React$Component);
-
-    function Inputs(props) {
-        _classCallCheck(this, Inputs);
-
-        var _this = _possibleConstructorReturn(this, (Inputs.__proto__ || Object.getPrototypeOf(Inputs)).call(this));
-
-        _this.state = {
+class Inputs extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {
             editName: '',
             password: '',
             message: '',
@@ -9807,417 +9689,358 @@ var Inputs = function (_React$Component) {
             logout: true,
             status: ''
         };
-        _this.handleChange = _this.handleChange.bind(_this);
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        return _this;
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-    _createClass(Inputs, [{
-        key: 'handleChange',
-        value: function handleChange(event) {
-            var attr = event.target.name;
-            this.setState(_defineProperty({}, attr, event.target.value));
-        }
-    }, {
-        key: 'handleSubmit',
-        value: function handleSubmit(event) {
-            event.preventDefault();
-            var attr = event.target.name;
-            this.props.sendInput(_defineProperty({}, attr, this.state[attr]));
-        }
-    }, {
-        key: 'handleCall',
-        value: function handleCall() {
-            this.props.sendInput({ call: this.props.inputOptions.call });
-            // console.log(`You CALL FOR ${this.props.inputOptions.call}`);
-        }
-    }, {
-        key: 'handleAllIn',
-        value: function handleAllIn() {
-            this.props.sendInput({ allIn: this.props.inputOptions.allIn });
-            // console.log(`You go All-IN FOR ${this.props.inputOptions.allIn}`);
-        }
-    }, {
-        key: 'handleFold',
-        value: function handleFold() {
-            this.props.sendInput({ fold: true });
-            // console.log("You FOLD");
-        }
-    }, {
-        key: 'handleCheck',
-        value: function handleCheck() {
-            this.props.sendInput({ check: true });
-            // console.log("You Check");
-        }
-    }, {
-        key: 'handleLeaveTable',
-        value: function handleLeaveTable() {
-            this.props.sendInput({ leaveTable: true });
-            console.log("You leave the table");
-        }
-    }, {
-        key: 'pause',
-        value: function pause() {
-            this.props.sendInput({ pause: true });
-            console.log("You pause");
-        }
-    }, {
-        key: 'unpause',
-        value: function unpause() {
-            this.props.sendInput({ unpause: true });
-            console.log("You unpause");
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-            if (this.props.status !== '') {
-                var newStatus = document.createElement('div');
-                newStatus.className = 'status-display hideMe';
-                newStatus.innerHTML = 'Status: ' + this.props.status;
-                var statusContainer = document.getElementsByClassName('status-display-container')[0];
-                while (statusContainer.firstChild) {
-                    statusContainer.removeChild(statusContainer.firstChild);
-                }
-                statusContainer.appendChild(newStatus);
-                // this.setState({status: this.props.status });
+    handleChange(event) {
+        var attr = event.target.name;
+        this.setState({ [attr]: event.target.value });
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        var attr = event.target.name;
+        this.props.sendInput({ [attr]: this.state[attr] });
+    }
+    handleCall() {
+        this.props.sendInput({ call: this.props.inputOptions.call });
+        // console.log(`You CALL FOR ${this.props.inputOptions.call}`);
+    }
+    handleAllIn() {
+        this.props.sendInput({ allIn: this.props.inputOptions.allIn });
+        // console.log(`You go All-IN FOR ${this.props.inputOptions.allIn}`);
+    }
+    handleFold() {
+        this.props.sendInput({ fold: true });
+        // console.log("You FOLD");
+    }
+    handleCheck() {
+        this.props.sendInput({ check: true });
+        // console.log("You Check");
+    }
+    handleLeaveTable() {
+        this.props.sendInput({ leaveTable: true });
+        console.log("You leave the table");
+    }
+    pause() {
+        this.props.sendInput({ pause: true });
+        console.log("You pause");
+    }
+    unpause() {
+        this.props.sendInput({ unpause: true });
+        console.log("You unpause");
+    }
+    componentDidUpdate() {
+        if (this.props.status !== '') {
+            var newStatus = document.createElement('div');
+            newStatus.className = 'status-display hideMe';
+            newStatus.innerHTML = 'Status: ' + this.props.status;
+            var statusContainer = document.getElementsByClassName('status-display-container')[0];
+            while (statusContainer.firstChild) {
+                statusContainer.removeChild(statusContainer.firstChild);
             }
+            statusContainer.appendChild(newStatus);
+            // this.setState({status: this.props.status });
         }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
+    }
+    render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'inputs-container' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'inputs-container' },
-                _react2.default.createElement(
+                {
+                    className: this.props.room !== 'TABLE1' ? 'lobby-inputs-container' : 'lobby-inputs-container room-inputs-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    {
-                        className: this.props.room !== 'TABLE1' ? 'lobby-inputs-container' : 'lobby-inputs-container room-inputs-container' },
-                    _react2.default.createElement(
+                    { className: 'lobby-forms-box' },
+                    !this.props.loggedIn ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'lobby-forms-box' },
-                        !this.props.loggedIn ? _react2.default.createElement(
-                            'div',
-                            null,
-                            _react2.default.createElement(
-                                'form',
-                                {
-                                    className: 'form form-container',
-                                    name: 'editName',
-                                    onSubmit: this.handleSubmit },
-                                _react2.default.createElement(
-                                    'div',
-                                    {
-                                        className: 'editName-input-text-container lobby-input-container' },
-                                    _react2.default.createElement('input', {
-                                        className: 'form form-text-input',
-                                        type: 'text',
-                                        name: 'editName',
-                                        value: this.state.editName,
-                                        onChange: this.handleChange })
-                                ),
-                                _react2.default.createElement(
-                                    'div',
-                                    {
-                                        className: 'editName-input-container lobby-input-container' },
-                                    _react2.default.createElement('input', {
-                                        className: 'form form-submit-input lobby-input',
-                                        type: 'submit',
-                                        value: 'Enter Username' })
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'form',
-                                {
-                                    className: 'form form-container',
-                                    name: 'password',
-                                    onSubmit: this.handleSubmit },
-                                _react2.default.createElement(
-                                    'div',
-                                    {
-                                        className: 'password-input-text-container lobby-input-container' },
-                                    _react2.default.createElement('input', {
-                                        className: 'form form-text-input',
-                                        type: 'text',
-                                        name: 'password',
-                                        value: this.state.password,
-                                        onChange: this.handleChange })
-                                ),
-                                _react2.default.createElement(
-                                    'div',
-                                    {
-                                        className: 'password-input-container lobby-input-container' },
-                                    _react2.default.createElement('input', {
-                                        className: 'form form-submit-input lobby-input',
-                                        type: 'submit',
-                                        value: 'Enter Password' })
-                                )
-                            )
-                        ) : null,
-                        this.props.loggedIn && this.props.room === 'LOBBY' ? _react2.default.createElement(
-                            'div',
-                            null,
-                            _react2.default.createElement(
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'form',
+                            {
+                                className: 'form form-container',
+                                name: 'editName',
+                                onSubmit: this.handleSubmit },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'div',
                                 {
-                                    className: 'getCash-input-container lobby-input-container' },
-                                _react2.default.createElement(
-                                    'button',
-                                    {
-                                        className: 'lobby-input',
-                                        name: 'getCash',
-                                        onClick: this.handleSubmit },
-                                    'Get $1000 (daily)'
-                                )
+                                    className: 'editName-input-text-container lobby-input-container' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                                    className: 'form form-text-input',
+                                    type: 'text',
+                                    name: 'editName',
+                                    value: this.state.editName,
+                                    onChange: this.handleChange })
                             ),
-                            _react2.default.createElement(_getTableCash2.default, {
-                                sendInput: this.props.sendInput,
-                                accountCash: this.props.accountCash
-                            })
-                        ) : null,
-                        this.props.loggedIn && this.props.room === 'TABLE1' ? _react2.default.createElement(
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                {
+                                    className: 'editName-input-container lobby-input-container' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                                    className: 'form form-submit-input lobby-input',
+                                    type: 'submit',
+                                    value: 'Enter Username' })
+                            )
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'form',
+                            {
+                                className: 'form form-container',
+                                name: 'password',
+                                onSubmit: this.handleSubmit },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                {
+                                    className: 'password-input-text-container lobby-input-container' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                                    className: 'form form-text-input',
+                                    type: 'text',
+                                    name: 'password',
+                                    value: this.state.password,
+                                    onChange: this.handleChange })
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                {
+                                    className: 'password-input-container lobby-input-container' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                                    className: 'form form-submit-input lobby-input',
+                                    type: 'submit',
+                                    value: 'Enter Password' })
+                            )
+                        )
+                    ) : null,
+                    this.props.loggedIn && this.props.room === 'LOBBY' ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
                             {
-                                className: 'leaveTable-input-container lobby-input-container' },
-                            _react2.default.createElement(
+                                className: 'getCash-input-container lobby-input-container' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'button',
                                 {
                                     className: 'lobby-input',
-                                    onClick: this.handleLeaveTable.bind(this) },
-                                'LEAVE TABLE'
+                                    name: 'getCash',
+                                    onClick: this.handleSubmit },
+                                'Get $1000 (daily)'
                             )
-                        ) : null,
-                        this.props.loggedIn ? _react2.default.createElement(
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__getTableCash_jsx__["a" /* default */], {
+                            sendInput: this.props.sendInput,
+                            accountCash: this.props.accountCash
+                        })
+                    ) : null,
+                    this.props.loggedIn && this.props.room === 'TABLE1' ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        {
+                            className: 'leaveTable-input-container lobby-input-container' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'button',
+                            {
+                                className: 'lobby-input',
+                                onClick: this.handleLeaveTable.bind(this) },
+                            'LEAVE TABLE'
+                        )
+                    ) : null,
+                    this.props.loggedIn ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        {
+                            className: 'cash-displays-container' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            {
+                                className: 'account-cash cash-displays' },
+                            'Account: $',
+                            this.props.accountCash
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            {
+                                className: 'table-cash cash-displays' },
+                            'Table: $',
+                            this.props.tableCash
+                        )
+                    ) : null,
+                    this.props.loggedIn && this.props.room === 'LOBBY' ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
                             {
-                                className: 'cash-displays-container' },
-                            _react2.default.createElement(
-                                'span',
+                                className: 'joinTable-input-container lobby-input-container' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'button',
                                 {
-                                    className: 'account-cash cash-displays' },
-                                'Account: $',
-                                this.props.accountCash
-                            ),
-                            _react2.default.createElement(
-                                'span',
-                                {
-                                    className: 'table-cash cash-displays' },
-                                'Table: $',
-                                this.props.tableCash
+                                    className: 'lobby-input',
+                                    name: 'joinTable',
+                                    onClick: this.handleSubmit },
+                                'Join Table'
                             )
-                        ) : null,
-                        this.props.loggedIn && this.props.room === 'LOBBY' ? _react2.default.createElement(
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
-                            null,
-                            _react2.default.createElement(
-                                'div',
+                            {
+                                className: 'logout-input-container lobby-input-container' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'button',
                                 {
-                                    className: 'joinTable-input-container lobby-input-container' },
-                                _react2.default.createElement(
-                                    'button',
-                                    {
-                                        className: 'lobby-input',
-                                        name: 'joinTable',
-                                        onClick: this.handleSubmit },
-                                    'Join Table'
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'div',
-                                {
-                                    className: 'logout-input-container lobby-input-container' },
-                                _react2.default.createElement(
-                                    'button',
-                                    {
-                                        className: 'lobby-input',
-                                        name: 'logout',
-                                        onClick: this.handleSubmit },
-                                    'Log Out'
-                                )
+                                    className: 'lobby-input',
+                                    name: 'logout',
+                                    onClick: this.handleSubmit },
+                                'Log Out'
                             )
-                        ) : null
-                    )
-                ),
-                _react2.default.createElement('div', { className: 'status-display-container' }),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'game-inputs-container' },
-                    'fold' in this.props.inputOptions ? _react2.default.createElement(
-                        'div',
-                        { className: 'fold-input-container game-input-container' },
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'fold-button game-input', onClick: this.handleFold.bind(this) },
-                            'FOLD'
-                        )
-                    ) : null,
-                    'check' in this.props.inputOptions ? _react2.default.createElement(
-                        'div',
-                        { className: 'check-input-container game-input-container' },
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'check-button game-input', onClick: this.handleCheck.bind(this) },
-                            'CHECK'
-                        )
-                    ) : null,
-                    'bet' in this.props.inputOptions ? _react2.default.createElement(_betinput2.default, {
-                        inputOptions: this.props.inputOptions,
-                        sendInput: this.props.sendInput,
-                        tableCash: this.props.tableCash
-                    }) : null,
-                    'call' in this.props.inputOptions ? _react2.default.createElement(
-                        'div',
-                        { className: 'call-input-container game-input-container' },
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'call-button game-input', onClick: this.handleCall.bind(this) },
-                            'CALL ' + this.props.inputOptions.call
-                        )
-                    ) : null,
-                    'raise' in this.props.inputOptions ? _react2.default.createElement(_raiseinput2.default, {
-                        inputOptions: this.props.inputOptions,
-                        sendInput: this.props.sendInput,
-                        tableCash: this.props.tableCash,
-                        roundOnlyPotsCallValue: this.props.roundOnlyPotsCallValue
-                    }) : null,
-                    'allIn' in this.props.inputOptions ? _react2.default.createElement(
-                        'div',
-                        { className: 'allIn-input-container game-input-container' },
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'allIn-button game-input', onClick: this.handleAllIn.bind(this) },
-                            'ALL-IN for ' + this.props.inputOptions.allIn
                         )
                     ) : null
                 )
-            );
-        }
-    }]);
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('div', { className: 'status-display-container' }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'game-inputs-container' },
+                'fold' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'fold-input-container game-input-container' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'button',
+                        { className: 'fold-button game-input', onClick: this.handleFold.bind(this) },
+                        'FOLD'
+                    )
+                ) : null,
+                'check' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'check-input-container game-input-container' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'button',
+                        { className: 'check-button game-input', onClick: this.handleCheck.bind(this) },
+                        'CHECK'
+                    )
+                ) : null,
+                'bet' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__betinput_jsx__["a" /* default */], {
+                    inputOptions: this.props.inputOptions,
+                    sendInput: this.props.sendInput,
+                    tableCash: this.props.tableCash
+                }) : null,
+                'call' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'call-input-container game-input-container' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'button',
+                        { className: 'call-button game-input', onClick: this.handleCall.bind(this) },
+                        `CALL ${this.props.inputOptions.call}`
+                    )
+                ) : null,
+                'raise' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__raiseinput_jsx__["a" /* default */], {
+                    inputOptions: this.props.inputOptions,
+                    sendInput: this.props.sendInput,
+                    tableCash: this.props.tableCash,
+                    roundOnlyPotsCallValue: this.props.roundOnlyPotsCallValue
+                }) : null,
+                'allIn' in this.props.inputOptions ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'allIn-input-container game-input-container' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'button',
+                        { className: 'allIn-button game-input', onClick: this.handleAllIn.bind(this) },
+                        `ALL-IN for ${this.props.inputOptions.allIn}`
+                    )
+                ) : null
+            )
+        );
+    }
+}
 
-    return Inputs;
-}(_react2.default.Component);
-
-exports.default = Inputs;
+/* harmony default export */ __webpack_exports__["a"] = (Inputs);
 
 /***/ }),
 /* 85 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pot_jsx__ = __webpack_require__(54);
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
 
-var _react2 = _interopRequireDefault(_react);
+class Pots extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
-var _pot = __webpack_require__(54);
-
-var _pot2 = _interopRequireDefault(_pot);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Pots = function (_React$Component) {
-  _inherits(Pots, _React$Component);
-
-  function Pots() {
-    _classCallCheck(this, Pots);
-
-    return _possibleConstructorReturn(this, (Pots.__proto__ || Object.getPrototypeOf(Pots)).apply(this, arguments));
-  }
-
-  _createClass(Pots, [{
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      return _react2.default.createElement(
+  render() {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'div',
+      null,
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        null,
-        _react2.default.createElement(
-          'div',
-          { className: 'pots-container' },
-          _react2.default.createElement(
-            'table',
-            { className: 'pots-table' },
-            _react2.default.createElement(
-              'tbody',
-              null,
-               false ? this.props.pots.map(function (pot, i) {
-                var value = String(pot.value);
-                var potType = pot.sidePot ? 'sidepot' : 'main_pot';
-                var playersInPot = Object.values(pot.playersInPot).map(function (seat) {
-                  return ' ' + seat.playerName.slice(0, 10).replace(/\s+/g, '_') + '_$' + seat.putIn;
-                }).join(',');
-                // console.log('playersInPot =', playersInPot);
-                return _react2.default.createElement(
-                  'div',
-                  { key: i },
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'td',
-                      { className: 'pots-table-type' },
-                      potType
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { className: 'pots-table-value' },
-                      '$',
-                      value
-                    )
+        { className: 'pots-container' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'table',
+          { className: 'pots-table' },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'tbody',
+            null,
+             false ? this.props.pots.map(function (pot, i) {
+              let value = String(pot.value);
+              let potType = pot.sidePot ? 'sidepot' : 'main_pot';
+              let playersInPot = Object.values(pot.playersInPot).map(seat => ' ' + seat.playerName.slice(0, 10).replace(/\s+/g, '_') + '_$' + seat.putIn).join(',');
+              // console.log('playersInPot =', playersInPot);
+              return React.createElement(
+                'div',
+                { key: i },
+                React.createElement(
+                  'tr',
+                  null,
+                  React.createElement(
+                    'td',
+                    { className: 'pots-table-type' },
+                    potType
                   ),
-                  _react2.default.createElement(
-                    'tr',
-                    { className: 'row-for-players-in-pot' },
-                    _react2.default.createElement(
-                      'td',
-                      { className: 'tableWholeRow' },
-                      '(',
-                      playersInPot,
-                      ')'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    { className: 'pots-table-divider' },
-                    '-------------'
+                  React.createElement(
+                    'td',
+                    { className: 'pots-table-value' },
+                    '$',
+                    value
                   )
-                );
-              }) : null
-            )
+                ),
+                React.createElement(
+                  'tr',
+                  { className: 'row-for-players-in-pot' },
+                  React.createElement(
+                    'td',
+                    { className: 'tableWholeRow' },
+                    '(',
+                    playersInPot,
+                    ')'
+                  )
+                ),
+                React.createElement(
+                  'tr',
+                  { className: 'pots-table-divider' },
+                  '-------------'
+                )
+              );
+            }) : null
           )
-        ),
-        this.props.potsBeginRound.map(function (pot, i) {
-          return _react2.default.createElement(_pot2.default, {
-            key: i,
-            value: pot.value
-            // playersInPot={pot.playersInPot}
-            // sidePot={pot.sidePot}
-            , potType: pot.sidePot ? 'side pot' : 'main pot',
-            chips: _this2.props.chips,
-            chipTypes: _this2.props.chipTypes,
-            classNameProp: 'pot-chips-container' });
-        })
-      );
-    }
-  }]);
+        )
+      ),
+      this.props.potsBeginRound.map((pot, i) => {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__pot_jsx__["a" /* default */], {
+          key: i,
+          value: pot.value
+          // playersInPot={pot.playersInPot}
+          // sidePot={pot.sidePot}
+          , potType: pot.sidePot ? 'side pot' : 'main pot',
+          chips: this.props.chips,
+          chipTypes: this.props.chipTypes,
+          classNameProp: 'pot-chips-container' });
+      })
+    );
+  }
+}
 
-  return Pots;
-}(_react2.default.Component);
-
-exports.default = Pots;
+/* harmony default export */ __webpack_exports__["a"] = (Pots);
 
 /***/ }),
 /* 86 */
@@ -10404,60 +10227,34 @@ webpackContext.id = 91;
 
 /***/ }),
 /* 92 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Images_table_jpg__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Images_table_jpg___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Images_table_jpg__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__community_cards_jsx__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Seat_jsx__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pots_jsx__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__inputs_jsx__ = __webpack_require__(84);
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
 
-var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(86);
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _table = __webpack_require__(87);
 
-var _table2 = _interopRequireDefault(_table);
 
-var _communityCards = __webpack_require__(83);
 
-var _communityCards2 = _interopRequireDefault(_communityCards);
-
-var _Seat = __webpack_require__(82);
-
-var _Seat2 = _interopRequireDefault(_Seat);
-
-var _pots = __webpack_require__(85);
-
-var _pots2 = _interopRequireDefault(_pots);
-
-var _inputs = __webpack_require__(84);
-
-var _inputs2 = _interopRequireDefault(_inputs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TableView = function (_React$Component) {
-    _inherits(TableView, _React$Component);
-
-    function TableView(props) {
-        _classCallCheck(this, TableView);
-
-        var _this = _possibleConstructorReturn(this, (TableView.__proto__ || Object.getPrototypeOf(TableView)).call(this));
-
-        _this.state = {
+class TableView extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {
             username: null,
             loggedIn: 0,
             clientReceived: false,
@@ -10580,15 +10377,15 @@ var TableView = function (_React$Component) {
                 location: 'bottom-right'
             }
         };
-        _this.setTableState = _this.setTableState.bind(_this);
-        _this.sendInput = _this.sendInput.bind(_this);
-        _this.seatNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        _this.dealerButton;
-        _this.tableBackground = {};
-        _this.deck = {};
-        _this.chips = {};
-        _this.chipTypes = [1, 5, 25, 100, 500, 2500, 10000];
-        _this.avatars = {
+        this.setTableState = this.setTableState.bind(this);
+        this.sendInput = this.sendInput.bind(this);
+        this.seatNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        this.dealerButton;
+        this.tableBackground = {};
+        this.deck = {};
+        this.chips = {};
+        this.chipTypes = [1, 5, 25, 100, 500, 2500, 10000];
+        this.avatars = {
             'Lieutenant Dan': null,
             'Mad Marcus': null,
             'Fredinator': null,
@@ -10604,9 +10401,9 @@ var TableView = function (_React$Component) {
             Avatar9: null,
             Avatar10: null
         };
-        _this.grabImages = _this.grabImages.bind(_this);
-        _this.grabImages();
-        _this.playerActionTypes = {
+        this.grabImages = this.grabImages.bind(this);
+        this.grabImages();
+        this.playerActionTypes = {
             check: true,
             call: true,
             bet: true,
@@ -10614,489 +10411,359 @@ var TableView = function (_React$Component) {
             fold: true,
             allIn: true
         };
-        return _this;
     }
+    componentWillMount() {
+        window.ws.onmessage = window.wsCreateListener(update => this.setTableState(update));
+        window.ws.onopen = () => console.log("Opening a connection...");
+        window.ws.onerror = error => console.log("Connection error = ", error);
+        window.ws.onclose = () => console.log("Connection closed...");
+    }
+    componentDidMount() {
+        // fast login
+        // setTimeout(()=>this.wsSend({editName: 'dts', password: '123'}), 700);
+        // setTimeout(()=>this.wsSend({getCash: true}), 1200);
+        // setTimeout(()=>this.wsSend({getTableCash: 300}), 1500);
+        // setTimeout(()=>this.wsSend({clientReady: true}), 1800);
+        // setTimeout(()=>this.wsSend({joinTable: true}), 2100);
+        this.pollForOtherPlayerInfo = setInterval(() => {
+            if (!this.state.clientReceived) {
+                console.log('requesting update from server');
+                this.wsSend({ clientReady: true });
+            } else if (this.state.clientReceived) {
+                console.log('clearing polling');
+                clearInterval(this.pollForOtherPlayerInfo);
+            }
+        }, 500);
+        // Object.assign polyfill for IE 11
+        if (typeof Object.assign != 'function') {
+            Object.assign = function (target) {
+                'use strict';
 
-    _createClass(TableView, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            var _this2 = this;
-
-            window.ws.onmessage = window.wsCreateListener(function (update) {
-                return _this2.setTableState(update);
-            });
-            window.ws.onopen = function () {
-                return console.log("Opening a connection...");
-            };
-            window.ws.onerror = function (error) {
-                return console.log("Connection error = ", error);
-            };
-            window.ws.onclose = function () {
-                return console.log("Connection closed...");
-            };
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            var _this3 = this;
-
-            // fast login
-            // setTimeout(()=>this.wsSend({editName: 'dts', password: '123'}), 700);
-            // setTimeout(()=>this.wsSend({getCash: true}), 1200);
-            // setTimeout(()=>this.wsSend({getTableCash: 300}), 1500);
-            // setTimeout(()=>this.wsSend({clientReady: true}), 1800);
-            // setTimeout(()=>this.wsSend({joinTable: true}), 2100);
-            this.pollForOtherPlayerInfo = setInterval(function () {
-                if (!_this3.state.clientReceived) {
-                    console.log('requesting update from server');
-                    _this3.wsSend({ clientReady: true });
-                } else if (_this3.state.clientReceived) {
-                    console.log('clearing polling');
-                    clearInterval(_this3.pollForOtherPlayerInfo);
+                if (target == null) {
+                    throw new TypeError('Cannot convert undefined or null to object');
                 }
-            }, 500);
-            // Object.assign polyfill for IE 11
-            if (typeof Object.assign != 'function') {
-                Object.assign = function (target) {
-                    'use strict';
 
-                    if (target == null) {
-                        throw new TypeError('Cannot convert undefined or null to object');
-                    }
-
-                    target = Object(target);
-                    for (var index = 1; index < arguments.length; index++) {
-                        var source = arguments[index];
-                        if (source != null) {
-                            for (var key in source) {
-                                if (Object.prototype.hasOwnProperty.call(source, key)) {
-                                    target[key] = source[key];
-                                }
+                target = Object(target);
+                for (var index = 1; index < arguments.length; index++) {
+                    var source = arguments[index];
+                    if (source != null) {
+                        for (var key in source) {
+                            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                                target[key] = source[key];
                             }
                         }
                     }
-                    return target;
-                };
-            }
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-            // if (this.state.leftTable===true) {
-            //     window.ws.onmessage = window.wsCreateListener();
-            //     ReactDOM.unmountComponentAtNode(document.getElementById('room'));
-            // }
-        }
-    }, {
-        key: 'wsSend',
-        value: function wsSend(update) {
-            window.ws.send(JSON.stringify(update));
-        }
-    }, {
-        key: 'sendInput',
-        value: function sendInput(action) {
-            this.wsSend(action);
-        }
-    }, {
-        key: 'setTableState',
-        value: function setTableState(update) {
-            if (update.chats) {
-                update.chats = update.chats.concat(this.state.chats);
-            }
-            if (update.seat) {
-                //updating about player
-                if ('tableCash' in update) {
-                    console.log('TABLECASH SET TO ', this.state.tableCash);
                 }
-                for (var playerSeat in update.seat) {
-                    // possible multiple updates functionality in future
-                    var serverSideSeatUpdate = update.seat[playerSeat];
-                    if ('winningCards' in serverSideSeatUpdate) {
-                        // update winning community cards for css highlighting
-                        this.setState({ winningCommunityCards: serverSideSeatUpdate.winningCards.slice(2) });
-                    }
-                    var clientSideSeatState = Object.assign({}, this.state[playerSeat]);
-                    var updatedState = Object.assign(clientSideSeatState, serverSideSeatUpdate); // copy state first then 
-                    this.setState(_defineProperty({}, playerSeat, updatedState));
+                return target;
+            };
+        }
+    }
+    componentDidUpdate() {
+        // if (this.state.leftTable===true) {
+        //     window.ws.onmessage = window.wsCreateListener();
+        //     ReactDOM.unmountComponentAtNode(document.getElementById('room'));
+        // }
+    }
+    wsSend(update) {
+        window.ws.send(JSON.stringify(update));
+    }
+    sendInput(action) {
+        this.wsSend(action);
+    }
+    setTableState(update) {
+        if (update.chats) {
+            update.chats = update.chats.concat(this.state.chats);
+        }
+        if (update.seat) {
+            //updating about player
+            if ('tableCash' in update) {
+                console.log('TABLECASH SET TO ', this.state.tableCash);
+            }
+            for (let playerSeat in update.seat) {
+                // possible multiple updates functionality in future
+                let serverSideSeatUpdate = update.seat[playerSeat];
+                if ('winningCards' in serverSideSeatUpdate) {
+                    // update winning community cards for css highlighting
+                    this.setState({ winningCommunityCards: serverSideSeatUpdate.winningCards.slice(2) });
                 }
+                let clientSideSeatState = Object.assign({}, this.state[playerSeat]);
+                let updatedState = Object.assign(clientSideSeatState, serverSideSeatUpdate); // copy state first then 
+                this.setState({ [playerSeat]: updatedState });
+            }
+        } else {
+            if (update.status) {
+                this.state.status = ''; //reset status to trigger update
+                this.setState(update);
+                this.state.status = '';
             } else {
-                if (update.status) {
-                    this.state.status = ''; //reset status to trigger update
-                    this.setState(update);
-                    this.state.status = '';
-                } else {
-                    this.setState(update);
-                }
+                this.setState(update);
             }
         }
-    }, {
-        key: 'grabImages',
-        value: function grabImages() {
-            var context = this;
-            context.tableBackground.backgroundImage = "url(" + _table2.default + ")";
-            context.dealerButton = __webpack_require__(88);
-            var suits = ['♥', '♣', '♠', '♦'];
-            var values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
-            context.deck.reverse = __webpack_require__(53);
-            suits.forEach(function (suit) {
-                values.forEach(function (value) {
-                    var cardName = value + suit;
-                    context.deck[cardName] = __webpack_require__(90)("./" + cardName + '.png');
-                });
+    }
+    grabImages() {
+        let context = this;
+        context.tableBackground.backgroundImage = "url(" + __WEBPACK_IMPORTED_MODULE_2__Images_table_jpg___default.a + ")";
+        context.dealerButton = __webpack_require__(88);
+        const suits = ['♥', '♣', '♠', '♦'];
+        const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
+        context.deck.reverse = __webpack_require__(53);
+        suits.forEach(function (suit) {
+            values.forEach(function (value) {
+                let cardName = value + suit;
+                context.deck[cardName] = __webpack_require__(90)(`./${cardName}.png`);
             });
-            context.chipTypes.forEach(function (chipValue) {
-                for (var i = 1; i < 5; i++) {
-                    context.chips['chips' + chipValue + '_stack' + i] = __webpack_require__(91)("./chips" + chipValue + '_stack' + i + '.png');
-                }
-            });
-            Object.keys(context.avatars).forEach(function (avatar) {
-                context.avatars[avatar] = __webpack_require__(89)("./" + avatar + '.jpg');
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this4 = this;
-
-            return _react2.default.createElement(
+        });
+        context.chipTypes.forEach(chipValue => {
+            for (let i = 1; i < 5; i++) {
+                context.chips[`chips${chipValue}_stack${i}`] = __webpack_require__(91)(`./chips${chipValue}_stack${i}.png`);
+            }
+        });
+        Object.keys(context.avatars).forEach(avatar => {
+            context.avatars[avatar] = __webpack_require__(89)(`./${avatar}.jpg`);
+        });
+    }
+    render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'table-image-div-outter' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'table-image-div-outter' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'table-image-div', style: this.tableBackground },
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'announceUpdate' },
-                        this.state.update
-                    ),
-                    _react2.default.createElement(_inputs2.default, {
-                        inputOptions: this.state.inputOptions,
-                        accountCash: this.state.accountCash,
-                        tableCash: this.state.tableCash,
-                        sendInput: this.sendInput,
-                        loggedIn: this.state.loggedIn,
-                        room: this.state.room,
-                        status: this.state.status,
-                        roundOnlyPotsCallValue: this.state.roundOnlyPotsCallValue
-                    }),
-                    _react2.default.createElement(_communityCards2.default, {
-                        winningCommunityCards: this.state.winningCommunityCards,
-                        communityCard1: this.state.communityCards[0] ? this.deck[this.state.communityCards[0]] : null,
-                        communityCard2: this.state.communityCards[1] ? this.deck[this.state.communityCards[1]] : null,
-                        communityCard3: this.state.communityCards[2] ? this.deck[this.state.communityCards[2]] : null,
-                        communityCard4: this.state.communityCards[3] ? this.deck[this.state.communityCards[3]] : null,
-                        communityCard5: this.state.communityCards[4] ? this.deck[this.state.communityCards[4]] : null
-                    }),
-                    _react2.default.createElement(_pots2.default, {
-                        pots: this.state.pots,
-                        potsBeginRound: this.state.potsBeginRound,
+                { className: 'table-image-div', style: this.tableBackground },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    { className: 'announceUpdate' },
+                    this.state.update
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__inputs_jsx__["a" /* default */], {
+                    inputOptions: this.state.inputOptions,
+                    accountCash: this.state.accountCash,
+                    tableCash: this.state.tableCash,
+                    sendInput: this.sendInput,
+                    loggedIn: this.state.loggedIn,
+                    room: this.state.room,
+                    status: this.state.status,
+                    roundOnlyPotsCallValue: this.state.roundOnlyPotsCallValue
+                }),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__community_cards_jsx__["a" /* default */], {
+                    winningCommunityCards: this.state.winningCommunityCards,
+                    communityCard1: this.state.communityCards[0] ? this.deck[this.state.communityCards[0]] : null,
+                    communityCard2: this.state.communityCards[1] ? this.deck[this.state.communityCards[1]] : null,
+                    communityCard3: this.state.communityCards[2] ? this.deck[this.state.communityCards[2]] : null,
+                    communityCard4: this.state.communityCards[3] ? this.deck[this.state.communityCards[3]] : null,
+                    communityCard5: this.state.communityCards[4] ? this.deck[this.state.communityCards[4]] : null
+                }),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__pots_jsx__["a" /* default */], {
+                    pots: this.state.pots,
+                    potsBeginRound: this.state.potsBeginRound,
+                    chips: this.chips,
+                    chipTypes: this.chipTypes
+                }),
+                this.seatNumbers.map((seatNumber, i) => {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__Seat_jsx__["a" /* default */], {
+                        seat: this.state[seatNumber],
+                        deck: this.deck,
+                        key: i,
+                        seatNumber: seatNumber,
+                        turn: this.state.turn,
+                        dealerButton: this.dealerButton,
+                        dealer: this.state.dealer,
+                        avatars: this.avatars,
                         chips: this.chips,
                         chipTypes: this.chipTypes
-                    }),
-                    this.seatNumbers.map(function (seatNumber, i) {
-                        return _react2.default.createElement(_Seat2.default, {
-                            seat: _this4.state[seatNumber],
-                            deck: _this4.deck,
-                            key: i,
-                            seatNumber: seatNumber,
-                            turn: _this4.state.turn,
-                            dealerButton: _this4.dealerButton,
-                            dealer: _this4.state.dealer,
-                            avatars: _this4.avatars,
-                            chips: _this4.chips,
-                            chipTypes: _this4.chipTypes
-                        });
-                    })
-                )
-            );
-        }
-    }]);
-
-    return TableView;
-}(_react2.default.Component);
-
-_reactDom2.default.render(_react2.default.createElement(TableView, null), document.getElementById('room'));
+                    });
+                })
+            )
+        );
+    }
+}
+__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(TableView, null), document.getElementById('room'));
 
 /***/ }),
 /* 93 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var BetInput = function (_React$Component) {
-    _inherits(BetInput, _React$Component);
-
-    function BetInput(props) {
-        _classCallCheck(this, BetInput);
-
-        var _this = _possibleConstructorReturn(this, (BetInput.__proto__ || Object.getPrototypeOf(BetInput)).call(this));
-
-        _this.state = {
+class BetInput extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {
             betValue: 0
         };
-        return _this;
     }
-
-    _createClass(BetInput, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.setState({ betValue: this.props.inputOptions.bet });
-        }
-    }, {
-        key: 'handleBet',
-        value: function handleBet(value) {
-            // console.log(`You Bet ${this.state.betValue}`);
-            this.props.sendInput({ bet: this.state.betValue });
-            this.setState({ betValue: 0 }); // reset to 0 for next turn
-        }
-    }, {
-        key: 'handleBetSlider',
-        value: function handleBetSlider(value) {
-            this.setState({ betValue: document.getElementById('bet-slider').value });
-            // console.log(`You Change BET-SLIDER TO ${this.state.betValue}`);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
+    componentDidMount() {
+        this.setState({ betValue: this.props.inputOptions.bet });
+    }
+    handleBet(value) {
+        // console.log(`You Bet ${this.state.betValue}`);
+        this.props.sendInput({ bet: this.state.betValue });
+        this.setState({ betValue: 0 }); // reset to 0 for next turn
+    }
+    handleBetSlider(value) {
+        this.setState({ betValue: document.getElementById('bet-slider').value });
+        // console.log(`You Change BET-SLIDER TO ${this.state.betValue}`);
+    }
+    render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            null,
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                null,
-                _react2.default.createElement(
-                    'div',
-                    { className: 'bet-input-container game-input-container' },
-                    _react2.default.createElement(
-                        'button',
-                        { className: 'bet-button game-input', onClick: this.handleBet.bind(this) },
-                        'BET ' + this.state.betValue
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'bet-input-container game-input-container' },
-                    _react2.default.createElement('input', {
-                        id: 'bet-slider',
-                        className: 'bet-slider slider game-input',
-                        type: 'range',
-                        min: '' + this.props.inputOptions.bet,
-                        max: '' + this.props.tableCash,
-                        step: '10',
-                        onChange: this.handleBetSlider.bind(this)
-                    })
+                { className: 'bet-input-container game-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    { className: 'bet-button game-input', onClick: this.handleBet.bind(this) },
+                    `BET ${this.state.betValue}`
                 )
-            );
-        }
-    }]);
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'bet-input-container game-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                    id: 'bet-slider',
+                    className: 'bet-slider slider game-input',
+                    type: 'range',
+                    min: `${this.props.inputOptions.bet}`,
+                    max: `${this.props.tableCash}`,
+                    step: '10',
+                    onChange: this.handleBetSlider.bind(this)
+                })
+            )
+        );
+    }
+}
 
-    return BetInput;
-}(_react2.default.Component);
-
-exports.default = BetInput;
+/* harmony default export */ __webpack_exports__["a"] = (BetInput);
 
 /***/ }),
 /* 94 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var GetTableCash = function (_React$Component) {
-    _inherits(GetTableCash, _React$Component);
-
-    function GetTableCash(props) {
-        _classCallCheck(this, GetTableCash);
-
-        var _this = _possibleConstructorReturn(this, (GetTableCash.__proto__ || Object.getPrototypeOf(GetTableCash)).call(this));
-
-        _this.state = {
+class GetTableCash extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {
             getTableCashValue: 0
         };
-        return _this;
     }
-
-    _createClass(GetTableCash, [{
-        key: 'handleSubmitGetTableCash',
-        value: function handleSubmitGetTableCash(value) {
-            // console.log(`You transfer $${this.state.getTableCashValue} to Table Cash`);
-            this.props.sendInput({ getTableCash: this.state.getTableCashValue });
-            this.setState({ getTableCashValue: 0 }); // reset to 0 for next turn
-            document.getElementById("getTableCash-slider").value = "0";
-        }
-    }, {
-        key: 'handleGetTableCashSlider',
-        value: function handleGetTableCashSlider(value) {
-            this.setState({ getTableCashValue: document.getElementById('getTableCash-slider').value });
-            // console.log(`You Change GET TABLE CASH SLIDER TO ${this.state.getTableCashValue}`);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
+    handleSubmitGetTableCash(value) {
+        // console.log(`You transfer $${this.state.getTableCashValue} to Table Cash`);
+        this.props.sendInput({ getTableCash: this.state.getTableCashValue });
+        this.setState({ getTableCashValue: 0 }); // reset to 0 for next turn
+        document.getElementById("getTableCash-slider").value = "0";
+    }
+    handleGetTableCashSlider(value) {
+        this.setState({ getTableCashValue: document.getElementById('getTableCash-slider').value });
+        // console.log(`You Change GET TABLE CASH SLIDER TO ${this.state.getTableCashValue}`);
+    }
+    render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'getTableCash-inputs-container' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'getTableCash-inputs-container' },
-                _react2.default.createElement(
-                    'div',
+                {
+                    className: 'getTableCash-input-container lobby-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
                     {
-                        className: 'getTableCash-input-container lobby-input-container' },
-                    _react2.default.createElement(
-                        'button',
-                        {
-                            className: 'lobby-input',
-                            onClick: this.handleSubmitGetTableCash.bind(this) },
-                        '$' + this.state.getTableCashValue + ' =>Table'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    {
-                        className: 'getTableCash-slider-container lobby-input-container' },
-                    _react2.default.createElement('input', {
-                        id: 'getTableCash-slider',
-                        type: 'range',
-                        min: '0',
-                        max: '' + this.props.accountCash,
-                        step: '10',
-                        onChange: this.handleGetTableCashSlider.bind(this)
-                    })
+                        className: 'lobby-input',
+                        onClick: this.handleSubmitGetTableCash.bind(this) },
+                    `$${this.state.getTableCashValue} =>Table`
                 )
-            );
-        }
-    }]);
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                {
+                    className: 'getTableCash-slider-container lobby-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                    id: 'getTableCash-slider',
+                    type: 'range',
+                    min: '0',
+                    max: `${this.props.accountCash}`,
+                    step: '10',
+                    onChange: this.handleGetTableCashSlider.bind(this)
+                })
+            )
+        );
+    }
+}
 
-    return GetTableCash;
-}(_react2.default.Component);
-
-exports.default = GetTableCash;
+/* harmony default export */ __webpack_exports__["a"] = (GetTableCash);
 
 /***/ }),
 /* 95 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(12);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var RaiseInput = function (_React$Component) {
-    _inherits(RaiseInput, _React$Component);
-
-    function RaiseInput(props) {
-        _classCallCheck(this, RaiseInput);
-
-        var _this = _possibleConstructorReturn(this, (RaiseInput.__proto__ || Object.getPrototypeOf(RaiseInput)).call(this));
-
-        _this.state = {
+class RaiseInput extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+    constructor(props) {
+        super();
+        this.state = {
             raiseValue: 0
         };
-        return _this;
     }
-
-    _createClass(RaiseInput, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.setState({ raiseValue: this.props.inputOptions.raise });
-        }
-    }, {
-        key: 'handleRaise',
-        value: function handleRaise(value) {
-            // console.log(`You Raise to ${this.state.raiseValue}`);
-            this.props.sendInput({ raise: this.state.raiseValue });
-            this.setState({ raiseValue: 0 }); // reset to 0 for next turn
-        }
-    }, {
-        key: 'handleRaiseSlider',
-        value: function handleRaiseSlider(value) {
-            this.setState({ raiseValue: document.getElementById('raise-slider').value });
-            // console.log(`You Change RAISE-SLIDER TO ${this.state.raiseValue}`);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
+    componentDidMount() {
+        this.setState({ raiseValue: this.props.inputOptions.raise });
+    }
+    handleRaise(value) {
+        // console.log(`You Raise to ${this.state.raiseValue}`);
+        this.props.sendInput({ raise: this.state.raiseValue });
+        this.setState({ raiseValue: 0 }); // reset to 0 for next turn
+    }
+    handleRaiseSlider(value) {
+        this.setState({ raiseValue: document.getElementById('raise-slider').value });
+        // console.log(`You Change RAISE-SLIDER TO ${this.state.raiseValue}`);
+    }
+    render() {
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            null,
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                null,
-                _react2.default.createElement(
-                    'div',
-                    { className: 'raise-input-container game-input-container' },
-                    _react2.default.createElement(
-                        'button',
-                        { className: 'raise-button game-input', onClick: this.handleRaise.bind(this) },
-                        'RAISE ' + this.state.raiseValue
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'raise-input-container game-input-container' },
-                    _react2.default.createElement('input', {
-                        id: 'raise-slider',
-                        className: 'raise-slider slider game-input',
-                        type: 'range',
-                        min: '' + this.props.inputOptions.raise,
-                        max: '' + this.props.tableCash,
-                        step: '10',
-                        onChange: this.handleRaiseSlider.bind(this)
-                    })
+                { className: 'raise-input-container game-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    { className: 'raise-button game-input', onClick: this.handleRaise.bind(this) },
+                    `RAISE ${this.state.raiseValue}`
                 )
-            );
-        }
-    }]);
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'raise-input-container game-input-container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', {
+                    id: 'raise-slider',
+                    className: 'raise-slider slider game-input',
+                    type: 'range',
+                    min: `${this.props.inputOptions.raise}`,
+                    max: `${this.props.tableCash}`,
+                    step: '10',
+                    onChange: this.handleRaiseSlider.bind(this)
+                })
+            )
+        );
+    }
+}
 
-    return RaiseInput;
-}(_react2.default.Component);
-
-exports.default = RaiseInput;
+/* harmony default export */ __webpack_exports__["a"] = (RaiseInput);
 
 /***/ }),
 /* 96 */
