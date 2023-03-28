@@ -1,0 +1,606 @@
+body {
+ 	color: white;
+ 	font-family: Helvetica, Verdana, Arial, Sans-Serif;
+ 	font-size: 13;
+ 	font-weight: 100;
+  margin: 0px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment:fixed;
+  background-position:center; 
+}
+#room {
+  position: relative;
+}
+.table-image-div {
+  z-index: -1;
+  width:  100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment:fixed;
+  background-position:center; 
+}
+.announceUpdate {
+  width: 50%;
+  height: 2%;
+  top: 1.5%;
+  left: 25%;
+  color: white;
+  font-size: 13;
+  border-style: solid;
+  border-color: #42bdff;
+  background-color: black;
+  display: inline-block;
+  position: absolute;
+}
+.status-display {
+  font-size: 13;
+  color: yellow;
+  position: absolute;
+  top: 4.2%;
+  left: 25%;
+}
+.lobby-inputs-container {
+  z-index: 9;
+  border: 1px;
+  min-width: 180px;
+  min-height: 230px;
+  float: left;
+/*  border-size: 2px;
+  border-style: solid;
+  border-color: aqua;*/
+  position: relative;
+  overflow: auto;
+}
+.room-inputs-container {
+  min-height: 140px;
+}
+.lobby-forms-box {
+  min-width: 100px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+/*  border: 1px;
+  border-style: solid;
+  border-color: aqua;*/
+}
+.lobby-input-container {
+  width: 100%;
+  height: 25px;
+  background-color: yellow;
+  border-style: solid;
+  border-color: black;
+  transform: translate(-2%, 20%);
+}
+.form-text-input {
+  width: 100%;
+  height: 25px;
+  border-style: solid;
+  border-color: black;
+/*  text-align: center;
+  line-height: 200px;
+  vertical-align: center;*/
+}
+.lobby-input {
+  width: 100%;
+  height: 100%;
+  font-size: 14;
+  font-weight: 650;
+  background-color: yellow;
+  white-space: nowrap;
+}
+.cash-displays-container {
+  width: 100%;
+  height: 50px;
+  border-style: solid;
+  border-color: #42bdff;
+  transform: translate(-2%, 20%);
+}
+.cash-displays {
+  width: 100%;
+  height: 50%;
+  color: white;
+  font-size: 13;
+  font-weight: 600;
+  display: inline-block;
+  position: relative;
+  background-color: black;
+}
+.game-inputs-container {
+  top: 88.5%;
+  left: 50%;
+  width: 31%;
+  transform: translate(-50%, 0);
+  height: 8%;
+  position: absolute;
+  overflow: visible;
+/*  border: 1px;
+  border-style: solid;
+  border-color: aqua;*/
+}
+.game-input-container {
+  /*min-width: 22%;*/
+  width: 75px;
+  display: inline-block;
+  height: 100%;
+  float: left;
+  background-color: yellow;
+  border-style: solid;
+  border-color: black; 
+}
+.game-input {
+  width: 100%;
+  height: 100%;
+  font-size: 14;
+  font-weight: 650;
+  background-color: yellow;
+}
+
+/* pot stacks */
+.pot-chips-container {
+  width: 21%;
+  height: 4%;
+  top: 50%;
+  left: 40%;
+  display: inline-block;
+  position: absolute;
+/*  border: 1px;
+  border-style: solid;
+  border-color: aqua;*/
+  font-weight: 780;
+  font-size: 16px;
+  white-space: nowrap;
+  color: magenta;
+}
+.pot-chips-description {
+  left: -25%;
+  top: 25%;
+  position: absolute;
+}
+.chip {
+  height: 100%;
+}
+
+/* Cards (except plyaer hole card position)*/
+.card {
+  z-index: 5;
+  position: absolute;
+}
+.holeCard1 {
+  width: 40%;
+  -ms-transform: rotate(-5deg); /* IE 9 */
+  -webkit-transform: rotate(-5deg); /* Safari */
+  transform: rotate(-5deg);
+}
+.holeCard2 {
+  width: 40%;
+  -ms-transform: rotate(5deg); /* IE 9 */
+  -webkit-transform: rotate(5deg); /* Safari */
+  transform: rotate(5deg);
+}
+.community-card-container {
+  width: 21%;
+  height: 10%;
+  top: 40.5%;
+  left: 35%;
+  color: blue;
+  display: inline-block;
+  position: absolute;
+}
+.community-card {
+  width: 17%;
+}
+.community-card-show {
+  width: 3.3%;
+}
+.community-card1 {
+  left: 0%;
+}
+.community-card2 {
+  left: 20%;
+}
+.community-card3 {
+  left: 40%;
+}
+.community-card4 {
+  left: 60%;
+}
+.community-card5 {
+  left: 80%;
+}
+
+/* Pots Table */
+.pots-container {
+  z-index: 4;
+  width: 12%;
+  height: 12%;
+  top: 37%;
+  left: 55.7%;
+  display: inline-block;
+  position: absolute;
+}
+.pots-table {
+  z-index: 4;
+  top: 0%;
+  left: 0%;
+  color: yellow;
+  width: 100%;
+  font-size: 12;
+  position: absolute;
+  border-collapse: collapse;
+}
+.pots-table-value {
+  color: aqua;
+}
+.pots-table-type {
+  color: magenta;
+}
+.row-for-players-in-pot {
+  display:block;
+  width: 100%;
+}
+.pots-table-divider {
+  color: black;
+}
+
+/* seat artifacts */
+.dealer-button {
+  z-index: 0;
+  width: 22%;
+  height: auto;
+  position: absolute;
+}
+.avatar {
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid #021a40;
+  background-color:#ff0;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+.username {
+  top: 2%;
+  left: 98%;
+  font-weight: 780;
+  font-size: 16px;
+  position: absolute;
+  overflow: show;
+}
+.tableCash {
+  top: 6%;
+  left: -38%;
+  font-weight: 780;
+  font-size: 16px;
+  position: absolute;
+  overflow: show;
+}
+.playerAction {
+  font-weight: 780;
+  font-size: 16px;
+  position: absolute;
+  overflow: show;
+  white-space: nowrap;
+}
+.seat-chips-container {
+  width: 100%;
+  height: 23%;
+  color: blue;
+  display: inline-block;
+  position: absolute;
+/*  border: 1px;
+  border-style: solid;
+  border-color: aqua;*/
+}
+
+/* SEATS */
+
+.seat {
+  width: 7.5%;
+  height: 16%;
+  display: inline-block;
+  position: absolute;
+/*  border: 1px;
+  border-style: solid;
+  border-color: aqua;*/
+}
+.seat-bottom {
+  z-index: 3;
+  top: 72%;
+  left: 44%;
+}
+.bottom.dealer-button {
+  top: -74%;
+  left: 18%;
+}
+.bottom-card.holeCard1 {
+  top: -38%;
+  left: 10%;
+}
+.bottom-card.holeCard2 {
+  top: -38%;
+  left: 50%;
+}
+.bottom-playerAction.playerAction {
+  top: -73%;
+  left: 42%;
+}
+.bottom-chips-container {
+  top: -96%;
+  left: 42%;
+}
+.seat-bottom-left {
+  z-index: 3;
+  top: 70%;
+  left: 17.5%;
+}
+.bottom-left.dealer-button {
+  top: -69%;
+  left: 150%;
+}
+.bottom-left-card.holeCard1 {
+  top: -43%;
+  left: 40%;
+}
+.bottom-left-card.holeCard2 {
+  top: -43%;
+  left: 80%;
+}
+.bottom-left-playerAction.playerAction {
+  top: -60%;
+  left: 179%;
+}
+.bottom-left-chips-container {
+  top: -85%;
+  left: 179%;
+}
+.seat-lower-left {
+  z-index: 2;
+  top: 45%;
+  left: 5.5%;
+}
+.lower-left.dealer-button {
+  top: 38%;
+  left: 242%;
+}
+.lower-left-card.holeCard1 {
+  top: 43%;
+  left: 90%;
+}
+.lower-left-card.holeCard2 {
+  top: 43%;
+  left: 130%;
+}
+.lower-left-playerAction.playerAction {
+  top: 40%;
+  left: 265%;
+}
+.lower-left-chips-container {
+  top: 15%;
+  left: 265%;
+}
+.seat-upper-left {
+  z-index: 1;
+  top: 22%;
+  left: 12.5%;
+}
+.upper-left.dealer-button {
+  top: 105%;
+  left: 170%;
+}
+.upper-left-card.holeCard1 {
+  top: 37%;
+  left: 90%;
+}
+.upper-left-card.holeCard2 {
+  top: 37%;
+  left: 130%;
+}
+.upper-left-playerAction.playerAction {
+  top: 105%;
+  left: 195%;
+}
+.upper-left-chips-container {
+  top: 119%;
+  left: 195%;
+}
+.seat-top-left {
+  z-index: 0;
+  top: 8%;
+  left: 29%;
+}
+.top-left.dealer-button {
+  top: 146%;
+  left: 60%;
+}
+.top-left-card.holeCard1 {
+  top: 80%;
+  left: 10%;
+}
+.top-left-card.holeCard2 {
+  top: 80%;
+  left: 50%;
+}
+.top-left-tableCash.tableCash {
+  top: 83%;
+  left: 92%;
+}
+.top-left-playerAction.playerAction {
+  top: 147%;
+  left: 85%;
+}
+.top-left-chips-container {
+  top: 161%;
+  left: 85%;
+}
+.seat-top {
+  z-index: 0;
+  top: 7.5%;
+  left: 46.3%;
+}
+.top.dealer-button {
+  top: 149%;
+  left: 15%;
+}
+.top-card.holeCard1 {
+  top: 80%;
+  left: 10%;
+}
+.top-card.holeCard2 {
+  top: 80%;
+  left: 50%;
+}
+.top-tableCash.tableCash {
+  top: 83%;
+  left: 92%;
+}
+.top-playerAction.playerAction {
+  top: 150%;
+  left: 40%;
+}
+.top-chips-container {
+  top: 164%;
+  left: 40%;
+}
+.seat-top-right {
+  z-index: 0;
+  top: 8%;
+  left: 63%;
+}
+.top-right.dealer-button {
+  top: 146%;
+  left: 10%;
+}
+.top-right-card.holeCard1 {
+  top: 80%;
+  left: 10%;
+}
+.top-right-card.holeCard2 {
+  top: 80%;
+  left: 50%;
+}
+.top-right-tableCash.tableCash {
+  top: 83%;
+  left: 92%;
+}
+.top-right-playerAction.playerAction {
+  top: 147%;
+  left: -45%;
+}
+.top-right-chips-container {
+  top: 161%;
+  left: -45%;
+}
+.seat-upper-right {
+  z-index: 1;
+  top: 22%;
+  left: 80%;
+}
+.upper-right.dealer-button {
+   top: 100%;
+  left: -110%;
+}
+.upper-right-card.holeCard1 {
+  top: 37%;
+  left: -72%;
+}
+.upper-right-card.holeCard2 {
+  top: 37%;
+  left: -32%;
+}
+.upper-right-playerAction.playerAction {
+  top: 105%;
+  left: -175%;
+}
+.upper-right-chips-container {
+  top: 119%;
+  left: -175%;
+}
+.seat-lower-right {
+  z-index: 2;
+  top: 45%;
+  left: 85%;
+}
+.lower-right.dealer-button {
+  top: 38%;
+  left: -150%;
+}
+.lower-right-card.holeCard1 {
+  top: 43%;
+  left: -72%;
+}
+.lower-right-card.holeCard2 {
+  top: 43%;
+  left: -32%;
+}
+.lower-right-playerAction.playerAction {
+  top: 40%;
+  left: -220%;
+}
+.lower-right-chips-container {
+  top: 15%;
+  left: -220%;
+}
+.seat-bottom-right {
+  z-index: 3;
+  top: 70%;
+  left: 69%;
+}
+.bottom-right.dealer-button {
+  top: -69%;
+  left: -13%;
+}
+.bottom-right-card.holeCard1 {
+  top: -43%;
+  left: -20%;
+}
+.bottom-right-card.holeCard2 {
+  top: -43%;
+  left: 20%;
+}
+.bottom-right-playerAction.playerAction {
+  top: -60%;
+  left: -85%;
+}
+.bottom-right-chips-container {
+  top: -85%;
+  left: -85%;
+}
+
+/* effects */
+.highlight {
+  border: 2px solid #dadada;
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+}
+.highlight-radius {
+  border-radius: 7px;
+}
+
+.hideMe {
+  -moz-animation: cssAnimation 0s ease-in 5s forwards;
+  -webkit-animation: cssAnimation 0s ease-in 5s forwards;
+  -o-animation: cssAnimation 0s ease-in 5s forwards;
+  animation: cssAnimation 0s ease-in 5s forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+@keyframes cssAnimation {
+  to {
+      width:0;
+      height:0;
+      overflow:hidden;
+  }
+}
+@-webkit-keyframes cssAnimation {
+  to {
+      width:0;
+      height:0;
+      visibility:hidden;
+  }
+}
