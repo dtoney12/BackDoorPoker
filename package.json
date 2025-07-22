@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./server/app.js"
+    "start": "node ./server/app.js",
+    "build": "webpack"
   },
   "engines": {
     "node": ">=20.19.4"
@@ -15,7 +16,6 @@
   "dependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "backbone": "^1.6.1",
     "bluebird": "^3.7.2",
@@ -34,7 +34,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.28.0",
     "babel-loader": "^10.0.0",
-    "babel-plugin-transform-object-entries": "^1.0.0"
+    "babel-plugin-transform-object-entries": "^1.0.0",
+    "webpack-cli": "^6.0.1"
   }
 }
