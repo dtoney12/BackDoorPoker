@@ -20,9 +20,11 @@ const lobby = require('./lobby')
 
 
 wss.on('connection', 
-	(ws) => {
+	(ws, req) => {
 		var user = new lobby.User();
 		user.ws = ws;
+		console.log(ws.upgradeReq);
+		ws.upgradeReq = req;
 		user.set({sessionId: ws.upgradeReq.rawHeaders[21].slice(0,5)});  // set sessionId
 		ws.on('message', (received)=> user.handleInput(JSON.parse(received)));
 		ws.on('close', ()=>{
