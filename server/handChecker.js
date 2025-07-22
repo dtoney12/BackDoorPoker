@@ -354,8 +354,8 @@ module.exports.checkHand = (hole, board, cardsOnTable)=>{
 // var board = ['K♣', 'A♣', 'A♦', '4♥', '4♣'];
 // var hole = ['8♥', '7♥'];
 // var board = ['6♥', '5♥', '4♥', '3♥', '2♥'];
-// var hole = ['A♥', '2♥'];
-// var board = ['3♣', '4♣', '5♦', '6♥', '7♣'];
+var hole = ['A♥', '2♥'];
+var board = ['3♣', '4♣', '5♦', '6♥', '7♣'];
 // var hole = ['4♦', '2♦'];
 // var board = ['A♥', '7♥', '10♦', '2♣', 'J♣'];
 // var hole = ['4♥', '4♣'];
@@ -370,11 +370,11 @@ module.exports.checkHand = (hole, board, cardsOnTable)=>{
 // var hole = ['4♥', 'A♣'];
 // var board = ['8♥', '8♣', '4♦', '6♥', 'A♥'];
 
-var hole = ['10♥', '9♣'];
-var board = ['10♣', '3♠', '5♦', '3♥', '9♥'];
+// var hole = ['10♥', '9♣'];
+// var board = ['10♣', '3♠', '5♦', '3♥', '9♥'];
 
 var highfive = module.exports.checkHand(hole, board, 7);
-// console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
+console.log('\nBEST HAND (indexes, type) =', highfive,'\n')
 // BEST HAND (indexes, type) = { indexes: [ 1, 0, 2, 5, 6 ], type: 5 } 
 
 

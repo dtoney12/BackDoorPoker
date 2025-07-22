@@ -1,5 +1,5 @@
 'use strict'
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const Promise = require('bluebird');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
@@ -11,17 +11,17 @@ const status = require('../templates/statuscode');
 const util = require('./util')
 
 const pool = mysql.createPool(
-	(process.env.RDS_HOSTNAME &&
-	{host     : process.env.RDS_HOSTNAME,
-  user     : process.env.RDS_USERNAME,
-  password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT}) ||
+// 	(process.env.RDS_HOSTNAME &&
+// 	{host     : process.env.RDS_HOSTNAME,
+//   user     : process.env.RDS_USERNAME,
+//   password : process.env.RDS_PASSWORD,
+//   port     : process.env.RDS_PORT}) ||
 
-  process.env.CLEARDB_DATABASE_URL ||	
+//   process.env.CLEARDB_DATABASE_URL ||	
 
 	{host: 'localhost',
 	user: 'root',
-	password: '',
+	password: 'password',
 	database: 'dtpoker'	});
 
 const getConn = ()=> {
