@@ -1,6 +1,6 @@
 'use strict';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client'
 import tableImg from './Images/table.jpg';
 import CommunityCards from './community-cards.jsx';
 import Seat from './Seat.jsx';
@@ -146,16 +146,16 @@ class TableView extends React.Component {
             'Mad Marcus': null,
             'Fredinator': null,
             'Tinkerer': null,
-            Avatar1: null,
-            Avatar2: null,
-            Avatar3: null,
-            Avatar4: null,
-            Avatar5: null,
-            Avatar6: null,
-            Avatar7: null,
-            Avatar8: null,
-            Avatar9: null,
-            Avatar10: null,
+            'Avatar1': null,
+            'Avatar2': null,
+            'Avatar3': null,
+            'Avatar4': null,
+            'Avatar5': null,
+            'Avatar6': null,
+            'Avatar7': null,
+            'Avatar8': null,
+            'Avatar9': null,
+            'Avatar10': null,
         };
         this.grabImages = this.grabImages.bind(this);
         this.grabImages();
@@ -227,6 +227,7 @@ class TableView extends React.Component {
         this.wsSend(action);
     }
     setTableState(update) {
+        console.log("---> update: ",update)
         if (update.chats) {
             update.chats = update.chats.concat(this.state.chats);
         }   
@@ -236,12 +237,32 @@ class TableView extends React.Component {
             }
             for (var playerSeat in update.seat) {  // possible multiple updates functionality in future
                 var serverSideSeatUpdate = update.seat[playerSeat];
+                // console.log("serverSideSeatUpdate ", JSON.stringify(serverSideSeatUpdate));
                 if ('winningCards' in serverSideSeatUpdate) {  // update winning community cards for css highlighting
                     this.setState({winningCommunityCards: serverSideSeatUpdate.winningCards.slice(2)});
                 }
                 var clientSideSeatState = Object.assign({}, this.state[playerSeat]);
-                var updatedState = Object.assign(clientSideSeatState, serverSideSeatUpdate)  // copy state first then 
-                this.setState({[playerSeat]: updatedState});
+                // console.log("clientSideSeatState ", JSON.stringify(clientSideSeatState));
+                var updatedState = Object.assign(clientSideSeatState, serverSideSeatUpdate)  // copy state first then
+                // console.log("---> setState([" + playerSeat + "]: updatedState = ", JSON.stringify(updatedState));
+                // this.setState({[playerSeat]: updatedState});
+                this.setState(prevState => {
+                    console.log("prevState = ",prevState)
+                    const newState = {
+                        ...prevState,
+                        [playerSeat]: {
+                            ...prevState[playerSeat],
+                            ...serverSideSeatUpdate
+                        }
+                    }
+                    console.log("newState = ",newState);
+                    return newState;
+                });
+
+                // this.setState({
+                //     ...this.state,
+                //     ...{...this.state[playerSeat],...update.seat[playerSeat]}
+                // })
             }
         } else {
             if (update.status) {
@@ -323,5 +344,8 @@ class TableView extends React.Component {
         );
     }
 }
-ReactDOM.render(<TableView />,   document.getElementById('room'));
+
+const root = createRoot(document.getElementById('room'));
+root.render(<TableView />);
+// ReactDOM.render(<TableView />,   document.getElementById('room'));
 

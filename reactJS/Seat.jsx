@@ -10,6 +10,7 @@ class Seat extends React.Component {
     }
   }
   componentDidUpdate() {
+    console.log("Seat " + this.props.seatNumber + " username = (" + this.props.seat.username + ") componentDidUpdate")
     if (!(this.state.avatar) && this.props.seat.username) {
       if (!!this.props.avatars[this.props.seat.username]) {
         this.setState({avatar: this.props.avatars[this.props.seat.username] });
@@ -51,6 +52,7 @@ class Seat extends React.Component {
 
           {this.props.seat.playerAction?
             Object.entries(this.props.seat.playerAction).map(function(action, i) {
+              console.log("PlayerAction " + JSON.stringify(action) + " for seat " + context.props.seat.username)
               var amount = action[1];
               if (amount===true) {
                 return  <div key={i}
@@ -68,6 +70,8 @@ class Seat extends React.Component {
                             chips={context.props.chips}
                             chipTypes={context.props.chipTypes}
                             classNameProp={context.props.seat.location+'-chips-container seat-chips-container'}
+                            username={context.props.seat.username}
+                            seatNumber={context.props.seatNumber}
                             />
                         </div>
               }}) :null}

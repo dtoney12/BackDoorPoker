@@ -17,8 +17,9 @@ class Pot extends React.Component {
     this.updateStacks = this.updateStacks.bind(this);
   }
   componentDidUpdate() {
+    console.log("For Seat " + this.props.seatNumber + " username = (" + this.props.username + "), Pot componentDidUpdate, this.props.value = " + this.props.value );
     if (this.props.value !== this.potValue) {
-      // console.log('updateStacks says potValue=', this.props.value);
+      // console.log('--> updateStacks says potValue=', this.props.value);
       this.updateStacks(this.props.value);
       this.potValue = this.props.value;
     } 
@@ -39,7 +40,7 @@ class Pot extends React.Component {
         chipStackCount++;
         potValue -= chipType;
       }
-      // console.log('setting stacktypeIndex of', stackTypeIndex, 'to chip count', chipStackCount);
+      console.log('setting stacktypeIndex of', stackTypeIndex, 'to chip count', chipStackCount);
       this.setState({ [stackTypeIndex]: chipStackCount });
     }
 

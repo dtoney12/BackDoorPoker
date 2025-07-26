@@ -17,13 +17,17 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           presets: ['@babel/preset-react', '@babel/preset-env'],
-          plugins: ['babel-plugin-transform-object-entries'],
+          // plugins: ['babel-plugin-transform-object-entries'],
+            plugins: ['transform-es2017-object-entries'],  // attempt to fix issue with addImport from babel-plugin-transform-object-entries
         },
       },
       { test: /\.(woff|png|jpg|gif)$/,
         include: SRC_DIR,
-        loader: 'url-loader' 
+        loader: 'url-loader',
+        options: {
+          esModule: false
+        }
       },
     ]
-  }
+  },
 };
