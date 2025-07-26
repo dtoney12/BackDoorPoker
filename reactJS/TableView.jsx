@@ -247,7 +247,7 @@ class TableView extends React.Component {
                 // console.log("---> setState([" + playerSeat + "]: updatedState = ", JSON.stringify(updatedState));
                 // this.setState({[playerSeat]: updatedState});
                 this.setState(prevState => {
-                    console.log("prevState = ",prevState)
+                    // console.log("prevState = ",prevState)
                     const newState = {
                         ...prevState,
                         [playerSeat]: {
@@ -255,7 +255,7 @@ class TableView extends React.Component {
                             ...serverSideSeatUpdate
                         }
                     }
-                    console.log("newState = ",newState);
+                    // console.log("newState = ",newState);
                     return newState;
                 });
 
