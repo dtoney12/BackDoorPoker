@@ -1,7 +1,7 @@
 'use strict';
 import React from 'react';
 import { createRoot } from 'react-dom/client'
-import tableImg from './Images/table.jpg';
+import tableImg from './images/table.jpg';
 import CommunityCards from './community-cards.jsx';
 import Seat from './Seat.jsx';
 import Pots from './pots.jsx';
