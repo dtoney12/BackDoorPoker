@@ -155,8 +155,9 @@ module.exports = {
 	},
 
 	initDb: (cb1, cb2, cb3, cb4, data1, data2, data3, data4)=> {
-		if (process.env.CLEARDB_DATABASE_URL) {
+		if (process.env.JAWSDB_URL) {
 			Promise.using(getConn(), function(conn) {	
+				console.log('>>> INITING JAWSDB DATABASE <<<')
 		  	return conn.queryAsync(schema.dropTableUsers)
 		  	.then(()=> conn.queryAsync(schema.createTableUsers))
 		  	.then(()=> conn.queryAsync(qry.insertUser, util.assign(schema.User, demo.User1)))
