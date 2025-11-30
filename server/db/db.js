@@ -17,7 +17,7 @@ const pool = mysql.createPool(
 //   password : process.env.RDS_PASSWORD,
 //   port     : process.env.RDS_PORT}) ||
 
-//   process.env.CLEARDB_DATABASE_URL ||	
+  process.env.JAWSDB_URL ||	
 
 	{host: 'localhost',
 	user: 'root',
